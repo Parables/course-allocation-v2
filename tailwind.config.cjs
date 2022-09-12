@@ -8,7 +8,7 @@ const config = {
     extend: {},
   },
 
-  plugins: [forms, daisyui],
+  plugins: [daisyui],
   daisyui: {
     themes: false, //["light", "dark", "cmyk"],
   },
