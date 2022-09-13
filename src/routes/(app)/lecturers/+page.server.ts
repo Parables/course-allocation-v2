@@ -23,29 +23,12 @@ export const actions: Actions = {
 			throw redirect(307, '/lecturers');
 		}
 	},
-	assign: async ({ request, url }) => {
-		// extract data from request
-		const data = await requestToJson(request);
-		console.log(data.assignedCourses);
-		// const response = await fetch(`${url.origin}/api/lecturers/${key}`, {
-		// 	method: 'PATCH',
-		// 	headers: {
-		// 		'Content-Type': 'application/json',
-		// 		Accept: 'application/json'
-		// 	},
-		// 	body: JSON.stringify(data)
-		// });
 
-		// const result = await response.json();
-
-		// console.log('Edit Lecturer Response:-->', result);
-		// if (result === null) {
-		// 	throw redirect(307, '/lecturers');
-		// }
-	},
 	update: async ({ request, url }) => {
 		// extract data from request
 		const { key, ...data } = await requestToJson(request);
+
+		console.log('key', key, 'data',data)
 
 		const response = await fetch(`${url.origin}/api/lecturers/${key}`, {
 			method: 'PATCH',

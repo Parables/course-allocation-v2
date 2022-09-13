@@ -3,45 +3,29 @@
 	import { page } from '$app/stores';
 	import BackButton from '$lib/assets/icons/chevron-left.svg';
 	import type { PageData } from './$types';
-	import Select from '$lib/components/input-fields/select.svelte';
 
 	export let data: PageData;
 	let lecturer: typeof data.lecturer;
 	let courses: any[] /*typeof data.courses*/ = [];
 	let availableCourses: typeof courses = [];
 	let assignedCourses: typeof courses = [];
-	// let selectedCourses: typeof courses = [];
+	let selectedCourses: typeof courses = [];
 
 	$: {
 		({ lecturer, courses } = data);
 		if (lecturer.assignedCourses) {
-			assignedCourses = lecturer.assignedCourses;
+			assignedCourses = lecturer.assignedCourses ?? [];
 		}
 
 		availableCourses = courses.filter(
 			(c) => assignedCourses.find((a) => a.key === c.key) === undefined
 		);
-	}
 
-	let scoops = 1;
-	let flavours = ['Mint choc chip'];
-
-	let menu = ['Cookies and cream', 'Mint choc chip', 'Raspberry ripple'];
-
-	function join(flavours: string[]) {
-		if (flavours.length === 1) return flavours[0];
-		return `${flavours.slice(0, -1).join(', ')} and ${flavours[flavours.length - 1]}`;
+		selectedCourses = assignedCourses?.map((c) => c.key) ?? [];
 	}
 
 	$: {
-		console.log(
-			'Falvours',
-			flavours,
-			'assignedCourses',
-			assignedCourses,
-			'avaCount',
-			availableCourses.length
-		);
+		console.log('assignedCourses', assignedCourses, 'avaCount', availableCourses.length);
 	}
 
 	function addCourses() {}
@@ -172,9 +156,21 @@
 					</div>
 				</div>
 
-				<Button on:click={addCourses} classNames="my-5 w-full "
-					>Assign {assignedCourses.length} Courses to {lecturer.full_name}</Button
-				>
+				<form id="course-allocation-form" action="/lecturers?/update" method="post">
+					<input type="text" id="key" name="key" class="sr-only" bind:value={data.lecturer.key} />
+
+					<input
+						type="text"
+						id="assignedCourses"
+						name="assignedCourses"
+						class="sr-only"
+						bind:value={selectedCourses}
+					/>
+
+					<Button classNames="w-full  my-5">
+						Assign {assignedCourses.length} Courses to {lecturer.full_name}
+					</Button>
+				</form>
 			</div>
 		</div>
 	</div>

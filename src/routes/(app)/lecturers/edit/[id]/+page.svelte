@@ -21,7 +21,17 @@
 
 	<div class="overflow-y-auto flex-1 mb-10">
 		<hr class="mt-6" />
+
 		<form action="/lecturers?/update" method="post" use:enhance>
+			<input
+				type="text"
+				id="key"
+				name="key"
+				label="key"
+				required
+				class="sr-only"
+				bind:value={data.lecturer.key}
+			/>
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-32 mt-[85px] w-full px-10">
 				<!-- Personal details -->
 				<div class="flex flex-col w-full">
@@ -29,14 +39,7 @@
 					<h5 class="text-xs font-poppins font-light mb-8">
 						Fill in personal details of the lecturer
 					</h5>
-					<InputField
-						id="key"
-						name="key"
-						label="key"
-						required
-						classNames="sr-only"
-						bind:initial={data.lecturer.key}
-					/>
+
 					<InputField
 						id="full_name"
 						name="full_name"
