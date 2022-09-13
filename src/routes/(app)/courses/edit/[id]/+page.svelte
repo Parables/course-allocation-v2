@@ -48,6 +48,13 @@
 						bind:initial={data.course.course_name}
 					/>
 					<InputField
+						id="course_code"
+						name="course_code"
+						label="Course Code"
+						required
+						bind:initial={data.course.course_code}
+					/>
+					<InputField
 						id="year_group"
 						name="year_group"
 						label="Year Group"

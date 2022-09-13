@@ -23,7 +23,7 @@ export type Action = 'view' | 'edit' | 'delete' | 'more';
 
 export interface ICellSchema {
 	class?: string;
-	type?: 'text' | 'numeric' | 'chip' | 'avartar-text' | 'avartar-mainText-subText' | 'actions';
+	type?: 'text' | 'numeric' | 'chip' | 'avartar-text' | 'avartar-mainText-subText'| 'mainText-subText' | 'actions';
 	avartar?: string; // data.key for the url of the image to be used as src or initial letter(s)
 	text?: string; // data.key for the text to be displayed
 	subText?: string; // data.key for the subText to be displayed below the text(mainText)

@@ -27,7 +27,7 @@
 					<h5 class="text-xs font-poppins font-light mb-8">
 						Fill in personal details of the lecturer
 					</h5>
-					<InputField id="full_name" name="full_name" label="Name" required />
+					<InputField id="full_name" name="full_name" label="Name" autocomplete="name" required />
 					<InputField id="gender" name="gender" label="Gender" required />
 				</div>
 				<!-- Contanct details -->

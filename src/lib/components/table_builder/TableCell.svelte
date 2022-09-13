@@ -27,6 +27,19 @@
 			</div>
 		</div>
 	</td>
+{:else if cellSchema.type === 'mainText-subText'}
+	<td class="px-6 py-4 whitespace-no-wrap border-b border-comet">
+		<div class="grid grid-cols-1">
+			<p class="text-sm font-medium leading-5 text-gray-500">
+				{rowData[cellSchema.text || '']}
+			</p>
+			{#if cellSchema.subText && rowData[cellSchema.subText]}
+				<p class="text-sm leading-5 text-gray-600">
+					{rowData[cellSchema.subText || '']}
+				</p>
+			{/if}
+		</div>
+	</td>
 {:else if cellSchema.type === 'chip'}
 	<td class="px-6 py-4 whitespace-no-wrap border-b border-comet">
 		<span

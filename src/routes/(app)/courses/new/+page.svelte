@@ -27,6 +27,7 @@
 					<h2 class="text-sm font-poppins font-semibold">Course Details</h2>
 					<h5 class="text-xs font-poppins font-light mb-8">Fill in the details for a course</h5>
 					<InputField id="course_name" name="course_name" label="Course Name" required />
+					<InputField id="course_code" name="course_code" label="Course Code" required />
 					<InputField id="year_group" name="year_group" label="Year Group" required />
 				</div>
 				<!-- Contanct details -->

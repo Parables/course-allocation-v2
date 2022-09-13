@@ -1,7 +1,7 @@
-import type { PageLoad } from './$types';
+import type { PageLoad } from '../../../../.svelte-kit/types/src/routes/(app)/lecturers/view/[id]/$types';
 
 export const load: PageLoad = async ({ url, params, fetch }) => {
-	const response = await fetch(`/api/lecturers/${params.id}`, {
+	const response = await fetch(`/api/lecturers/`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -9,7 +9,7 @@ export const load: PageLoad = async ({ url, params, fetch }) => {
 		}
 	});
 
-	const lecturer = await response.json();
+	const lecturers = await response.json();
 
 	const courseResponse = await fetch(`/api/courses`, {
 		method: 'GET',
@@ -19,7 +19,7 @@ export const load: PageLoad = async ({ url, params, fetch }) => {
 		}
 	});
 	const courses = await courseResponse.json();
-	console.log('Request:-->', lecturer, courses);
+	// console.log('Request:-->', lecturers, courses);
 
-	return { lecturer, courses };
+	return { lecturers,  courses };
 };
