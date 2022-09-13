@@ -9,19 +9,19 @@
 	let courses: any[] /*typeof data.courses*/ = [];
 	let availableCourses: typeof courses = [];
 	let assignedCourses: typeof courses = [];
-	let selectedCourses: typeof courses = [];
+	let selectedCourses: string;
 
 	$: {
 		({ lecturer, courses } = data);
 		if (lecturer.assignedCourses) {
-			assignedCourses = lecturer.assignedCourses ?? [];
+			assignedCourses = [...JSON.parse(lecturer.assignedCourses)];
 		}
 
 		availableCourses = courses.filter(
 			(c) => assignedCourses.find((a) => a.key === c.key) === undefined
 		);
 
-		selectedCourses = assignedCourses?.map((c) => c.key) ?? [];
+		selectedCourses = JSON.stringify(assignedCourses);
 	}
 
 	$: {
