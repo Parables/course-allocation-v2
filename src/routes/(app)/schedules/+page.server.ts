@@ -2,9 +2,9 @@ import { requestToJson } from "$lib/utils";
 import { redirect } from "@sveltejs/kit";
 import type { Actions } from "./$types";
 
-const getAssignedCourses = async (url: string) => {
+const getAssignedCourses = async (endpoint: string) => {
   // get the lecturer's courses
-  const lecturerResponse = await fetch(url, {
+  const lecturerResponse = await fetch(endpoint, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -14,9 +14,36 @@ const getAssignedCourses = async (url: string) => {
 
   const lecturer = await lecturerResponse.json();
 
-  return lecturer.assigned_courses
-    ? JSON.parse(lecturer.assigned_courses)
-    : null;
+  return lecturer.assigned_courses ?? null;
+};
+
+const updateAssignedCourses = async (
+  endpoint: string,
+  assignedCourses: Record<string, any>
+) => {
+  const response = await fetch(endpoint, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({ assigned_courses: assignedCourses }),
+  });
+
+  const result = await response.json();
+
+  console.log("Assigned Courses to Lecturer Response:-->", result);
+  if (result === null) {
+    // throw redirect(307, `/schedules`);
+    return {
+      success: ` ${
+        Object.keys(assignedCourses).length
+      } Courses allocated to lecturer`,
+    };
+  }
+  return {
+    error: `Something went wrong... please check your internet connection and try again`,
+  };
 };
 
 export const actions: Actions = {
@@ -29,8 +56,9 @@ export const actions: Actions = {
 
     console.log("key", key, "addCourses", strAddCourses);
 
+    const endpoint = `${url.origin}/api/lecturers/${key}`;
     const assignedCourses: Record<string, any> =
-      (await getAssignedCourses(`${url.origin}/api/lecturers/${key}`)) ?? {};
+      (await getAssignedCourses(endpoint)) ?? {};
 
     addCourses.forEach((a) => {
       assignedCourses[a.key] = a;
@@ -38,42 +66,30 @@ export const actions: Actions = {
 
     console.log("adding these courses", assignedCourses);
 
-    const response = await fetch(`${url.origin}/api/lecturers/${key}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({ assigned_courses: assignedCourses }),
-    });
-
-    const result = await response.json();
-
-    console.log("Assigned Courses to Lecturer Response:-->", result);
-    if (result === null) {
-      throw redirect(307, `/schedules`);
-    }
+    return updateAssignedCourses(endpoint, assignedCourses);
   },
+
   removeCourses: async ({ url, request }) => {
     // extract data from request
-    const { key, ...data } = await requestToJson(request);
+    const data = await request.formData();
+    const key = data.get("key") as string;
+    const strRemoveCourses = data.get("removeCourses") as string;
+    const removeCourses: any[] = strRemoveCourses
+      ? JSON.parse(strRemoveCourses)
+      : [];
 
-    console.log("key", key, "data", data.assigned_courses);
+    console.log("key", key, "removeCourses", strRemoveCourses);
 
-    const response = await fetch(`${url.origin}/api/lecturers/${key}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(data),
+    const endpoint = `${url.origin}/api/lecturers/${key}`;
+    const assignedCourses: Record<string, any> =
+      (await getAssignedCourses(endpoint)) ?? {};
+
+    removeCourses.forEach((a) => {
+      delete assignedCourses[a.key];
     });
 
-    const result = await response.json();
+    console.log("adding these courses", assignedCourses);
 
-    console.log("Assigned Courses to Lecturer Response:-->", result);
-    if (result === null) {
-      throw redirect(307, `/schedules`);
-    }
+    return updateAssignedCourses(endpoint, { ...assignedCourses });
   },
 };

@@ -1,11 +1,13 @@
 <script lang="ts">
 	import Button from '$lib/components/button.svelte';
+	import EassyToast from '$lib/components/easy-toast.svelte';
 	import { page } from '$app/stores';
 	import BackButton from '$lib/assets/icons/chevron-left.svg';
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
 
 	export let data: PageData;
+	export let form: any;
 
 	let lecturers: any[] = [];
 	let courses: any[] = [];
@@ -88,7 +90,7 @@
 	</div>
 
 	<!-- assigned courses lecturers -->
-	<div class="flex flex-col w-full h-full overflow-hidden">
+	<div class="relative flex flex-col w-full h-full overflow-hidden">
 		<p class="my-5 font-semibold text-center uppercase">Assigned Courses</p>
 
 		{#if selectedLecturer !== null}
@@ -118,8 +120,14 @@
 					</ul>
 
 					<form action="?/addCourses" method="post">
-						<input type="text" name="key" id="key" value={selectedLecturer.key} />
-						<input type="text" name="addCourses" id="addCourses" value={strAddCourses} />
+						<input type="text" name="key" id="key" value={selectedLecturer.key} class="sr-only" />
+						<input
+							type="text"
+							name="addCourses"
+							id="addCourses"
+							value={strAddCourses}
+							class="sr-only"
+						/>
 						<Button>Assign Courses</Button>
 					</form>
 				</div>
@@ -150,8 +158,14 @@
 						{/each}
 					</ul>
 					<form action="?/removeCourses" method="post">
-						<input type="text" name="key" id="key" value={selectedLecturer.key} />
-						<input type="text" name="removeCourses" id="removeCourses" value={strRemoveCourses} />
+						<input type="text" name="key" id="key" value={selectedLecturer.key} class="sr-only" />
+						<input
+							type="text"
+							name="removeCourses"
+							id="removeCourses"
+							value={strRemoveCourses}
+							class="sr-only"
+						/>
 						<Button>Remove Courses</Button>
 					</form>
 				</div>
@@ -160,6 +174,14 @@
 			<p class="grid w-full h-full place-items-center">
 				Select a Lecturer on the left panel to assign courses to
 			</p>
+		{/if}
+
+		{#if form?.error}
+			<EassyToast show={true} message={form.error ?? 'Something went wrong'} type="error" />
+		{/if}
+
+		{#if form?.success}
+			<EassyToast show={true} message={form.success ?? 'Something went wrong'} type="success" />
 		{/if}
 	</div>
 </div>
