@@ -1,10 +1,8 @@
 <script lang="ts">
 	import Button from '$lib/components/button.svelte';
 	import EassyToast from '$lib/components/easy-toast.svelte';
-	import { page } from '$app/stores';
 	import BackButton from '$lib/assets/icons/chevron-left.svg';
 	import type { PageData } from './$types';
-	import { onMount } from 'svelte';
 
 	export let data: PageData;
 	export let form: any;
@@ -49,7 +47,7 @@
 </script>
 
 <div class="flex items-center w-full ">
-	<a href="/lecturers" class="mr-4 text-purple-500 border border-purple-500 rounded ">
+	<a href="/" class="mr-4 text-purple-500 border border-purple-500 rounded ">
 		<BackButton />
 	</a>
 	<h1 class="text-2xl font-bold font-poppins">Schedules</h1>
@@ -79,7 +77,10 @@
 								<img src="https://placeimg.com/192/192/people" alt="profile-picture" />
 							</div>
 						</div> -->
-						{lecturer.full_name}
+						<div class="inline-flex flex-col ml-4 w-full">
+							<p>{lecturer.full_name}</p>
+							<p class="text-sm text-gray-400">{lecturer.phone_number}</p>
+						</div>
 					</label>
 				</li>
 			{:else}
@@ -101,18 +102,21 @@
 					</p>
 
 					<ul class="flex flex-col w-full h-full gap-5 pb-5 overflow-y-auto">
-						{#each availableCourses as course, i (course.key)}
+						{#each availableCourses as course, i}
 							<li class="border border-gray-100 rounded-md group group-hover:shadow-md">
 								<label for={course.key} class="flex items-center w-full px-5 py-3 cursor-pointer">
 									<input
 										type="checkbox"
 										class="w-4 h-4 mr-4 border border-gray-500 rounded appearance-none checked:bg-purple-500 checked:ring-offset-2 checked:ring-purple-500 checked:ring-2"
 										bind:group={addCourses}
-										name="assignedCourses"
+										name="addCourses"
 										value={course}
-										id={course.key}
+										id={`addCourse-${course.key}`}
 									/>
-									{course.course_name}
+									<div class="inline-flex flex-col ml-4 w-full">
+										<p>{course.course_name}</p>
+										<p class="text-sm text-gray-400">{course.course_code}</p>
+									</div>
 								</label>
 							</li>
 						{/each}
@@ -140,7 +144,7 @@
 					</p>
 
 					<ul class="flex flex-col w-full h-full gap-5 pb-5 overflow-y-auto">
-						{#each selectedCourses as course, i (`assigned-${course.key}`)}
+						{#each selectedCourses as course, i}
 							<li class="border border-gray-100 rounded-md group group-hover:shadow-md">
 								<label for={course.key} class="flex items-center w-full px-5 py-3 cursor-pointer">
 									<input
@@ -149,9 +153,12 @@
 										bind:group={removeCourses}
 										name="assignedCourses"
 										value={course}
-										id={course.key}
+										id={`removed-${course.key}`}
 									/>
-									{course.course_name}
+									<div class="inline-flex flex-col ml-4 w-full">
+										<p>{course.course_name}</p>
+										<p class="text-sm text-gray-400">{course.course_code}</p>
+									</div>
 								</label>
 							</li>
 						{/each}

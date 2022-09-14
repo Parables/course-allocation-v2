@@ -5,7 +5,6 @@
 	import type { PageData } from './$types';
 	import BackButton from '$lib/assets/icons/chevron-left.svg';
 	export let data: PageData;
-	console.log('form initial', data.lecturer);
 </script>
 
 <div class="w-full h-full flex flex-col">

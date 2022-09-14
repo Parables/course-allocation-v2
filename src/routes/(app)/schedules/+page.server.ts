@@ -1,5 +1,3 @@
-import { requestToJson } from "$lib/utils";
-import { redirect } from "@sveltejs/kit";
 import type { Actions } from "./$types";
 
 const getAssignedCourses = async (endpoint: string) => {
@@ -32,9 +30,7 @@ const updateAssignedCourses = async (
 
   const result = await response.json();
 
-  console.log("Assigned Courses to Lecturer Response:-->", result);
   if (result === null) {
-    // throw redirect(307, `/schedules`);
     return {
       success: ` ${
         Object.keys(assignedCourses).length
@@ -54,8 +50,6 @@ export const actions: Actions = {
     const strAddCourses = data.get("addCourses") as string;
     const addCourses: any[] = strAddCourses ? JSON.parse(strAddCourses) : [];
 
-    console.log("key", key, "addCourses", strAddCourses);
-
     const endpoint = `${url.origin}/api/lecturers/${key}`;
     const assignedCourses: Record<string, any> =
       (await getAssignedCourses(endpoint)) ?? {};
@@ -63,8 +57,6 @@ export const actions: Actions = {
     addCourses.forEach((a) => {
       assignedCourses[a.key] = a;
     });
-
-    console.log("adding these courses", assignedCourses);
 
     return updateAssignedCourses(endpoint, assignedCourses);
   },
@@ -78,8 +70,6 @@ export const actions: Actions = {
       ? JSON.parse(strRemoveCourses)
       : [];
 
-    console.log("key", key, "removeCourses", strRemoveCourses);
-
     const endpoint = `${url.origin}/api/lecturers/${key}`;
     const assignedCourses: Record<string, any> =
       (await getAssignedCourses(endpoint)) ?? {};
@@ -87,8 +77,6 @@ export const actions: Actions = {
     removeCourses.forEach((a) => {
       delete assignedCourses[a.key];
     });
-
-    console.log("adding these courses", assignedCourses);
 
     return updateAssignedCourses(endpoint, { ...assignedCourses });
   },

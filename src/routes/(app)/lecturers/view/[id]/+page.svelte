@@ -6,30 +6,20 @@
 
 	export let data: PageData;
 	let lecturer: typeof data.lecturer;
-	let courses: any[] /*typeof data.courses*/ = [];
-	let availableCourses: typeof courses = [];
-	let assignedCourses: typeof courses = [];
-	let selectedCourses: string;
+	let selectedCourses: any[] = [];
+	let removeCourses: any[] = [];
+	let strRemoveCourses: string;
 
 	$: {
-		({ lecturer, courses } = data);
-		if (lecturer.assignedCourses) {
-			assignedCourses = [...JSON.parse(lecturer.assignedCourses)];
+		({ lecturer } = data);
+		selectedCourses = lecturer?.assigned_courses ?? {};
+	}
+
+	$: {
+		if (removeCourses) {
+			strRemoveCourses = JSON.stringify(removeCourses);
 		}
-
-		availableCourses = courses.filter(
-			(c) => assignedCourses.find((a) => a.key === c.key) === undefined
-		);
-
-		selectedCourses = JSON.stringify(assignedCourses);
 	}
-
-	$: {
-		console.log('assignedCourses', assignedCourses, 'avaCount', availableCourses.length);
-	}
-
-	function addCourses() {}
-	function removeCourses() {}
 </script>
 
 <div class="w-full h-full flex flex-col">
@@ -93,84 +83,46 @@
 					>
 				</a>
 			</div>
+			<!-- assigned courses lecturers -->
+			<div class="relative flex flex-col w-full h-full overflow-hidden">
+				<!-- selected courses -->
+				<div class="flex flex-col flex-1 h-full px-10 overflow-hidden">
+					<p class="mb-5 text-sm font-medium text-center text-gray-500 uppercase">
+						Assigned Courses
+					</p>
 
-			<!-- assigned course -->
-			<div class="flex flex-col w-full md:pr-20">
-				<h3 class="font-semibold text-base text-gray-400 uppercase">Course Allocation</h3>
-
-				<div class="grid grid-cols-2 md:gap-10 gap-5 mt-4 h-full overflow-y-auto">
-					<!-- available courses -->
-					<div class="">
-						<p class="text-gray-500 uppercase text-center mb-5 text-sm font-medium">
-							Available Courses
-						</p>
-
-						<ul class="grid grid-cols-1 gap-5">
-							{#each availableCourses as course, i (course.key)}
-								<li class="group group-hover:shadow-md rounded-md border border-gray-100">
-									<label
-										for={course.key}
-										class="items-center flex w-full  py-3 px-5 cursor-pointer"
-									>
-										<input
-											type="checkbox"
-											class="appearance-none checked:bg-purple-500 checked:ring-offset-2 mr-4 w-4 h-4 rounded checked:ring-purple-500 checked:ring-2 border-gray-500 border"
-											bind:group={assignedCourses}
-											name="assignedCourses"
-											value={course}
-											id={course.key}
-										/>
-										{course.course_name}
-									</label>
-								</li>
-							{/each}
-						</ul>
-					</div>
-
-					<!-- selected courses -->
-					<div class="">
-						<p class="text-gray-500 uppercase text-center mb-5 text-sm font-medium">
-							Assigned Courses
-						</p>
-
-						<ul class="grid grid-cols-1 gap-5">
-							{#each assignedCourses as course, i (course.key)}
-								<li class="group group-hover:shadow-md rounded-md border border-gray-100">
-									<label
-										for={course.key}
-										class="items-center flex w-full  py-3 px-5 cursor-pointer"
-									>
-										<input
-											type="checkbox"
-											class="appearance-none checked:bg-purple-500 checked:ring-offset-2 mr-4 w-4 h-4 rounded checked:ring-purple-500 checked:ring-2 border-gray-500 border"
-											bind:group={assignedCourses}
-											name="assignedCourses"
-											value={course}
-											id={course.key}
-										/>
-										{course.course_name}
-									</label>
-								</li>
-							{/each}
-						</ul>
-					</div>
+					<ul class="flex flex-col w-full h-full gap-5 pb-5 overflow-y-auto">
+						{#each selectedCourses as course, i}
+							<li class="border border-gray-100 rounded-md group group-hover:shadow-md">
+								<label for={course.key} class="flex items-center w-full px-5 py-3 cursor-pointer">
+									<input
+										type="checkbox"
+										class="checkbox checkbox-primary"
+										bind:group={removeCourses}
+										name="assignedCourses"
+										value={course}
+										id={`assigned-${course.key}`}
+									/>
+									<div class="inline-flex flex-col ml-4 w-full">
+										<p>{course.course_name}</p>
+										<p class="text-sm text-gray-400">{course.course_code}</p>
+									</div>
+								</label>
+							</li>
+						{/each}
+					</ul>
+					<form action="/schedules?/removeCourses" method="post">
+						<input type="text" name="key" id="key" value={lecturer.key} class="sr-only" />
+						<input
+							type="text"
+							name="removeCourses"
+							id="removeCourses"
+							value={strRemoveCourses}
+							class="sr-only"
+						/>
+						<Button>Remove Courses</Button>
+					</form>
 				</div>
-
-				<form id="course-allocation-form" action="/lecturers?/update" method="post">
-					<input type="text" id="key" name="key" class="sr-only" bind:value={data.lecturer.key} />
-
-					<input
-						type="text"
-						id="assignedCourses"
-						name="assignedCourses"
-						class="sr-only"
-						bind:value={selectedCourses}
-					/>
-
-					<Button classNames="w-full  my-5">
-						Assign {assignedCourses.length} Courses to {lecturer.full_name}
-					</Button>
-				</form>
 			</div>
 		</div>
 	</div>

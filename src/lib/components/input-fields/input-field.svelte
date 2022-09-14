@@ -6,7 +6,7 @@
 	export let id: string;
 	export let name: string;
 	export let label: string;
-	export let initial: string | undefined = undefined;
+	export let initial: string | undefined = '';
 	export let value: string | undefined = initial;
 	export let placeholder: string = 'Placeholder';
 	export let classNames: string = 'w-full';

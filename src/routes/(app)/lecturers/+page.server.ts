@@ -1,68 +1,93 @@
-import { requestToJson } from '$lib/utils';
-import { redirect } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import { redirect } from "@sveltejs/kit";
+import type { Actions } from "./$types";
 
 export const actions: Actions = {
-	create: async ({ request, url }) => {
-		// extract data from request
-		const data = await requestToJson(request);
+  create: async ({ request, url }) => {
+    // extract data from request
+    const data = await request.formData();
 
-		const response = await fetch(`${url.origin}/api/lecturers`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Accept: 'application/json'
-			},
-			body: JSON.stringify(data)
-		});
+    const full_name = data.get("full_name");
+    const gender = data.get("gender");
+    const email = data.get("email");
+    const phone_number = data.get("phone_number");
+    const degree = data.get("degree");
+    const masters = data.get("masters");
 
-		const result = await response.json();
+    const response = await fetch(`${url.origin}/api/lecturers`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        full_name,
+        gender,
+        email,
+        phone_number,
+        degree,
+        masters,
+      }),
+    });
 
-		console.log('Create Lecturer Response:-->', result);
-		if (result.key) {
-			throw redirect(307, '/lecturers');
-		}
-	},
+    const result = await response.json();
 
-	update: async ({ request, url }) => {
-		// extract data from request
-		const { key, ...data } = await requestToJson(request);
+    if (result.key) {
+      throw redirect(303, "/lecturers");
+    }
+  },
 
-		console.log('key', key, 'data',data)
+  update: async ({ request, url }) => {
+    // extract data from request
+    const data = await request.formData();
 
-		const response = await fetch(`${url.origin}/api/lecturers/${key}`, {
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json',
-				Accept: 'application/json'
-			},
-			body: JSON.stringify(data)
-		});
+    const key = data.get("key");
+    const full_name = data.get("full_name");
+    const gender = data.get("gender");
+    const email = data.get("email");
+    const phone_number = data.get("phone_number");
+    const degree = data.get("degree");
+    const masters = data.get("masters");
 
-		const result = await response.json();
+    const response = await fetch(`${url.origin}/api/lecturers/${key}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        full_name,
+        gender,
+        email,
+        phone_number,
+        degree,
+        masters,
+      }),
+    });
 
-		console.log('Edit Lecturer Response:-->', result);
-		if (result === null) {
-			throw redirect(307, '/lecturers');
-		}
-	},
-	delete: async ({ request, url }) => {
-		// extract data from request
-		const { key } = await requestToJson(request);
+    const result = await response.json();
 
-		const response = await fetch(`${url.origin}/api/lecturers/${key}`, {
-			method: 'DELETE',
-			headers: {
-				'Content-Type': 'application/json',
-				Accept: 'application/json'
-			}
-		});
+    if (result === null) {
+      throw redirect(303, "/lecturers");
+    }
+  },
+  delete: async ({ request, url }) => {
+    // extract data from request
+    const data = await request.formData();
 
-		const result = await response.json();
+    const key = data.get("key");
 
-		console.log('Delete Lecturer Response:-->', result);
-		if (result === null) {
-			throw redirect(307, '/lecturers');
-		}
-	}
+    const response = await fetch(`${url.origin}/api/lecturers/${key}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+
+    const result = await response.json();
+
+    if (result === null) {
+      throw redirect(303, "/lecturers");
+    }
+  },
 };

@@ -6,7 +6,6 @@
 
 	$: {
 		paths = $page.url.pathname.split('/');
-		console.log('breadcrumbs:-->', paths);
 	}
 </script>
 

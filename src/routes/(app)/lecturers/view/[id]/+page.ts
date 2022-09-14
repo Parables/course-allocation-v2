@@ -1,7 +1,7 @@
 import type { PageLoad } from "./$types";
 
-export const load: PageLoad = async ({ url, params }) => {
-  const response = await fetch(`${url.origin}/api/lecturers/${params.id}`, {
+export const load: PageLoad = async ({ url, params, fetch }) => {
+  const response = await fetch(`/api/lecturers/${params.id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
