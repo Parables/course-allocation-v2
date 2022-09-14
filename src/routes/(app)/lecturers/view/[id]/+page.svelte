@@ -1,18 +1,36 @@
 <script lang="ts">
+	import EassyToast from '$lib/components/easy-toast.svelte';
 	import Button from '$lib/components/button.svelte';
 	import { page } from '$app/stores';
 	import BackButton from '$lib/assets/icons/chevron-left.svg';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
+	export let form: any;
+
 	let lecturer: typeof data.lecturer;
+	let courses: any[] = [];
+	let assignedCourses: Record<string, any> = {};
+
+	let availableCourses: any[] = [];
 	let selectedCourses: any[] = [];
+	let addCourses: any[] = [];
+	let strAddCourses: string;
+
 	let removeCourses: any[] = [];
 	let strRemoveCourses: string;
 
 	$: {
-		({ lecturer } = data);
-		selectedCourses = lecturer?.assigned_courses ?? {};
+		({ lecturer, courses } = data);
+		assignedCourses = lecturer.assigned_courses ?? {};
+		availableCourses = courses.filter((c) => assignedCourses[c.key] === undefined);
+		selectedCourses = Object.values(lecturer?.assigned_courses ?? {});
+	}
+
+	$: {
+		if (addCourses) {
+			strAddCourses = JSON.stringify(addCourses);
+		}
 	}
 
 	$: {
@@ -83,46 +101,113 @@
 					>
 				</a>
 			</div>
+
 			<!-- assigned courses lecturers -->
 			<div class="relative flex flex-col w-full h-full overflow-hidden">
-				<!-- selected courses -->
-				<div class="flex flex-col flex-1 h-full px-10 overflow-hidden">
-					<p class="mb-5 text-sm font-medium text-center text-gray-500 uppercase">
-						Assigned Courses
-					</p>
+				<p class="my-5 font-semibold text-center uppercase">Assigned Courses</p>
 
-					<ul class="flex flex-col w-full h-full gap-5 pb-5 overflow-y-auto">
-						{#each selectedCourses as course, i}
-							<li class="border border-gray-100 rounded-md group group-hover:shadow-md">
-								<label for={course.key} class="flex items-center w-full px-5 py-3 cursor-pointer">
-									<input
-										type="checkbox"
-										class="checkbox checkbox-primary"
-										bind:group={removeCourses}
-										name="assignedCourses"
-										value={course}
-										id={`assigned-${course.key}`}
-									/>
-									<div class="inline-flex flex-col ml-4 w-full">
-										<p>{course.course_name}</p>
-										<p class="text-sm text-gray-400">{course.course_code}</p>
-									</div>
-								</label>
-							</li>
-						{/each}
-					</ul>
-					<form action="/schedules?/removeCourses" method="post">
-						<input type="text" name="key" id="key" value={lecturer.key} class="sr-only" />
-						<input
-							type="text"
-							name="removeCourses"
-							id="removeCourses"
-							value={strRemoveCourses}
-							class="sr-only"
-						/>
-						<Button>Remove Courses</Button>
-					</form>
-				</div>
+				{#if lecturer !== null}
+					<div class="flex items-stretch w-full h-full overflow-hidden justify-evenly">
+						<!-- available courses -->
+						<div class="flex flex-col flex-1 h-full px-10 overflow-hidden">
+							<p class="mb-5 text-sm font-medium text-center text-gray-500 uppercase">
+								Available Courses
+							</p>
+
+							<ul class="flex flex-col w-full h-full gap-5 pb-5 overflow-y-auto">
+								{#each availableCourses as course, i}
+									<li class="border border-gray-100 rounded-md group group-hover:shadow-md">
+										<label
+											for={`addCourse-${course.key}`}
+											class="flex items-center w-full px-5 py-3 cursor-pointer"
+										>
+											<input
+												type="checkbox"
+												class="checkbox checkbox-primary"
+												bind:group={addCourses}
+												name="addCourses"
+												value={course}
+												id={`addCourse-${course.key}`}
+											/>
+											<div class="inline-flex flex-col ml-4 w-full">
+												<p>{course.course_name}</p>
+												<p class="text-sm text-gray-400">{course.course_code}</p>
+											</div>
+										</label>
+									</li>
+								{/each}
+							</ul>
+
+							<form action="/schedules?/addCourses" method="post">
+								<input type="text" name="key" id="key" value={lecturer.key} class="sr-only" />
+								<input
+									type="text"
+									name="addCourses"
+									id="addCourses"
+									value={strAddCourses}
+									class="sr-only"
+								/>
+								<Button>Assign Courses</Button>
+							</form>
+						</div>
+
+						<div class="w-2 h-full bg-gray-500" />
+
+						<!-- selected courses -->
+						<div class="flex flex-col flex-1 h-full px-10 overflow-hidden">
+							<p class="mb-5 text-sm font-medium text-center text-gray-500 uppercase">
+								Assigned Courses
+							</p>
+
+							<ul class="flex flex-col w-full h-full gap-5 pb-5 overflow-y-auto">
+								{#each selectedCourses as course, i}
+									<li class="border border-gray-100 rounded-md group group-hover:shadow-md">
+										<label
+											for={`removed-${course.key}`}
+											class="flex items-center w-full px-5 py-3 cursor-pointer"
+										>
+											<input
+												type="checkbox"
+												class="checkbox checkbox-primary"
+												bind:group={removeCourses}
+												name="removeCourses"
+												value={course}
+												id={`removed-${course.key}`}
+											/>
+											<div class="inline-flex flex-col ml-4 w-full">
+												<p>{course.course_name}</p>
+												<p class="text-sm text-gray-400">{course.course_code}</p>
+											</div>
+										</label>
+									</li>
+								{/each}
+							</ul>
+							<form action="/schedules?/removeCourses" method="post">
+								<input type="text" name="key" id="key" value={lecturer.key} class="sr-only" />
+								<input
+									type="text"
+									name="removeCourses"
+									id="removeCourses"
+									value={strRemoveCourses}
+									class="sr-only"
+								/>
+								<Button>Remove Courses</Button>
+							</form>
+						</div>
+					</div>
+				{:else}
+					<p class="grid w-full h-full place-items-center">
+						Select a Lecturer on the left panel to assign courses to
+					</p>
+				{/if}
+
+				{#if form?.error}
+					<EassyToast show={true} message={form.error ?? 'Something went wrong'} type="error" />
+				{/if}
+
+				{#if form?.success}
+					<EassyToast show={true} message={form.success ?? 'Something went wrong'} type="success" />
+				{/if}
 			</div>
 		</div>
 	</div>

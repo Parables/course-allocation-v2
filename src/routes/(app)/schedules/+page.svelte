@@ -104,10 +104,13 @@
 					<ul class="flex flex-col w-full h-full gap-5 pb-5 overflow-y-auto">
 						{#each availableCourses as course, i}
 							<li class="border border-gray-100 rounded-md group group-hover:shadow-md">
-								<label for={course.key} class="flex items-center w-full px-5 py-3 cursor-pointer">
+								<label
+									for={`addCourse-${course.key}`}
+									class="flex items-center w-full px-5 py-3 cursor-pointer"
+								>
 									<input
 										type="checkbox"
-										class="w-4 h-4 mr-4 border border-gray-500 rounded appearance-none checked:bg-purple-500 checked:ring-offset-2 checked:ring-purple-500 checked:ring-2"
+										class="checkbox checkbox-primary"
 										bind:group={addCourses}
 										name="addCourses"
 										value={course}
@@ -146,12 +149,15 @@
 					<ul class="flex flex-col w-full h-full gap-5 pb-5 overflow-y-auto">
 						{#each selectedCourses as course, i}
 							<li class="border border-gray-100 rounded-md group group-hover:shadow-md">
-								<label for={course.key} class="flex items-center w-full px-5 py-3 cursor-pointer">
+								<label
+									for={`removed-${course.key}`}
+									class="flex items-center w-full px-5 py-3 cursor-pointer"
+								>
 									<input
 										type="checkbox"
-										class="w-4 h-4 mr-4 border border-gray-500 rounded appearance-none checked:bg-purple-500 checked:ring-offset-2 checked:ring-purple-500 checked:ring-2"
+										class="checkbox checkbox-primary"
 										bind:group={removeCourses}
-										name="assignedCourses"
+										name="removeCourses"
 										value={course}
 										id={`removed-${course.key}`}
 									/>

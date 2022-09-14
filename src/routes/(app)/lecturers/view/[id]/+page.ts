@@ -11,5 +11,14 @@ export const load: PageLoad = async ({ url, params, fetch }) => {
 
   const lecturer = await response.json();
 
-  return { lecturer };
+  const courseResponse = await fetch(`/api/courses`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+  });
+  const courses = await courseResponse.json();
+
+  return { lecturer, courses };
 };
