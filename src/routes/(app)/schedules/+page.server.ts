@@ -1,3 +1,4 @@
+import { redirect } from "@sveltejs/kit";
 import type { Actions } from "./$types";
 
 const getAssignedCourses = async (endpoint: string) => {
@@ -17,7 +18,8 @@ const getAssignedCourses = async (endpoint: string) => {
 
 const updateAssignedCourses = async (
   endpoint: string,
-  assignedCourses: Record<string, any>
+  assignedCourses: Record<string, any>,
+  redirectTo: string | null
 ) => {
   const response = await fetch(endpoint, {
     method: "PATCH",
@@ -31,6 +33,9 @@ const updateAssignedCourses = async (
   const result = await response.json();
 
   if (result === null) {
+    if (redirectTo) {
+      throw redirect(303, redirectTo);
+    }
     return {
       success: ` ${
         Object.keys(assignedCourses).length
@@ -58,7 +63,8 @@ export const actions: Actions = {
       assignedCourses[a.key] = a;
     });
 
-    return updateAssignedCourses(endpoint, assignedCourses);
+    const redirectTo = url.searchParams.get("redirectTo");
+    return updateAssignedCourses(endpoint, assignedCourses, redirectTo);
   },
 
   removeCourses: async ({ url, request }) => {
@@ -78,6 +84,7 @@ export const actions: Actions = {
       delete assignedCourses[a.key];
     });
 
-    return updateAssignedCourses(endpoint, { ...assignedCourses });
+    const redirectTo = url.searchParams.get("redirectTo");
+    return updateAssignedCourses(endpoint, { ...assignedCourses }, redirectTo);
   },
 };

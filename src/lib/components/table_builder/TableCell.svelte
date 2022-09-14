@@ -67,7 +67,7 @@
 						<svelte:component this={EditIcon} />
 					</a>
 				{:else if action === 'delete'}
-					<form action="/lecturers?/delete" method="post">
+					<form action="{$page.url.pathname}?/delete" method="post">
 						<input type="text" name="key" value={rowData.key} class="sr-only" />
 						<button type="submit" class="mx-2">
 							<svelte:component this={DeleteIcon} />

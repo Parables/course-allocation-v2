@@ -138,7 +138,10 @@
 								{/each}
 							</ul>
 
-							<form action="/schedules?/addCourses" method="post">
+							<form
+								action="/schedules?/addCourses&redirectTo=/lecturers/view/{lecturer.key}"
+								method="post"
+							>
 								<input type="text" name="key" id="key" value={lecturer.key} class="sr-only" />
 								<input
 									type="text"
@@ -182,7 +185,10 @@
 									</li>
 								{/each}
 							</ul>
-							<form action="/schedules?/removeCourses" method="post">
+							<form
+								action="/schedules?/removeCourses&redirectTo=/lecturers/view/{lecturer.key}"
+								method="post"
+							>
 								<input type="text" name="key" id="key" value={lecturer.key} class="sr-only" />
 								<input
 									type="text"
