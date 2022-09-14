@@ -3,6 +3,7 @@
 	import EassyToast from '$lib/components/easy-toast.svelte';
 	import BackButton from '$lib/assets/icons/chevron-left.svg';
 	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 
 	export let data: PageData;
 	export let form: any;
@@ -10,7 +11,7 @@
 	let lecturers: any[] = [];
 	let courses: any[] = [];
 	let assignedCourses: Record<string, any> = {};
-	let selectedLecturer: Record<string, any> | null = null;
+	let selectedLecturer: string | null = null;
 
 	let availableCourses: any[] = [];
 	let selectedCourses: any[] = [];
@@ -25,9 +26,13 @@
 	}
 
 	$: {
+		selectedLecturer = $page.url.hash.replace('#', '');
+	}
+
+	$: {
 		if (selectedLecturer) {
 			selectedCourses = [];
-			assignedCourses = selectedLecturer.assigned_courses ?? {};
+			assignedCourses = lecturers.find((l) => l.key === selectedLecturer)?.assigned_courses ?? {};
 			availableCourses = courses.filter((c) => assignedCourses[c.key] === undefined);
 			selectedCourses = [...selectedCourses, ...Object.values(assignedCourses)];
 		}
@@ -59,30 +64,18 @@
 		<p class="my-5 font-semibold text-center uppercase">Select a Lecturer</p>
 		<ul class="flex flex-col w-full h-full gap-5 px-10 pb-10 overflow-y-auto">
 			{#each lecturers as lecturer, i (lecturer.key)}
-				<li class="w-full group">
-					<input
-						type="radio"
-						name="selectedLecturer"
-						id={lecturer.key}
-						bind:group={selectedLecturer}
-						value={lecturer}
-						class="hidden radio peer"
-					/>
-					<label
-						for={lecturer.key}
-						class="flex items-center w-full gap-5 px-5 py-3 bg-white border-2 rounded-lg group-hover:border-purple-500 peer-checked:shadow-lg border-gray-50 peer-checked:bg-purple-500 peer-checked:text-white"
+				<a href="#{lecturer.key}">
+					<li
+						class="w-full group flex flex-col  px-5 py-3 bg-white border-2 rounded-lg group-hover:border-purple-500 border-gray-50 {selectedLecturer?.includes(
+							lecturer.key
+						)
+							? 'active-lecturer'
+							: ''}"
 					>
-						<!-- <div class="border-0 rounded-lg avatar">
-							<div class="w-16 rounded-lg ">
-								<img src="https://placeimg.com/192/192/people" alt="profile-picture" />
-							</div>
-						</div> -->
-						<div class="inline-flex flex-col ml-4 w-full">
-							<p>{lecturer.full_name}</p>
-							<p class="text-sm text-gray-400">{lecturer.phone_number}</p>
-						</div>
-					</label>
-				</li>
+						<p>{lecturer.full_name}</p>
+						<p class="text-sm text-gray-400">{lecturer.phone_number}</p>
+					</li>
+				</a>
 			{:else}
 				<a href="/lecturers/new">Create Lecturer</a>
 			{/each}
@@ -116,7 +109,7 @@
 										value={course}
 										id={`addCourse-${course.key}`}
 									/>
-									<div class="inline-flex flex-col ml-4 w-full">
+									<div class="inline-flex flex-col w-full ml-4">
 										<p>{course.course_name}</p>
 										<p class="text-sm text-gray-400">{course.course_code}</p>
 									</div>
@@ -125,8 +118,8 @@
 						{/each}
 					</ul>
 
-					<form action="?/addCourses" method="post">
-						<input type="text" name="key" id="key" value={selectedLecturer.key} class="sr-only" />
+					<form action="?/addCourses&redirectTo=/schedules#{selectedLecturer}" method="post">
+						<input type="text" name="key" id="key" value={selectedLecturer} class="sr-only" />
 						<input
 							type="text"
 							name="addCourses"
@@ -161,7 +154,7 @@
 										value={course}
 										id={`removed-${course.key}`}
 									/>
-									<div class="inline-flex flex-col ml-4 w-full">
+									<div class="inline-flex flex-col w-full ml-4">
 										<p>{course.course_name}</p>
 										<p class="text-sm text-gray-400">{course.course_code}</p>
 									</div>
@@ -169,8 +162,8 @@
 							</li>
 						{/each}
 					</ul>
-					<form action="?/removeCourses" method="post">
-						<input type="text" name="key" id="key" value={selectedLecturer.key} class="sr-only" />
+					<form action="?/removeCourses&redirectTo=/schedules#{selectedLecturer}" method="post">
+						<input type="text" name="key" id="key" value={selectedLecturer} class="sr-only" />
 						<input
 							type="text"
 							name="removeCourses"
@@ -197,3 +190,9 @@
 		{/if}
 	</div>
 </div>
+
+<style lang="postcss">
+	.active-lecturer {
+		@apply shadow-lg bg-purple-500 text-white;
+	}
+</style>
