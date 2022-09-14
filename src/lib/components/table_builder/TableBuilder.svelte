@@ -8,7 +8,7 @@
 	export let data: any[] = [];
 </script>
 
-<div class="flex flex-col">
+<div class="flex flex-col ">
 	<div class="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
 		<div
 			class="inline-block min-w-full overflow-hidden align-middle border-b shadow border-comet sm:rounded-lg"
@@ -26,9 +26,7 @@
 							</th>
 						{/each}
 						<th
-							class="px-6 py-3 text-xs font-medium leading-4 tracking-wider
-                text-left text-gray-500 uppercase border-b border-comet
-                bg-gray-50"
+							class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-comet bg-gray-50"
 						>
 							Actions
 						</th>

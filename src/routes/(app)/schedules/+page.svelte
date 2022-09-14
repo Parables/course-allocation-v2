@@ -72,14 +72,13 @@
 					/>
 					<label
 						for={lecturer.key}
-						class="flex items-center w-full gap-5 bg-white border-2 rounded-lg group-hover:border-purple-500 peer-checked:shadow-lg border-gray-50 peer-checked:bg-purple-500 peer-checked:text-white"
+						class="flex items-center w-full gap-5 px-5 py-3 bg-white border-2 rounded-lg group-hover:border-purple-500 peer-checked:shadow-lg border-gray-50 peer-checked:bg-purple-500 peer-checked:text-white"
 					>
-						<div class="border-0 rounded-lg avatar">
+						<!-- <div class="border-0 rounded-lg avatar">
 							<div class="w-16 rounded-lg ">
-								<!-- svelte-ignore a11y-img-redundant-alt -->
 								<img src="https://placeimg.com/192/192/people" alt="profile-picture" />
 							</div>
-						</div>
+						</div> -->
 						{lecturer.full_name}
 					</label>
 				</li>

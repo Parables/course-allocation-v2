@@ -8,17 +8,21 @@
 	export let data: PageData;
 </script>
 
-<div class="flex w-full items-center justify-between mb-10">
-	<div class="flex w-full items-center ">
-		<a href="/" class=" rounded border-purple-500 text-purple-500 border mr-4">
-			<BackButton />
+<div class="flex flex-col w-full h-full">
+	<div class="flex items-center justify-between w-full mb-10">
+		<div class="flex items-center w-full ">
+			<a href="/" class="mr-4 text-purple-500 border border-purple-500 rounded ">
+				<BackButton />
+			</a>
+			<h1 class="text-2xl font-bold font-poppins">All Courses</h1>
+		</div>
+
+		<a href="/courses/new">
+			<Button classNames="w-auto ">+ New</Button>
 		</a>
-		<h1 class="font-poppins text-2xl font-bold">All Courses</h1>
 	</div>
 
-	<a href="/courses/new">
-		<Button classNames="w-auto ">+ New</Button>
-	</a>
+	<div class="flex-1 w-full p-10 mb-10 overflow-x-hidden overflow-y-auto">
+		<TableBuilder table={coursesTable} bind:data={data.courses} />
+	</div>
 </div>
-
-<TableBuilder table={coursesTable} bind:data={data.courses} />
