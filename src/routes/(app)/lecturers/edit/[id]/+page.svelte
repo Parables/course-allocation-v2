@@ -1,27 +1,26 @@
 <script lang="ts">
 	import Button from '$lib/components/button.svelte';
 	import InputField from '$lib/components/input-fields/input-field.svelte';
-	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import BackButton from '$lib/assets/icons/chevron-left.svg';
 	export let data: PageData;
 </script>
 
-<div class="w-full h-full flex flex-col">
+<div class="flex flex-col w-full h-full">
 	<div>
-		<div class="flex w-full items-center ">
-			<a href="/lecturers" class=" rounded border-purple-500 text-purple-500 border mr-4">
+		<div class="flex items-center w-full ">
+			<a href="/lecturers" class="mr-4 text-purple-500 border border-purple-500 rounded ">
 				<BackButton />
 			</a>
-			<h1 class="font-poppins text-2xl font-bold">Edit Lecturer's Profile</h1>
+			<h1 class="text-2xl font-bold font-poppins">Edit Lecturer's Profile</h1>
 		</div>
-		<h3 class="mt-3 ml-10 font-roboto text-sm font-light">Fill in the data for a Lecturer</h3>
+		<h3 class="mt-3 ml-10 text-sm font-light font-roboto">Fill in the data for a Lecturer</h3>
 	</div>
 
-	<div class="overflow-y-auto flex-1 mb-10">
+	<div class="flex-1 mb-10 overflow-y-auto">
 		<hr class="mt-6" />
 
-		<form action="/lecturers?/update" method="post" use:enhance>
+		<form action="/lecturers?/update" method="post">
 			<input
 				type="text"
 				id="key"
@@ -34,8 +33,8 @@
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-32 mt-[85px] w-full px-10">
 				<!-- Personal details -->
 				<div class="flex flex-col w-full">
-					<h2 class="text-sm font-poppins font-semibold">Personal Details</h2>
-					<h5 class="text-xs font-poppins font-light mb-8">
+					<h2 class="text-sm font-semibold font-poppins">Personal Details</h2>
+					<h5 class="mb-8 text-xs font-light font-poppins">
 						Fill in personal details of the lecturer
 					</h5>
 
@@ -56,8 +55,8 @@
 				</div>
 				<!-- Contanct details -->
 				<div class="flex flex-col w-full">
-					<h2 class="text-sm font-poppins font-semibold">Contact Details</h2>
-					<h5 class="text-xs font-poppins font-light mb-8">
+					<h2 class="text-sm font-semibold font-poppins">Contact Details</h2>
+					<h5 class="mb-8 text-xs font-light font-poppins">
 						Fill in contact details of the lecturer
 					</h5>
 					<InputField
@@ -80,8 +79,8 @@
 				</div>
 				<!-- Qualification details -->
 				<div class="flex flex-col w-full">
-					<h2 class="text-sm font-poppins font-semibold">Qualification Details</h2>
-					<h5 class="text-xs font-poppins font-light mb-8">
+					<h2 class="text-sm font-semibold font-poppins">Qualification Details</h2>
+					<h5 class="mb-8 text-xs font-light font-poppins">
 						Fill in qualification details of the lecturer
 					</h5>
 					<InputField
