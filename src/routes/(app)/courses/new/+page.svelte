@@ -2,6 +2,8 @@
 	import Button from '$lib/components/button.svelte';
 	import InputField from '$lib/components/input-fields/input-field.svelte';
 	import BackButton from '$lib/assets/icons/chevron-left.svg';
+	// import type { ActionData } from './$types';
+	export let form: any;
 </script>
 
 <div class="w-full h-full flex flex-col">
@@ -26,9 +28,30 @@
 				<div class="flex flex-col w-full">
 					<h2 class="text-sm font-poppins font-semibold">Course Details</h2>
 					<h5 class="text-xs font-poppins font-light mb-8">Fill in the details for a course</h5>
-					<InputField id="course_name" name="course_name" label="Course Name" required />
-					<InputField id="course_code" name="course_code" label="Course Code" required />
-					<InputField id="year_group" name="year_group" label="Year Group" required />
+					<InputField
+						id="title"
+						name="title"
+						label="Course Title"
+						required
+						errorText={form?.title}
+					/>
+					<InputField id="code" name="code" label="Course Code" required errorText={form?.code} />
+					<InputField
+						id="creditHours"
+						name="creditHours"
+						label="Credit Hourse"
+						required
+						errorText={form?.creditHours}
+						type="number"
+					/>
+					<InputField
+						id="contactHours"
+						name="contactHours"
+						label="Contact Hours"
+						required
+						type="number"
+						errorText={form?.creditHours}
+					/>
 				</div>
 				<!-- Contanct details -->
 				<div class="flex flex-col w-full">
@@ -37,18 +60,42 @@
 						Fill in other details of the course
 					</h5>
 					<InputField
-						id="course_type"
-						name="course_type"
-						label="Course Type"
+						id="profile"
+						name="profile"
+						label="Course Profile"
+						list="profile-choices"
 						type="text"
 						required
+						errorText={form?.profile}
 					/>
+
+					<datalist id="profile-choices">
+						<option value="department" />
+						<option value="servicing" />
+					</datalist>
+
 					<InputField
-						id="student_count"
-						name="student_count"
+						id="session"
+						name="session"
+						label="Session"
+						list="course-sessions"
+						required
+						errorText={form?.session}
+					/>
+
+					<datalist id="course-sessions">
+						<option value="regular" />
+						<option value="evening" />
+						<option value="weekend" />
+					</datalist>
+
+					<InputField
+						id="studentCount"
+						name="studentCount"
 						label="Number of Students"
 						type="number"
 						required
+						errorText={form?.studentCount}
 					/>
 				</div>
 			</div>

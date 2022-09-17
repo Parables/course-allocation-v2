@@ -1,16 +1,24 @@
-import { redirect } from "@sveltejs/kit";
+import {
+  CourseSchema,
+  CreateCourseSchema,
+  UpdateCourseSchema,
+} from "$lib/data/types/course";
+import { formDataToJson } from "$lib/utils";
+import { invalid, redirect } from "@sveltejs/kit";
+import { ValidationError } from "myzod";
 import type { Actions } from "./$types";
 
 export const actions: Actions = {
   create: async ({ request, url }) => {
     // extract data from request
-    const data = await request.formData();
+    const data = formDataToJson(await request.formData());
 
-    const course_name = data.get("course_name");
-    const course_code = data.get("course_code");
-    const year_group = data.get("year_group");
-    const course_type = data.get("course_type");
-    const student_count = data.get("student_count");
+    const validated = CreateCourseSchema.try(data);
+
+    if (validated instanceof ValidationError) {
+      console.log("validation error", validated);
+      throw invalid(404, { ...data, errors: validated.collectedErrors });
+    }
 
     const response = await fetch(`${url.origin}/api/courses`, {
       method: "POST",
@@ -18,13 +26,7 @@ export const actions: Actions = {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({
-        course_name,
-        course_code,
-        year_group,
-        course_type,
-        student_count,
-      }),
+      body: JSON.stringify(validated),
     });
 
     const result = await response.json();
@@ -35,28 +37,22 @@ export const actions: Actions = {
   },
   update: async ({ request, url }) => {
     // extract data from request
-    const data = await request.formData();
+    const data = formDataToJson(await request.formData());
 
-    const key = data.get("key");
-    const course_name = data.get("course_name");
-    const course_code = data.get("course_code");
-    const year_group = data.get("year_group");
-    const course_type = data.get("course_type");
-    const student_count = data.get("student_count");
+    const validated = UpdateCourseSchema.try(data);
 
-    const response = await fetch(`${url.origin}/api/courses/${key}`, {
+    if (validated instanceof ValidationError) {
+      console.log("validation error", validated);
+      throw invalid(404, { ...data, errors: validated.collectedErrors });
+    }
+
+    const response = await fetch(`${url.origin}/api/courses/${validated.key}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({
-        course_name,
-        course_code,
-        year_group,
-        course_type,
-        student_count,
-      }),
+      body: JSON.stringify(validated),
     });
 
     const result = await response.json();

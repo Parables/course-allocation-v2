@@ -77,3 +77,18 @@ export const handleEmailAuthResponse = (
     location: "/",
   };
 };
+
+export const formDataToJson = (formData: FormData) => {
+  const object: Record<string, any> = {};
+  formData.forEach((value, key) => {
+    if (!Reflect.has(object, key)) {
+      object[key] = value;
+      return;
+    }
+    if (!Array.isArray(object[key])) {
+      object[key] = [object[key]];
+    }
+    object[key].push(value);
+  });
+  return JSON.parse(JSON.stringify(object));
+};
