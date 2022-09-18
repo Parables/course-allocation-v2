@@ -8,7 +8,7 @@ export const CourseBaseSchema = myzod.object({
 	code: myzod.string(),
 	creditHours: myzod.number().coerce(),
 	contactHours: myzod.number().coerce(),
-	profile: myzod.literals('department', 'servicing'),
+	profile: myzod.string().valid(['department', 'servicing']),
 	session: myzod.literals('regular', 'evening', 'weekend'),
 	studentCount: myzod.number().coerce().default(0)
 });
@@ -18,14 +18,11 @@ interface ICourse extends Infer<typeof CourseBaseSchema> {
 	lecturer?: LecturerType;
 }
 
-export const CourseSchema: Type<ICourse> = baseSchema
-	.and(CourseBaseSchema)
-	.and(
-		myzod.object({
-			lecturer: myzod.lazy(() => LecturerSchema).or(myzod.undefined())
-		})
-	)
-	.collectErrors();
+export const CourseSchema: Type<ICourse> = baseSchema.and(CourseBaseSchema).and(
+	myzod.object({
+		lecturer: myzod.lazy(() => LecturerSchema).or(myzod.undefined())
+	})
+);
 
 export type CourseType = Infer<typeof CourseSchema>;
 
@@ -33,11 +30,10 @@ export const CreateCourseSchema = CourseBaseSchema.and(
 	myzod.object({
 		lecturer: ID.optional()
 	})
-).collectErrors();
+);
+
 export type CreateCourseInput = Infer<typeof CreateCourseSchema>;
 
-export const UpdateCourseSchema = baseSchema
-	.and(myzod.partial(CreateCourseSchema, { deep: true }))
-	.collectErrors();
+export const UpdateCourseSchema = baseSchema.and(myzod.partial(CreateCourseSchema, { deep: true }));
 
 export type UpdateCourseInput = Infer<typeof UpdateCourseSchema>;

@@ -25,6 +25,8 @@ export const GET: RequestHandler = async () => {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     return json(await db.put(await request.json()));
-  } catch (error) {}
+  } catch (error) {
+    //
+  }
   throw error(400, "Failed to create course");
 };

@@ -2,8 +2,13 @@
 	import Button from '$lib/components/button.svelte';
 	import InputField from '$lib/components/input-fields/input-field.svelte';
 	import BackButton from '$lib/assets/icons/chevron-left.svg';
-	// import type { ActionData } from './$types';
-	export let form: any;
+	import { enhance } from '$app/forms';
+	import type { ActionData } from './$types';
+	export let form: ActionData;
+
+	$: {
+		console.log('form:-->', form);
+	}
 </script>
 
 <div class="w-full h-full flex flex-col">
@@ -22,7 +27,7 @@
 		<hr class="mt-6" />
 
 		<!-- add course form -->
-		<form action="/courses?/create" method="post">
+		<form method="post" use:enhance>
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-32 mt-[85px] w-full px-10">
 				<!-- Personal details -->
 				<div class="flex flex-col w-full">
@@ -33,15 +38,21 @@
 						name="title"
 						label="Course Title"
 						required
-						errorText={form?.title}
+						initial={form?.title ?? ''}
 					/>
-					<InputField id="code" name="code" label="Course Code" required errorText={form?.code} />
+					<InputField
+						id="code"
+						name="code"
+						label="Course Code"
+						required
+						initial={form?.code ?? ''}
+					/>
 					<InputField
 						id="creditHours"
 						name="creditHours"
-						label="Credit Hourse"
+						label="Credit Hours"
 						required
-						errorText={form?.creditHours}
+						initial={form?.creditHours ?? ''}
 						type="number"
 					/>
 					<InputField
@@ -50,7 +61,7 @@
 						label="Contact Hours"
 						required
 						type="number"
-						errorText={form?.creditHours}
+						initial={form?.contactHours ?? ''}
 					/>
 				</div>
 				<!-- Contanct details -->
@@ -66,7 +77,7 @@
 						list="profile-choices"
 						type="text"
 						required
-						errorText={form?.profile}
+						initial={form?.profile ?? ''}
 					/>
 
 					<datalist id="profile-choices">
@@ -80,7 +91,7 @@
 						label="Session"
 						list="course-sessions"
 						required
-						errorText={form?.session}
+						initial={form?.session ?? ''}
 					/>
 
 					<datalist id="course-sessions">
@@ -95,7 +106,7 @@
 						label="Number of Students"
 						type="number"
 						required
-						errorText={form?.studentCount}
+						initial={form?.studentCount ?? ''}
 					/>
 				</div>
 			</div>

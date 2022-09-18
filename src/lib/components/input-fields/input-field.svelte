@@ -6,7 +6,6 @@
 	export let id: string;
 	export let name: string;
 	export let label: string;
-	export let list: string | undefined = undefined;
 	export let errorText: string | undefined = undefined;
 	export let initial: string | undefined = '';
 	export let value: string | undefined = initial;
@@ -34,7 +33,7 @@
 			{placeholder}
 			{autocomplete}
 			{required}
-			{list}
+			{...$$restProps}
 			value={initial}
 			class="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-[#3E3859]"
 			on:input={(e) => {

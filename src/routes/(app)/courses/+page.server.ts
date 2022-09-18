@@ -9,33 +9,33 @@ import { ValidationError } from "myzod";
 import type { Actions } from "./$types";
 
 export const actions: Actions = {
-  create: async ({ request, url }) => {
+  /*   create: async ({ request, url }) => {
     // extract data from request
     const data = formDataToJson(await request.formData());
 
     const validated = CreateCourseSchema.try(data);
 
     if (validated instanceof ValidationError) {
-      console.log("validation error", validated);
-      throw invalid(404, { ...data, errors: validated.collectedErrors });
+      console.log("validation error", JSON.stringify(validated));
+      return invalid(400, { ...data });
+    } else {
+      const response = await fetch(`${url.origin}/api/courses`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(validated),
+      });
+
+      const result = await response.json();
+
+      if (result.key) {
+        throw redirect(303, "/courses");
+      }
     }
-
-    const response = await fetch(`${url.origin}/api/courses`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(validated),
-    });
-
-    const result = await response.json();
-
-    if (result.key) {
-      throw redirect(303, "/courses");
-    }
-  },
-  update: async ({ request, url }) => {
+  }, */
+  /*   update: async ({ request, url }) => {
     // extract data from request
     const data = formDataToJson(await request.formData());
 
@@ -43,7 +43,7 @@ export const actions: Actions = {
 
     if (validated instanceof ValidationError) {
       console.log("validation error", validated);
-      throw invalid(404, { ...data, errors: validated.collectedErrors });
+      return invalid(400, { ...data, errors: validated.collectedErrors });
     }
 
     const response = await fetch(`${url.origin}/api/courses/${validated.key}`, {
@@ -60,7 +60,7 @@ export const actions: Actions = {
     if (result === null) {
       throw redirect(303, "/courses");
     }
-  },
+  }, */
   delete: async ({ request, url }) => {
     // extract data from request
     const data = await request.formData();

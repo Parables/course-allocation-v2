@@ -1,3 +1,4 @@
+import type { CourseType } from "$lib/data/types/course";
 import type { PageLoad } from "./$types";
 
 export const load: PageLoad = async ({ url, params }) => {
@@ -9,7 +10,7 @@ export const load: PageLoad = async ({ url, params }) => {
     },
   });
 
-  const course = await response.json();
+  const course: CourseType = await response.json();
 
   return { course };
 };

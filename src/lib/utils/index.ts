@@ -1,6 +1,7 @@
 import { browser } from "$app/environment";
 import { goto } from "$app/navigation";
 import { error, json, redirect } from "@sveltejs/kit";
+import type { ValidationError } from "myzod";
 
 export const isValidTicket = (ticket: any) =>
   ticket &&

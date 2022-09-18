@@ -2,9 +2,17 @@
 	import Button from '$lib/components/button.svelte';
 	import InputField from '$lib/components/input-fields/input-field.svelte';
 	import BackButton from '$lib/assets/icons/chevron-left.svg';
-	import type { PageData } from './$types';
+	import type { ActionData, PageData } from './$types';
 
 	export let data: PageData;
+	export let form: ActionData;
+
+	let course: typeof data.course;
+
+	$: {
+		({ course } = data);
+		console.log('form:-->', form, 'data:-->', data);
+	}
 </script>
 
 <div class="flex flex-col w-full h-full">
@@ -34,28 +42,37 @@
 						label="key"
 						required
 						classNames="sr-only"
-						bind:initial={data.course.key}
+						initial={course?.key}
 					/>
 					<InputField
-						id="course_name"
-						name="course_name"
-						label="Course Name"
+						id="title"
+						name="title"
+						label="Course Title"
 						required
-						bind:initial={data.course.course_name}
+						initial={form?.title ?? course?.title ?? ''}
 					/>
 					<InputField
-						id="course_code"
-						name="course_code"
+						id="code"
+						name="code"
 						label="Course Code"
 						required
-						bind:initial={data.course.course_code}
+						initial={form?.code ?? course?.code ?? ''}
 					/>
 					<InputField
-						id="year_group"
-						name="year_group"
-						label="Year Group"
+						id="creditHours"
+						name="creditHours"
+						label="Credit Hourse"
 						required
-						bind:initial={data.course.year_group}
+						type="number"
+						initial={form?.creditHours ?? course?.creditHours ?? ''}
+					/>
+					<InputField
+						id="contactHours"
+						name="contactHours"
+						label="Contact Hours"
+						required
+						type="number"
+						initial={form?.contactHours ?? course?.contactHours ?? ''}
 					/>
 				</div>
 				<!-- Contanct details -->
@@ -65,19 +82,42 @@
 						Fill in other details of the course
 					</h5>
 					<InputField
-						id="course_type"
-						name="course_type"
-						label="Course Type"
+						id="profile"
+						name="profile"
+						label="Course Profile"
+						list="profile-choices"
 						type="text"
 						required
-						bind:initial={data.course.course_type}
+						initial={form?.profile ?? course?.profile ?? ''}
 					/>
+
+					<datalist id="profile-choices">
+						<option value="department" />
+						<option value="servicing" />
+					</datalist>
+
 					<InputField
-						id="student_count"
-						name="student_count"
-						label="Number of Students"
+						id="session"
+						name="session"
+						label="Session"
+						list="course-sessions"
 						required
-						bind:initial={data.course.student_count}
+						initial={form?.session ?? course?.session ?? ''}
+					/>
+
+					<datalist id="course-sessions">
+						<option value="regular" />
+						<option value="evening" />
+						<option value="weekend" />
+					</datalist>
+
+					<InputField
+						id="studentCount"
+						name="studentCount"
+						label="Number of Students"
+						type="number"
+						required
+						initial={form?.studentCount ?? course?.studentCount ?? ''}
 					/>
 				</div>
 			</div>
