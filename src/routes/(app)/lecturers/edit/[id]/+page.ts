@@ -1,3 +1,4 @@
+import type { LecturerType } from "$lib/data/types/lecturer";
 import type { PageLoad } from "./$types";
 
 export const load: PageLoad = async ({ url, params }) => {
@@ -9,7 +10,7 @@ export const load: PageLoad = async ({ url, params }) => {
     },
   });
 
-  const lecturer = await response.json();
+  const lecturer: LecturerType = await response.json();
 
   return { lecturer };
 };

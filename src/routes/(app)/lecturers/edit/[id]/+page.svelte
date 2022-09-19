@@ -1,9 +1,18 @@
 <script lang="ts">
 	import Button from '$lib/components/button.svelte';
 	import InputField from '$lib/components/input-fields/input-field.svelte';
-	import type { PageData } from './$types';
 	import BackButton from '$lib/assets/icons/chevron-left.svg';
+	import type { ActionData, PageData } from './$types';
+
 	export let data: PageData;
+	export let form: ActionData;
+
+	let lecturer: typeof data.lecturer;
+
+	$: {
+		({ lecturer } = data);
+		console.log('form:-->', form, 'data:-->', data);
+	}
 </script>
 
 <div class="flex flex-col w-full h-full">
@@ -20,7 +29,7 @@
 	<div class="flex-1 mb-10 overflow-y-auto">
 		<hr class="mt-6" />
 
-		<form action="/lecturers?/update" method="post">
+		<form method="post">
 			<input
 				type="text"
 				id="key"
@@ -39,18 +48,18 @@
 					</h5>
 
 					<InputField
-						id="full_name"
-						name="full_name"
+						id="fullName"
+						name="fullName"
 						label="Name"
 						required
-						bind:initial={data.lecturer.full_name}
+						initial={form?.fullName ?? lecturer?.fullName ?? ''}
 					/>
 					<InputField
 						id="gender"
 						name="gender"
 						label="Gender"
 						required
-						bind:initial={data.lecturer.gender}
+						initial={form?.gender ?? lecturer?.gender ?? ''}
 					/>
 				</div>
 				<!-- Contanct details -->
@@ -66,15 +75,15 @@
 						type="email"
 						autocomplete="email"
 						required
-						bind:initial={data.lecturer.email}
+						initial={form?.email ?? lecturer?.email ?? ''}
 					/>
 					<InputField
-						id="phone_number"
-						name="phone_number"
+						id="phoneNumber"
+						name="phoneNumber"
 						label="Phone Number"
 						autocomplete="tel"
 						required
-						bind:initial={data.lecturer.phone_number}
+						initial={form?.phoneNumber ?? lecturer?.phoneNumber ?? ''}
 					/>
 				</div>
 				<!-- Qualification details -->
@@ -87,13 +96,13 @@
 						id="degree"
 						name="degree"
 						label="Degree"
-						bind:initial={data.lecturer.degree}
+						initial={form?.degree ?? lecturer?.degree ?? ''}
 					/>
 					<InputField
 						id="masters"
 						name="masters"
 						label="Masters"
-						bind:initial={data.lecturer.masters}
+						initial={form?.masters ?? lecturer?.masters ?? ''}
 					/>
 				</div>
 			</div>

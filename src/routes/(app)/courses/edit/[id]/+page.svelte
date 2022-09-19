@@ -8,6 +8,7 @@
 	export let form: ActionData;
 
 	let course: typeof data.course;
+	let lecturers: typeof data.lecturers;
 
 	$: {
 		({ course } = data);
@@ -29,6 +30,7 @@
 	<div class="flex-1 mb-10 overflow-y-auto">
 		<!-- top divider -->
 		<hr class="mt-6" />
+
 		<!-- edit course form -->
 		<form action="/courses?/update" method="post">
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-32 mt-[85px] w-full px-10">
@@ -119,6 +121,23 @@
 						required
 						initial={form?.studentCount ?? course?.studentCount ?? ''}
 					/>
+
+					<InputField
+						id="lecturer"
+						name="lecturer"
+						label="Assign Course To"
+						type="text"
+						list="assigned-lecturer-options"
+						required
+						initial={form?.lecturer ?? course?.lecturer ?? ''}
+					/>
+
+					<datalist id="assigned-lecturer-options">
+						<option value="">None</option>
+						{#each lecturers as lecturer}
+							<option value={lecturer.key}>{lecturer.fullName}</option>
+						{/each}
+					</datalist>
 				</div>
 			</div>
 			<!-- bottom divider -->

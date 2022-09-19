@@ -29,7 +29,7 @@
 		<!-- add course form -->
 		<form method="post" use:enhance>
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-32 mt-[85px] w-full px-10">
-				<!-- Personal details -->
+				<!-- Course details -->
 				<div class="flex flex-col w-full">
 					<h2 class="text-sm font-poppins font-semibold">Course Details</h2>
 					<h5 class="text-xs font-poppins font-light mb-8">Fill in the details for a course</h5>
@@ -64,7 +64,7 @@
 						initial={form?.contactHours ?? ''}
 					/>
 				</div>
-				<!-- Contanct details -->
+				<!-- Other details -->
 				<div class="flex flex-col w-full">
 					<h2 class="text-sm font-poppins font-semibold">Other Details</h2>
 					<h5 class="text-xs font-poppins font-light mb-8 invisible">

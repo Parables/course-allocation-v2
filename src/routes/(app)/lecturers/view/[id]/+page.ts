@@ -1,6 +1,8 @@
+import type { CourseType } from "$lib/data/types/course";
+import type { LecturerType } from "$lib/data/types/lecturer";
 import type { PageLoad } from "./$types";
 
-export const load: PageLoad = async ({ url, params, fetch }) => {
+export const load: PageLoad = async ({ params, fetch }) => {
   const response = await fetch(`/api/lecturers/${params.id}`, {
     method: "GET",
     headers: {
@@ -9,16 +11,17 @@ export const load: PageLoad = async ({ url, params, fetch }) => {
     },
   });
 
-  const lecturer = await response.json();
+  const lecturer: LecturerType = await response.json();
 
-  const courseResponse = await fetch(`/api/courses`, {
+  const coursesResponse = await fetch(`/api/courses`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
     },
   });
-  const courses = await courseResponse.json();
+
+  const courses: CourseType[] = await coursesResponse.json();
 
   return { lecturer, courses };
 };

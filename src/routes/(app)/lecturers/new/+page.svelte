@@ -2,6 +2,13 @@
 	import Button from '$lib/components/button.svelte';
 	import InputField from '$lib/components/input-fields/input-field.svelte';
 	import BackButton from '$lib/assets/icons/chevron-left.svg';
+	import type { ActionData } from './$types';
+	import { enhance } from '$app/forms';
+	export let form: ActionData;
+
+	$: {
+		console.log('form:-->', form);
+	}
 </script>
 
 <div class="w-full h-full flex flex-col">
@@ -18,8 +25,9 @@
 	<div class="overflow-y-auto flex-1 mb-10">
 		<!-- top divider -->
 		<hr class="mt-6" />
+
 		<!-- add lecturer form -->
-		<form action="/lecturers?/create" method="post">
+		<form method="post" use:enhance>
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-32 mt-[85px] w-full px-10">
 				<!-- Personal details -->
 				<div class="flex flex-col w-full">
@@ -27,9 +35,29 @@
 					<h5 class="text-xs font-poppins font-light mb-8">
 						Fill in personal details of the lecturer
 					</h5>
-					<InputField id="full_name" name="full_name" label="Name" autocomplete="name" required />
-					<InputField id="gender" name="gender" label="Gender" required />
+					<InputField
+						id="fullName"
+						name="fullName"
+						label="Full Name"
+						autocomplete="name"
+						required
+						initial={form?.fullName ?? ''}
+					/>
+					<InputField
+						id="gender"
+						name="gender"
+						label="Gender"
+						list="gender-options"
+						required
+						initial={form?.gender ?? ''}
+					/>
+
+					<datalist id="gender-options">
+						<option value="male" />
+						<option value="female" />
+					</datalist>
 				</div>
+
 				<!-- Contanct details -->
 				<div class="flex flex-col w-full">
 					<h2 class="text-sm font-poppins font-semibold">Contact Details</h2>
@@ -43,6 +71,7 @@
 						type="email"
 						autocomplete="email"
 						required
+						initial={form?.email ?? ''}
 					/>
 					<InputField
 						id="phone_number"
@@ -50,6 +79,7 @@
 						label="Phone Number"
 						autocomplete="tel"
 						required
+						initial={form?.phoneNumber ?? ''}
 					/>
 				</div>
 				<!-- Qualification details -->
@@ -58,8 +88,8 @@
 					<h5 class="text-xs font-poppins font-light mb-8">
 						Fill in qualification details of the lecturer
 					</h5>
-					<InputField id="degree" name="degree" label="Degree" />
-					<InputField id="masters" name="masters" label="Masters" />
+					<InputField id="degree" name="degree" label="Degree" initial={form?.degree ?? ''} />
+					<InputField id="masters" name="masters" label="Masters" initial={form?.masters ?? ''} />
 				</div>
 			</div>
 			<!-- bottom divider -->
