@@ -57,6 +57,7 @@
 	const server: ServerStorageOptions = {
 		url: `${$page.url.origin}/api/programmes`, // TODO: Replace with data fetched from PageLoad
 		then: (data: ProgrammeType[]) => {
+			// TODO: use alaSQL to count the number of unique courses and unique lecturers for the programme
 			return data?.map((programme: ProgrammeType) => {
 				return [
 					{ key: programme.key, title: programme.title, code: programme.code },
