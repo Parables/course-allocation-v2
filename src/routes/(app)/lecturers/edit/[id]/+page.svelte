@@ -1,7 +1,8 @@
 <script lang="ts">
 	import Button from '$lib/components/button.svelte';
 	import InputField from '$lib/components/input-fields/input-field.svelte';
-	import BackButton from '$lib/assets/icons/chevron-left.svg';
+	import { enhance } from '$app/forms';
+	import backIcon from '$lib/assets/icons/chevron-left.svg?raw';
 	import type { ActionData, PageData } from './$types';
 
 	export let data: PageData;
@@ -11,7 +12,6 @@
 
 	$: {
 		({ lecturer } = data);
-		console.log('form:-->', form, 'data:-->', data);
 	}
 </script>
 
@@ -19,7 +19,7 @@
 	<div>
 		<div class="flex items-center w-full ">
 			<a href="/lecturers" class="mr-4 text-purple-500 border border-purple-500 rounded ">
-				<BackButton />
+				{@html backIcon}
 			</a>
 			<h1 class="text-2xl font-bold font-poppins">Edit Lecturer's Profile</h1>
 		</div>
@@ -27,18 +27,11 @@
 	</div>
 
 	<div class="flex-1 mb-10 overflow-y-auto">
+		<!-- top divider -->
 		<hr class="mt-6" />
 
-		<form method="post">
-			<input
-				type="text"
-				id="key"
-				name="key"
-				label="key"
-				required
-				class="sr-only"
-				bind:value={data.lecturer.key}
-			/>
+		<!-- edit lecturer form -->
+		<form method="POST" use:enhance>
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-32 mt-[85px] w-full px-10">
 				<!-- Personal details -->
 				<div class="flex flex-col w-full">
@@ -46,7 +39,15 @@
 					<h5 class="mb-8 text-xs font-light font-poppins">
 						Fill in personal details of the lecturer
 					</h5>
-
+					<InputField
+						type="text"
+						id="key"
+						name="key"
+						label="key"
+						required
+						class="sr-only"
+						initial={lecturer?.key}
+					/>
 					<InputField
 						id="fullName"
 						name="fullName"
@@ -104,6 +105,7 @@
 						label="Masters"
 						initial={form?.masters ?? lecturer?.masters ?? ''}
 					/>
+					<InputField id="PhD" name="PhD" label="PhD" initial={form?.PhD ?? lecturer?.PhD ?? ''} />
 				</div>
 			</div>
 			<!-- bottom divider -->

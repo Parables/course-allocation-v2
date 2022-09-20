@@ -9,6 +9,7 @@ export const LecturerBaseSchema = myzod.object({
   phoneNumber: myzod.string(),
   degree: myzod.string().optional(),
   masters: myzod.string().optional(),
+  PhD: myzod.string().optional(),
 });
 
 export const LecturerSchema = baseSchema.and(LecturerBaseSchema);

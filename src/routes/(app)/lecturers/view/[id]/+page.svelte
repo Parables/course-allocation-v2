@@ -2,7 +2,8 @@
 	import EassyToast from '$lib/components/easy-toast.svelte';
 	import Button from '$lib/components/button.svelte';
 	import { page } from '$app/stores';
-	import BackButton from '$lib/assets/icons/chevron-left.svg';
+	import { enhance } from '$app/forms';
+	import backIcon from '$lib/assets/icons/chevron-left.svg?raw';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -10,12 +11,16 @@
 	let lecturer: typeof data.lecturer;
 	let courses: typeof data.courses;
 	// TODO: Use alaSQL to select * courses where course.lecturer = lecturer.key
+
+	$: {
+		({ lecturer, courses } = data);
+	}
 </script>
 
 <div class="w-full h-full flex flex-col">
 	<div class="flex w-full items-center ">
 		<a href="/lecturers" class=" rounded border-purple-500 text-purple-500 border mr-4">
-			<BackButton />
+			{@html backIcon}
 		</a>
 		<h1 class="font-poppins text-2xl font-bold">Lecturer's Profile</h1>
 	</div>
@@ -53,6 +58,9 @@
 				<dt class="uppercase text-sm text-gray-500 font-medium">Masters</dt>
 				<dd class="text-base mb-4">{lecturer.masters}</dd>
 
+				<dt class="uppercase text-sm text-gray-500 font-medium">PhD</dt>
+				<dd class="text-base mb-4">{lecturer.PhD}</dd>
+
 				<dt class="sr-only">Edit Profile</dt>
 				<dd>
 					<a href="/lecturers/edit/{$page.params.id}">
@@ -62,12 +70,12 @@
 
 				<dt class="sr-only">Delete Profile</dt>
 				<dd>
-					<a href="/lecturers/delete/{$page.params.id}">
+					<form action="?/lecturers" method="POST" use:enhance>
 						<Button
 							classNames=" w-8/12 border-2 border-red-500 bg-transparent text-red-500 hover:ring-red-500 focus:ring-red-500"
 							>Delete Profile</Button
 						>
-					</a>
+					</form>
 				</dd>
 			</dl>
 

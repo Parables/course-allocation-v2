@@ -16,17 +16,15 @@ export const GET: RequestHandler = async ({ params }) => {
 export const PATCH: RequestHandler = async ({ request, params }) => {
   try {
     return json(await db.update(await request.json(), params.id));
-  } catch (error) {
-    //
+  } catch (err) {
+    throw error(400, "Failed to update course");
   }
-  throw error(400, "Failed to update course");
 };
 
 export const DELETE: RequestHandler = async ({ params }) => {
   try {
     return json(await db.delete(params.id));
-  } catch (error) {
-    //
+  } catch (err) {
+    throw error(400, "Failed to delete course");
   }
-  throw error(400, "Failed to delete course");
 };

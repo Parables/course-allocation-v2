@@ -1,21 +1,19 @@
 <script lang="ts">
 	import Button from '$lib/components/button.svelte';
 	import InputField from '$lib/components/input-fields/input-field.svelte';
-	import BackButton from '$lib/assets/icons/chevron-left.svg';
-	import type { ActionData } from './$types';
 	import { enhance } from '$app/forms';
-	export let form: ActionData;
+	import backIcon from '$lib/assets/icons/chevron-left.svg?raw';
+	import type { ActionData, PageData } from './$types';
 
-	$: {
-		console.log('form:-->', form);
-	}
+	export let data: PageData;
+	export let form: ActionData;
 </script>
 
 <div class="w-full h-full flex flex-col">
 	<div>
 		<div class="flex w-full items-center ">
 			<a href="/lecturers" class=" rounded border-purple-500 text-purple-500 border mr-4">
-				<BackButton />
+				{@html backIcon}
 			</a>
 			<h1 class="font-poppins text-2xl font-bold">Create A Lecturer</h1>
 		</div>
@@ -27,7 +25,7 @@
 		<hr class="mt-6" />
 
 		<!-- add lecturer form -->
-		<form method="post" use:enhance>
+		<form method="POST" use:enhance>
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-32 mt-[85px] w-full px-10">
 				<!-- Personal details -->
 				<div class="flex flex-col w-full">
@@ -74,8 +72,8 @@
 						initial={form?.email ?? ''}
 					/>
 					<InputField
-						id="phone_number"
-						name="phone_number"
+						id="phoneNumber"
+						name="phoneNumber"
 						label="Phone Number"
 						autocomplete="tel"
 						required
@@ -90,6 +88,7 @@
 					</h5>
 					<InputField id="degree" name="degree" label="Degree" initial={form?.degree ?? ''} />
 					<InputField id="masters" name="masters" label="Masters" initial={form?.masters ?? ''} />
+					<InputField id="PhD" name="PhD" label="PhD" initial={form?.PhD ?? ''} />
 				</div>
 			</div>
 			<!-- bottom divider -->

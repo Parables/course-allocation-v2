@@ -1,62 +1,97 @@
 <script lang="ts">
-	import Button from '$lib/components/button.svelte';
-	import BackButton from '$lib/assets/icons/chevron-left.svg';
-	import type { UserConfig } from 'gridjs';
 	import { page } from '$app/stores';
 	import Grid from 'gridjs-svelte';
+	import { html, type UserConfig } from 'gridjs';
+	import Button from '$lib/components/button.svelte';
+	import backIcon from '$lib/assets/icons/chevron-left.svg?raw';
+	import plusIcon from '$lib/assets/icons/plus.svg?raw';
+	import viewIcon from '$lib/assets/icons/eye.svg?raw';
+	import editIcon from '$lib/assets/icons/edit.svg?raw';
+	import deleteIcon from '$lib/assets/icons/trash.svg?raw';
+	import type { ServerStorageOptions } from 'gridjs/dist/src/storage/server';
+	import type { LecturerType } from '$lib/data/types/lecturer';
 
 	const columns: UserConfig['columns'] = [
+		{ name: 'Key', hidden: true },
 		{ name: 'Full Name' },
 		{ name: 'Gender' },
 		{ name: 'Email Hours' },
 		{ name: 'Phone Number' },
 		{ name: 'Degree' },
-		{ name: 'Masters' }
+		{ name: 'Masters' },
+		{ name: 'PhD' },
+		{ name: 'Assigned Courses' },
+		{
+			name: 'Actions',
+			formatter: (cell: any, row: any) => {
+				const key = row.cells[0].data?.key;
+
+				const actions = cell.map((action: any) => {
+					if (action === 'view') {
+						return `<a href="${$page.url.toString()}/view/${key}">${viewIcon}</a>`;
+					} else if (action === 'edit') {
+						return `<a href="${$page.url.toString()}/edit/${key}">${editIcon}</a>`;
+					} else if (action === 'delete') {
+						return `<form action="?/delete" method="post" class="grid place-items-center"><input name="key" value=${key} class="sr-only" /><button type="submit">${deleteIcon}</button></form>`;
+					}
+				});
+
+				return html(`<span class="inline-flex items-center gap-x-5">${actions.join('\n')}</span>`);
+			}
+		}
 	];
+
+	const server: ServerStorageOptions = {
+		url: `${$page.url.origin}/api/lecturers`, // TODO: Replace with data fetched from PageLoad
+		then: (data: LecturerType[]) => {
+			return data?.map((lecturer: LecturerType) => {
+				return [
+					lecturer.key,
+					lecturer.fullName,
+					lecturer.gender,
+					lecturer.email,
+					lecturer.phoneNumber,
+					lecturer.degree ?? '',
+					lecturer.masters ?? '',
+					lecturer.PhD,
+					0, //TODO: use alaSQL to fetch all courses assigned to lecturer
+					['view', 'edit', 'delete']
+				];
+			});
+		}
+	};
+
+	let tableWrapper: HTMLDivElement | undefined;
 </script>
 
-<div class="flex flex-col w-full h-full">
+<div class="flex flex-col w-full h-full overflow-hidden">
 	<div class="flex items-center justify-between w-full ">
 		<div class="flex items-center w-full ">
 			<a href="/" class="mr-4 text-purple-500 border border-purple-500 rounded ">
-				<BackButton />
+				{@html backIcon}
 			</a>
 			<h1 class="text-2xl font-bold font-poppins">All Lecturers</h1>
 		</div>
 
 		<a href="/lecturers/new">
-			<Button classNames="w-auto ">+ New</Button>
+			<Button classNames="w-auto inline-flex items-center gap-x-2">{@html plusIcon} New</Button>
 		</a>
 	</div>
 
-	<div class="flex-1 w-full p-10 mb-10 overflow-hidden">
-		<!-- <TableBuilder table={coursesTable} bind:data={data.courses} /> -->
-
+	<div class=" w-full h-[90%] overflow-hidden mt-4" bind:this={tableWrapper}>
 		<Grid
 			{columns}
+			{server}
 			sort
-			search
+			search={{ ignoreHiddenColumns: false }}
 			pagination={{ enabled: true, limit: 10 }}
 			fixedHeader
-			height="500px"
-			server={{
-				url: `${$page.url.origin}/api/lecturers`,
-				then: (data) => {
-					console.log('data', data);
-					return data?.map((lecturer) => {
-						return [
-							lecturer.fullName ?? '',
-							lecturer.gender?.toUpperCase() ?? '',
-							lecturer.email ?? '',
-							lecturer.phoneNumber ?? '',
-							lecturer.degree ?? '',
-							lecturer.masters ?? ''
-						];
-					});
-				}
-			}}
+			resizable
+			width="{tableWrapper?.clientWidth}px"
+			height="{tableWrapper?.clientHeight - 130}px"
 			className={{
-				table: 'table-auto'
+				table: 'table-auto whitespace-nowrap ',
+				td: 'whitespace-nowrap '
 			}}
 		/>
 	</div>

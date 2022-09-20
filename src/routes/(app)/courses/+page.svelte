@@ -58,6 +58,7 @@
 			}
 		}
 	];
+
 	const server: ServerStorageOptions = {
 		url: `${$page.url.origin}/api/courses`, // TODO: Replace with data fetched from PageLoad
 		then: (data: CourseType[]) => {
@@ -98,13 +99,14 @@
 	<div class=" w-full h-[90%] overflow-hidden mt-4" bind:this={tableWrapper}>
 		<Grid
 			{columns}
+			{server}
 			sort
-			autoWidth={false}
 			search={{ ignoreHiddenColumns: false }}
 			pagination={{ enabled: true, limit: 10 }}
 			fixedHeader
+			resizable
+			width="{tableWrapper?.clientWidth}px"
 			height="{tableWrapper?.clientHeight - 130}px"
-			{server}
 			className={{
 				table: 'table-auto whitespace-nowrap ',
 				td: 'whitespace-nowrap '

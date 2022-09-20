@@ -1,4 +1,4 @@
-import { CreateCourseSchema } from "$lib/data/types/course";
+import { CreateLecturerSchema } from "$lib/data/types/lecturer";
 import { formDataToJson } from "$lib/utils";
 import { invalid, redirect } from "@sveltejs/kit";
 import { ValidationError } from "myzod";
@@ -9,7 +9,7 @@ export const actions: Actions = {
     // extract data from request
     const data = formDataToJson(await request.formData());
 
-    const validated = CreateCourseSchema.try(data);
+    const validated = CreateLecturerSchema.try(data);
 
     if (validated instanceof ValidationError) {
       return invalid(400, { ...data, error: { message: validated.message } });

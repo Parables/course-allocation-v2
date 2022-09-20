@@ -17,7 +17,6 @@ export const PATCH: RequestHandler = async ({ request, params }) => {
   try {
     return json(await db.update(await request.json(), params.id));
   } catch (err) {
-    console.log(err);
     throw error(400, "Failed to update programme");
   }
 };
@@ -26,7 +25,6 @@ export const DELETE: RequestHandler = async ({ params }) => {
   try {
     return json(await db.delete(params.id));
   } catch (err) {
-    console.log(err);
     throw error(400, "Failed to delete programme");
   }
 };
