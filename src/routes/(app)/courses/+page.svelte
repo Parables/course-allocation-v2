@@ -50,7 +50,7 @@
 					} else if (action === 'edit') {
 						return `<a href="${$page.url.toString()}/edit/${key}">${editIcon}</a>`;
 					} else if (action === 'delete') {
-						return `<form action="?/delete" method="post" class="grid place-items-center"><input name="key" value=${key} class="sr-only" /><button type="submit">${deleteIcon}</button></form>`;
+						return `<form action="${$page.url.toString()}?/delete" method="POST" class="grid place-items-center"><input name="key" value=${key} class="sr-only" /><button type="submit">${deleteIcon}</button></form>`;
 					}
 				});
 
