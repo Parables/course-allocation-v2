@@ -1,9 +1,11 @@
-import flatten, { unflatten } from "flat";
+import flat from "flat";
 import { UpdateProgrammeSchema } from "$lib/data/types/programme";
 import { formDataToJson } from "$lib/utils";
 import { invalid, redirect } from "@sveltejs/kit";
 import { ValidationError } from "myzod";
 import type { Actions } from "./$types";
+
+const { flatten, unflatten } = flat;
 
 export const actions: Actions = {
   default: async ({ request, url }) => {
