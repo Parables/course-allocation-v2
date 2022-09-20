@@ -62,7 +62,7 @@
 					{ key: programme.key, title: programme.title, code: programme.code },
 					programme.title,
 					programme.code,
-					Object.keys(programme.outline).length,
+					`${Object.keys(programme.outline).length} years`,
 					0, //TODO: use alaSQL here
 					['view', 'edit', 'delete']
 				];

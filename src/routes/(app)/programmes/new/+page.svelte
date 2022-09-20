@@ -64,233 +64,44 @@
 					<h5 class="text-xs font-poppins font-light mb-8">Fill in the details for a programme</h5>
 
 					<div class="flex flex-col gap-y-20 w-full h-full">
-						<!-- year 1 -->
-						<summary class="w-full h-full">
-							<h2 class="text-sm font-poppins font-semibold">Year 1</h2>
-							<h5 class="text-xs font-poppins font-light mb-8">
-								Select the courses for the programme outline in Year 1
-							</h5>
-							<details class="w-full">
-								<div class="grid grid-cols-2 gap-10 w-full ">
-									<!-- semster 1 -->
-									<div class="w-full h-[300px] overflow-y-auto pr-10">
-										<h2 class="text-sm font-poppins font-semibold">Semester 1</h2>
+						{#each [1, 2, 3, 4] as y}
+							<!-- year y -->
+							<summary class="w-full h-full">
+								<h2 class="text-sm font-poppins font-semibold">Year {y}</h2>
+								<h5 class="text-xs font-poppins font-light mb-8">
+									Select the courses for the programme outline in Year {y}
+								</h5>
+								<details class="w-full">
+									<div class="grid grid-cols-2 gap-10 w-full ">
+										{#each [1, 2] as s}
+											<!-- semster s -->
+											<div class="w-full h-[300px] overflow-y-auto pr-10">
+												<h2 class="text-sm font-poppins font-semibold">Semester {s}</h2>
 
-										<div class="grid grid-cols-1 gap-y-5 gap-x-10 h-full my-4">
-											{#each courses as course}
-												<div class="shadow-md rounded-md p-4 inline-flex items-center gap-x-4">
-													<input
-														type="checkbox"
-														name="outline.year1.sem1"
-														id="outline.year1.sem1-{course.key}"
-														class="checkbox checkbox-primary checkbox-sm"
-														value={course.key}
-													/>
-													<p class="text-sm font-medium">
-														{course.title}
-													</p>
+												<div class="grid grid-cols-1 gap-y-5 gap-x-10 h-full my-4">
+													{#each courses as course}
+														<label
+															for="outline.year{y}.sem{s}-{course.key}"
+															class="text-sm font-medium shadow-md rounded-md p-4 inline-flex items-center gap-x-4"
+														>
+															<input
+																type="checkbox"
+																name="outline.year{y}.sem{s}"
+																id="outline.year{y}.sem{s}-{course.key}"
+																class="checkbox checkbox-primary checkbox-sm"
+																value={course.key}
+															/>
+															{course.title}
+														</label>
+													{/each}
+													<div class="h-5 " />
 												</div>
-											{/each}
-											<div class="h-5 " />
-										</div>
+											</div>
+										{/each}
 									</div>
-
-									<!-- semster 2 -->
-									<div class="w-full h-[300px] overflow-y-auto pr-10">
-										<h2 class="text-sm font-poppins font-semibold">Semester 2</h2>
-
-										<div class="grid grid-cols-1 gap-y-5 gap-x-10 h-full my-4">
-											{#each courses as course}
-												<div class="shadow-md rounded-md p-4 inline-flex items-center gap-x-4">
-													<input
-														type="checkbox"
-														name="outline.year1.sem2"
-														id="outline.year1.sem2-{course.key}"
-														class="checkbox checkbox-primary checkbox-sm"
-														value={course.key}
-													/>
-													<p class="text-sm font-medium">
-														{course.title}
-													</p>
-												</div>
-											{/each}
-											<div class="h-5 " />
-										</div>
-									</div>
-								</div>
-							</details>
-						</summary>
-
-						<!-- year 2 -->
-						<summary class="w-full h-full">
-							<h2 class="text-sm font-poppins font-semibold">Year 2</h2>
-							<h5 class="text-xs font-poppins font-light mb-8">
-								Select the courses for the programme outline in Year 2
-							</h5>
-							<details class="w-full">
-								<div class="grid grid-cols-2 gap-10 w-full ">
-									<!-- semster 1 -->
-									<div class="w-full h-[300px] overflow-y-auto pr-10">
-										<h2 class="text-sm font-poppins font-semibold">Semester 1</h2>
-
-										<div class="grid grid-cols-1 gap-y-5 gap-x-10 h-full my-4">
-											{#each courses as course}
-												<div class="shadow-md rounded-md p-4 inline-flex items-center gap-x-4">
-													<input
-														type="checkbox"
-														name="outline.year2.sem1"
-														id="outline.year2.sem1-{course.key}"
-														class="checkbox checkbox-primary checkbox-sm"
-														value={course.key}
-													/>
-													<p class="text-sm font-medium">
-														{course.title}
-													</p>
-												</div>
-											{/each}
-											<div class="h-5 " />
-										</div>
-									</div>
-
-									<!-- semster 2 -->
-									<div class="w-full h-[300px] overflow-y-auto pr-10">
-										<h2 class="text-sm font-poppins font-semibold">Semester 2</h2>
-
-										<div class="grid grid-cols-1 gap-y-5 gap-x-10 h-full my-4">
-											{#each courses as course}
-												<div class="shadow-md rounded-md p-4 inline-flex items-center gap-x-4">
-													<input
-														type="checkbox"
-														name="outline.year2.sem2"
-														id="outline.year2.sem2-{course.key}"
-														class="checkbox checkbox-primary checkbox-sm"
-														value={course.key}
-													/>
-													<p class="text-sm font-medium">
-														{course.title}
-													</p>
-												</div>
-											{/each}
-											<div class="h-5 " />
-										</div>
-									</div>
-								</div>
-							</details>
-						</summary>
-
-						<!-- year 3 -->
-						<summary class="w-full h-full">
-							<h2 class="text-sm font-poppins font-semibold">Year 3</h2>
-							<h5 class="text-xs font-poppins font-light mb-8">
-								Select the courses for the programme outline in Year 3
-							</h5>
-							<details class="w-full">
-								<div class="grid grid-cols-2 gap-10 mt-3 w-full ">
-									<!-- semster 1 -->
-									<div class="w-full h-[300px] overflow-y-auto pr-10">
-										<h2 class="text-sm font-poppins font-semibold">Semester 1</h2>
-
-										<div class="grid grid-cols-1 gap-y-5 gap-x-10 h-full my-4">
-											{#each courses as course}
-												<div class="shadow-md rounded-md p-4 inline-flex items-center gap-x-4">
-													<input
-														type="checkbox"
-														name="outline.year3.sem1"
-														id="outline.year3.sem1-{course.key}"
-														class="checkbox checkbox-primary checkbox-sm"
-														value={course.key}
-													/>
-													<p class="text-sm font-medium">
-														{course.title}
-													</p>
-												</div>
-											{/each}
-											<div class="h-5 " />
-										</div>
-									</div>
-
-									<!-- semster 2 -->
-									<div class="w-full h-[300px] overflow-y-auto pr-10">
-										<h2 class="text-sm font-poppins font-semibold">Semester 2</h2>
-
-										<div class="grid grid-cols-1 gap-y-5 gap-x-10 h-full my-4">
-											{#each courses as course}
-												<div class="shadow-md rounded-md p-4 inline-flex items-center gap-x-4">
-													<input
-														type="checkbox"
-														name="outline.year3.sem2"
-														id="outline.year3.sem2-{course.key}"
-														class="checkbox checkbox-primary checkbox-sm"
-														value={course.key}
-													/>
-													<p class="text-sm font-medium">
-														{course.title}
-													</p>
-												</div>
-											{/each}
-											<div class="h-5 " />
-										</div>
-									</div>
-								</div>
-							</details>
-						</summary>
-
-						<!-- year 4 -->
-						<summary class="w-full h-full">
-							<h2 class="text-sm font-poppins font-semibold">Year 4</h2>
-							<h5 class="text-xs font-poppins font-light mb-8">
-								Select the courses for the programme outline in Year 4
-							</h5>
-							<details class="w-full">
-								<div class="grid grid-cols-2 gap-10 mt-3 w-full ">
-									<!-- semster 1 -->
-									<div class="w-full h-[300px] overflow-y-auto pr-10">
-										<h2 class="text-sm font-poppins font-semibold">Semester 1</h2>
-
-										<div class="grid grid-cols-1 gap-y-5 gap-x-10 h-full my-4">
-											{#each courses as course}
-												<div class="shadow-md rounded-md p-4 inline-flex items-center gap-x-4">
-													<input
-														type="checkbox"
-														name="outline.year4.sem1"
-														id="outline.year4.sem1-{course.key}"
-														class="checkbox checkbox-primary checkbox-sm"
-														value={course.key}
-													/>
-													<p class="text-sm font-medium">
-														{course.title}
-													</p>
-												</div>
-											{/each}
-											<div class="h-5 " />
-										</div>
-									</div>
-
-									<!-- semster 2 -->
-									<div class="w-full h-[300px] overflow-y-auto pr-10">
-										<h2 class="text-sm font-poppins font-semibold">Semester 2</h2>
-
-										<div class="grid grid-cols-1 gap-y-5 gap-x-10 h-full my-4">
-											{#each courses as course}
-												<div class="shadow-md rounded-md p-4 inline-flex items-center gap-x-4">
-													<input
-														type="checkbox"
-														name="outline.year4.sem2"
-														id="outline.year4.sem2-{course.key}"
-														class="checkbox checkbox-primary checkbox-sm"
-														value={course.key}
-													/>
-													<p class="text-sm font-medium">
-														{course.title}
-													</p>
-												</div>
-											{/each}
-											<div class="h-5 " />
-										</div>
-									</div>
-								</div>
-							</details>
-						</summary>
+								</details>
+							</summary>
+						{/each}
 					</div>
 				</div>
 			</div>

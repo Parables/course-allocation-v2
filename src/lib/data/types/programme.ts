@@ -31,7 +31,11 @@ export type ProgrammeType = Infer<typeof ProgrammeSchema>;
 
 export const CreateProgrammeSchema = ProgrammeBaseSchema.and(
 	myzod.object({
-		outline: myzod.record(myzod.record(myzod.array(ID)))
+		outline: myzod.record(myzod.record(myzod.array(ID).or(myzod.string()).map((c)=>{
+			if(!Array.isArray(c)){
+				return c.split(',')
+			}
+		})))
 	})
 );
 export type CreateProgrammeInput = Infer<typeof CreateProgrammeSchema>;
