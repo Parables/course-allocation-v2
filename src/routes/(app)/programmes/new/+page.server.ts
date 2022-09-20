@@ -1,4 +1,5 @@
-import { UpdateCourseSchema } from "$lib/data/types/course";
+import { flatten, unflatten } from "flat";
+import { CreateProgrammeSchema } from "$lib/data/types/programme";
 import { formDataToJson } from "$lib/utils";
 import { invalid, redirect } from "@sveltejs/kit";
 import { ValidationError } from "myzod";
@@ -9,27 +10,25 @@ export const actions: Actions = {
     // extract data from request
     const data = formDataToJson(await request.formData());
 
-    const validated = UpdateCourseSchema.try(data);
+    const validated = CreateProgrammeSchema.try(unflatten(flatten(data)));
 
     if (validated instanceof ValidationError) {
       return invalid(400, { ...data, error: { message: validated.message } });
     }
 
-    const { key, ...updated } = validated;
-
-    const response = await fetch(`${url.origin}/api/courses/${key}`, {
-      method: "PATCH",
+    const response = await fetch(`${url.origin}/api/programmes`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify(updated),
+      body: JSON.stringify(validated),
     });
 
     const result = await response.json();
 
-    if (result === null) {
-      throw redirect(303, "/courses");
+    if (result.key) {
+      throw redirect(303, "/programmes");
     }
   },
 };

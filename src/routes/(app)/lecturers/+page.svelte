@@ -1,18 +1,12 @@
 <script lang="ts">
 	import Button from '$lib/components/button.svelte';
-	import type { PageData } from './$types';
-	import TableBuilder from '$lib/components/table_builder/TableBuilder.svelte';
-	import { lecturersTable } from '$lib/components/table_builder/tables/lecturersTable';
 	import BackButton from '$lib/assets/icons/chevron-left.svg';
-	import { html, type UserConfig } from 'gridjs';
+	import type { UserConfig } from 'gridjs';
 	import { page } from '$app/stores';
 	import Grid from 'gridjs-svelte';
 
 	const columns: UserConfig['columns'] = [
-		{
-			name: 'Full Name',
-			sort: true
-		},
+		{ name: 'Full Name' },
 		{ name: 'Gender' },
 		{ name: 'Email Hours' },
 		{ name: 'Phone Number' },
@@ -61,12 +55,9 @@
 					});
 				}
 			}}
+			className={{
+				table: 'table-auto'
+			}}
 		/>
 	</div>
 </div>
-
-<style>
-	table {
-		white-space: 'nowrap';
-	}
-</style>

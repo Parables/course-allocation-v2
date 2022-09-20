@@ -4,35 +4,26 @@ import { baseSchema, ID } from './base';
 import { CourseSchema, type CourseType } from './course';
 
 export const ProgrammeBaseSchema = myzod.object({
-	name: myzod.string(),
-	programmeCode: myzod.string().optional()
+	title: myzod.string(),
+	code: myzod.string().optional()
 });
 
 interface IProgramme extends Infer<typeof ProgrammeBaseSchema> {
-	years: {
+	key: string;
+	outline: {
 		[x: string]: ISemesters;
 	};
 }
 
 interface ISemesters {
-	semesters: {
-		[x: string]: {
-			courses: CourseType[];
-		};
-	};
+	[x: string]: CourseType[];
 }
 
-const SemestersSchema: Type<ISemesters> = myzod.object({
-	semesters: myzod.record(
-		myzod.object({
-			courses: myzod.array(myzod.lazy(() => CourseSchema))
-		})
-	)
-});
+const SemestersSchema: Type<ISemesters> = myzod.record(myzod.array(myzod.lazy(() => CourseSchema)));
 
 export const ProgrammeSchema: Type<IProgramme> = baseSchema.and(ProgrammeBaseSchema).and(
 	myzod.object({
-		years: myzod.record(myzod.lazy(() => SemestersSchema))
+		outline: myzod.record(myzod.lazy(() => SemestersSchema))
 	})
 );
 
@@ -40,11 +31,7 @@ export type ProgrammeType = Infer<typeof ProgrammeSchema>;
 
 export const CreateProgrammeSchema = ProgrammeBaseSchema.and(
 	myzod.object({
-		years: myzod.record(myzod.object({
-            semesters: myzod.record(myzod.object({
-                courses: myzod.array(ID)
-            }))
-        }))
+		outline: myzod.record(myzod.record(myzod.array(ID)))
 	})
 );
 export type CreateProgrammeInput = Infer<typeof CreateProgrammeSchema>;

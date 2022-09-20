@@ -5,7 +5,9 @@
     "dictionaries": [],
     "words": [
         "DETA",
-        "myzod"
+        "myzod",
+        "sveltejs",
+        "unflatten"
     ],
     "ignoreWords": [],
     "import": []

@@ -1,4 +1,5 @@
-import { UpdateCourseSchema } from "$lib/data/types/course";
+import flatten, { unflatten } from "flat";
+import { UpdateProgrammeSchema } from "$lib/data/types/programme";
 import { formDataToJson } from "$lib/utils";
 import { invalid, redirect } from "@sveltejs/kit";
 import { ValidationError } from "myzod";
@@ -9,7 +10,9 @@ export const actions: Actions = {
     // extract data from request
     const data = formDataToJson(await request.formData());
 
-    const validated = UpdateCourseSchema.try(data);
+    const validated = UpdateProgrammeSchema.try(unflatten(flatten(data)));
+
+    console.log(validated);
 
     if (validated instanceof ValidationError) {
       return invalid(400, { ...data, error: { message: validated.message } });
@@ -17,7 +20,7 @@ export const actions: Actions = {
 
     const { key, ...updated } = validated;
 
-    const response = await fetch(`${url.origin}/api/courses/${key}`, {
+    const response = await fetch(`${url.origin}/api/programmes/${key}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -28,8 +31,10 @@ export const actions: Actions = {
 
     const result = await response.json();
 
+    console.log(result);
+
     if (result === null) {
-      throw redirect(303, "/courses");
+      throw redirect(303, "/programmes");
     }
   },
 };

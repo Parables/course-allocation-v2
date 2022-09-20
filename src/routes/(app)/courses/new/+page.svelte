@@ -1,38 +1,42 @@
 <script lang="ts">
 	import Button from '$lib/components/button.svelte';
 	import InputField from '$lib/components/input-fields/input-field.svelte';
-	import BackButton from '$lib/assets/icons/chevron-left.svg';
 	import { enhance } from '$app/forms';
-	import type { ActionData } from './$types';
+	import backIcon from '$lib/assets/icons/chevron-left.svg?raw';
+	import type { ActionData, PageData } from './$types';
+
+	export let data: PageData;
 	export let form: ActionData;
 
+	let lecturers: typeof data.lecturers = [];
+
 	$: {
-		console.log('form:-->', form);
+		lecturers = data.lecturers ?? [];
 	}
 </script>
 
-<div class="w-full h-full flex flex-col">
+<div class="flex flex-col w-full h-full">
 	<div>
-		<div class="flex w-full items-center ">
-			<a href="/courses" class=" rounded border-purple-500 text-purple-500 border mr-4">
-				<BackButton />
+		<div class="flex items-center w-full ">
+			<a href="/courses" class="mr-4 text-purple-500 border border-purple-500 rounded ">
+				{@html backIcon}
 			</a>
-			<h1 class="font-poppins text-2xl font-bold">Create A Course</h1>
+			<h1 class="text-2xl font-bold font-poppins">Create A Course</h1>
 		</div>
-		<h3 class="mt-3 ml-10 font-roboto text-sm font-light">Fill in the data for a Course</h3>
+		<h3 class="mt-3 ml-10 text-sm font-light font-roboto">Fill in the data for a Course</h3>
 	</div>
 
-	<div class="overflow-y-auto flex-1 mb-10">
+	<div class="flex-1 mb-10 overflow-y-auto">
 		<!-- top divider -->
 		<hr class="mt-6" />
 
 		<!-- add course form -->
-		<form method="post" use:enhance>
+		<form method="POST" use:enhance>
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-32 mt-[85px] w-full px-10">
 				<!-- Course details -->
 				<div class="flex flex-col w-full">
-					<h2 class="text-sm font-poppins font-semibold">Course Details</h2>
-					<h5 class="text-xs font-poppins font-light mb-8">Fill in the details for a course</h5>
+					<h2 class="text-sm font-semibold font-poppins">Course Details</h2>
+					<h5 class="mb-8 text-xs font-light font-poppins">Fill in the details for a course</h5>
 					<InputField
 						id="title"
 						name="title"
@@ -66,10 +70,8 @@
 				</div>
 				<!-- Other details -->
 				<div class="flex flex-col w-full">
-					<h2 class="text-sm font-poppins font-semibold">Other Details</h2>
-					<h5 class="text-xs font-poppins font-light mb-8 invisible">
-						Fill in other details of the course
-					</h5>
+					<h2 class="text-sm font-semibold font-poppins">Other Details</h2>
+					<h5 class="mb-8 text-xs font-light font-poppins">Fill in other details of the course</h5>
 					<InputField
 						id="profile"
 						name="profile"
@@ -108,6 +110,25 @@
 						required
 						initial={form?.studentCount ?? ''}
 					/>
+
+					{#if lecturers.length > 0}
+						<InputField
+							id="lecturer"
+							name="lecturer"
+							label="Assign Course To"
+							type="text"
+							list="assigned-lecturer-options"
+							required
+							initial={form?.lecturer ?? ''}
+						/>
+
+						<datalist id="assigned-lecturer-options">
+							<option value="" selected>None</option>
+							{#each lecturers as lecturer}
+								<option value={lecturer.key}>{lecturer.fullName}</option>
+							{/each}
+						</datalist>
+					{/if}
 				</div>
 			</div>
 			<!-- bottom divider -->

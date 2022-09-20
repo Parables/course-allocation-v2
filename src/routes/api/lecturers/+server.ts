@@ -1,10 +1,10 @@
 import type { RequestHandler } from "./$types";
 import { Deta } from "deta"; // import Deta
 import { error, json } from "@sveltejs/kit";
-import { DETA_PROJECT_KEY } from "$env/static/private";
+import { env } from "$env/dynamic/private";
 
 // Initialize with a Project Key
-const deta = Deta(DETA_PROJECT_KEY);
+const deta = Deta(env.DETA_PROJECT_KEY);
 
 // This how to connect to or create a database.
 const db = deta.Base("lecturers");

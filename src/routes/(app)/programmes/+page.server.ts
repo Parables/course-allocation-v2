@@ -8,7 +8,7 @@ export const actions: Actions = {
 
     const key = data.get("key");
 
-    const response = await fetch(`${url.origin}/api/courses/${key}`, {
+    const response = await fetch(`${url.origin}/api/programmes/${key}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -19,7 +19,7 @@ export const actions: Actions = {
     const result = await response.json();
 
     if (result === null) {
-      throw redirect(303, "/courses");
+      throw redirect(303, "/programmes");
     }
   },
 };

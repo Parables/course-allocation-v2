@@ -1,7 +1,8 @@
 <script lang="ts">
 	import Button from '$lib/components/button.svelte';
 	import InputField from '$lib/components/input-fields/input-field.svelte';
-	import BackButton from '$lib/assets/icons/chevron-left.svg';
+	import { enhance } from '$app/forms';
+	import backIcon from '$lib/assets/icons/chevron-left.svg?raw';
 	import type { ActionData, PageData } from './$types';
 
 	export let data: PageData;
@@ -12,7 +13,6 @@
 
 	$: {
 		({ course } = data);
-		console.log('form:-->', form, 'data:-->', data);
 	}
 </script>
 
@@ -20,7 +20,7 @@
 	<div>
 		<div class="flex items-center w-full ">
 			<a href="/courses" class="mr-4 text-purple-500 border border-purple-500 rounded ">
-				<BackButton />
+				{@html backIcon}
 			</a>
 			<h1 class="text-2xl font-bold font-poppins">Edit A Course</h1>
 		</div>
@@ -32,7 +32,7 @@
 		<hr class="mt-6" />
 
 		<!-- edit course form -->
-		<form action="/courses?/update" method="post">
+		<form method="post" use:enhance>
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-32 mt-[85px] w-full px-10">
 				<!-- Personal details -->
 				<div class="flex flex-col w-full">
@@ -122,22 +122,24 @@
 						initial={form?.studentCount ?? course?.studentCount ?? ''}
 					/>
 
-					<InputField
-						id="lecturer"
-						name="lecturer"
-						label="Assign Course To"
-						type="text"
-						list="assigned-lecturer-options"
-						required
-						initial={form?.lecturer ?? course?.lecturer ?? ''}
-					/>
+					{#if lecturers.length > 0}
+						<InputField
+							id="lecturer"
+							name="lecturer"
+							label="Assign Course To"
+							type="text"
+							list="assigned-lecturer-options"
+							required
+							initial={form?.lecturer ?? course?.lecturer ?? ''}
+						/>
 
-					<datalist id="assigned-lecturer-options">
-						<option value="">None</option>
-						{#each lecturers as lecturer}
-							<option value={lecturer.key}>{lecturer.fullName}</option>
-						{/each}
-					</datalist>
+						<datalist id="assigned-lecturer-options">
+							<option value="" selected>None</option>
+							{#each lecturers as lecturer}
+								<option value={lecturer.key}>{lecturer.fullName}</option>
+							{/each}
+						</datalist>
+					{/if}
 				</div>
 			</div>
 			<!-- bottom divider -->
