@@ -8,6 +8,7 @@
 	import alasql from 'alasql';
 	import { browser } from '$app/environment';
 	import { enhance } from '$app/forms';
+	import { invalidateAll } from '$app/navigation';
 
 	export let data: PageData;
 	export let form: any;
@@ -119,7 +120,13 @@
 					method="POST"
 					use:enhance
 				>
-					<input type="text" name="key" id="key" value={selectedLecturer} class="sr-only" />
+					<input
+						type="text"
+						name="lecturer"
+						id="lecturer"
+						value={selectedLecturer}
+						class="sr-only"
+					/>
 					<Button>Assign Courses</Button>
 				</form>
 			</div>
@@ -160,18 +167,32 @@
 					method="POST"
 					use:enhance
 				>
-					<input type="text" name="key" id="key" value={selectedLecturer} class="sr-only" />
+					<input
+						type="text"
+						name="lecturer"
+						id="lecturer"
+						value={selectedLecturer}
+						class="sr-only"
+					/>
 					<Button>Remove Courses</Button>
 				</form>
 			</div>
 		</div>
 
 		{#if form?.error}
-			<EassyToast show={true} message={form.error ?? 'Something went wrong'} type="error" />
+			<EassyToast
+				show={true}
+				message={form.error?.message ?? 'Something went wrong'}
+				type="error"
+			/>
 		{/if}
 
 		{#if form?.success}
-			<EassyToast show={true} message={form.success ?? 'Something went wrong'} type="success" />
+			<EassyToast
+				show={true}
+				message={form.success?.message ?? 'Updated successfully	'}
+				type="success"
+			/>
 		{/if}
 	</div>
 </div>
