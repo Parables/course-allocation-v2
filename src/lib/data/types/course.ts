@@ -38,6 +38,32 @@ export const UpdateCourseSchema = baseSchema.and(myzod.partial(CreateCourseSchem
 
 export type UpdateCourseInput = Infer<typeof UpdateCourseSchema>;
 
+export const UpdateCourseLecturerSchema = myzod.object({
+	lecturer: myzod.string(),
+	addCourses: myzod
+		.array(ID)
+		.or(myzod.string())
+		.map((c) => {
+			if (!Array.isArray(c)) {
+				return c.split(',');
+			}
+		})
+		.default([])
+		.optional(),
+	removeCourses: myzod
+		.array(ID)
+		.or(myzod.string())
+		.map((c) => {
+			if (!Array.isArray(c)) {
+				return c.split(',');
+			}
+		})
+		.default([])
+		.optional()
+});
+
+export type UpdateCourseLecturerInput = Infer<typeof UpdateCourseLecturerSchema>;
+
 export type FilterableCourse = {
 	key: string;
 	title: string;
