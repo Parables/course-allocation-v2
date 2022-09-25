@@ -31,11 +31,22 @@ export type ProgrammeType = Infer<typeof ProgrammeSchema>;
 
 export const CreateProgrammeSchema = ProgrammeBaseSchema.and(
 	myzod.object({
-		outline: myzod.record(myzod.record(myzod.array(ID).or(myzod.string()).map((c)=>{
-			if(!Array.isArray(c)){
-				return c.split(',')
-			}
-		})))
+		outline: myzod
+			.record(
+				myzod.record(
+					myzod
+						.array(ID)
+						.or(myzod.string())
+						.map((c) => {
+							if (!Array.isArray(c)) {
+								return c.split(',');
+							}
+						})
+				)
+			)
+			.default({
+				year1: { sem1: [], sem2: [] }
+			})
 	})
 );
 export type CreateProgrammeInput = Infer<typeof CreateProgrammeSchema>;
@@ -45,3 +56,43 @@ export const UpdateProgrammeSchema = baseSchema.and(
 );
 
 export type UpdateProgrammeInput = Infer<typeof UpdateProgrammeSchema>;
+
+export const ProgrammeRawSchema = baseSchema.and(
+	ProgrammeBaseSchema.and(
+		myzod.object({
+			outline: myzod.record(myzod.record(myzod.array(ID)))
+		})
+	)
+);
+export type ProgrammeRawType = Infer<typeof ProgrammeRawSchema>;
+
+export type FilterableProgramme = {
+	key: string;
+	title: string;
+	code: string;
+	header: {
+		key: string;
+		title: string;
+		code: string;
+	};
+	duration: number;
+	year?: string;
+	sem?: string;
+	course_key?: string;
+	course_title?: string;
+	course_code?: string;
+	course_header: {
+		key: string;
+		title: string;
+		code: string;
+	};
+	course_count?: number;
+	course_creditHours?: number;
+	course_contactHours?: number;
+	course_profile?: string;
+	course_session?: string;
+	course_studentCount?: number;
+	course_lecturer_fullName?: string;
+	course_lecturer_phoneNumber?: string;
+	course_lecturer_email?: string;
+};

@@ -5,15 +5,17 @@
 	import Button from '$lib/components/button.svelte';
 	import backIcon from '$lib/assets/icons/chevron-left.svg?raw';
 	import plusIcon from '$lib/assets/icons/plus.svg?raw';
-	import viewIcon from '$lib/assets/icons/eye.svg?raw';
+	import assignLecturerIcon from '$lib/assets/icons/user-check.svg?raw';
 	import editIcon from '$lib/assets/icons/edit.svg?raw';
 	import deleteIcon from '$lib/assets/icons/trash.svg?raw';
 	import type { ServerStorageOptions } from 'gridjs/dist/src/storage/server';
-	import type { CourseType } from '$lib/data/types/course';
+	import type { CourseType, FilterableCourse } from '$lib/data/types/course';
+	import { goto } from '$app/navigation';
+	import { suffixWith } from '$lib/utils';
 
 	const columns: UserConfig['columns'] = [
 		{
-			id: 'title',
+			id: 'header',
 			name: 'Course Title & Code',
 			sort: {
 				compare: (a: any, b: any) => {
@@ -31,26 +33,29 @@
 			<p class="text-sm text-gray-500">${cell?.code}</p>
 		</div>`)
 		},
-		{ name: 'Title', hidden: true },
-		{ name: 'Course Code', hidden: true },
-		{ name: 'Credit Hours' },
-		{ name: 'Contact Hours' },
-		{ name: 'Profile' },
-		{ name: 'Session' },
-		{ name: 'Student Count' },
-		{ name: 'Lecturer' },
+		{ id: 'title', name: 'Title', hidden: true },
+		{ id: 'code', name: 'Course Code', hidden: true },
+		{ id: 'creditHours', name: 'Credit Hours' },
+		{ id: 'contactHours', name: 'Contact Hours' },
+		{ id: 'profile', name: 'Profile' },
+		{ id: 'session', name: 'Session' },
+		{ id: 'studentCount', name: 'Student Count' },
+		{ id: 'lecturer_header', name: 'Lecturer Header', hidden: true },
+		{ id: 'lecturer_fullName', name: 'Lecturer Name' },
+		{ id: 'lecturer_email', name: 'Lecturer Email' },
+		{ id: 'lecturer_phoneNumber', name: 'Lecturer Phone Number' },
 		{
 			name: 'Actions',
 			formatter: (cell: any, row: any) => {
-				const key = row.cells[0].data?.key;
+				const key = row.cells[8].data?.key ?? '';
 
 				const actions = cell.map((action: any) => {
 					if (action === 'view') {
-						return `<a href="${$page.url.toString()}/view/${key}">${viewIcon}</a>`;
+						return `<a href="${$page.url.origin}/schedules?lecturer=${key}" title="Assign Lecturer">${assignLecturerIcon}</a>`;
 					} else if (action === 'edit') {
-						return `<a href="${$page.url.toString()}/edit/${key}">${editIcon}</a>`;
+						return `<a href="${$page.url.toString()}/edit/${key}" title="Edit Course">${editIcon}</a>`;
 					} else if (action === 'delete') {
-						return `<form action="${$page.url.toString()}?/delete" method="POST" class="grid place-items-center"><input name="key" value=${key} class="sr-only" /><button type="submit">${deleteIcon}</button></form>`;
+						return `<form action="${$page.url.toString()}?/delete" method="POST" class="grid place-items-center"><input name="key" value="${key}" class="sr-only"/><button type="submit"  title="Delete Course">${deleteIcon}</button></form>`;
 					}
 				});
 
@@ -60,23 +65,31 @@
 	];
 
 	const server: ServerStorageOptions = {
-		url: `${$page.url.origin}/api/courses`, // TODO: Replace with data fetched from PageLoad
-		then: (data: CourseType[]) => {
-			return data?.map((course: CourseType) => {
+		url: `${$page.url.origin}/api/courses?filterable=true`,
+		then: (data: { filterableCourses: FilterableCourse[]; rawCourses: CourseType[] }) => {
+			return data.filterableCourses.map((c: FilterableCourse) => {
 				return [
-					{ key: course.key, title: course.title, code: course.code },
-					course.title,
-					course.code,
-					course.creditHours,
-					course.contactHours,
-					(course.profile ?? '').toUpperCase(),
-					(course.session ?? '').toUpperCase(),
-					course.studentCount,
-					course.lecturer?.fullName,
+					c.header,
+					c.title?.toUpperCase(),
+					c.code?.toUpperCase(),
+					suffixWith(c.creditHours, 'Hour', 'Hours'),
+					suffixWith(c.contactHours, 'Hour', 'Hours'),
+					c.profile?.toUpperCase(),
+					c.session?.toUpperCase(),
+					suffixWith(c.studentCount, 'Student', 'Students'),
+					c.lecturer_header,
+					c.lecturer_fullName ?? 'N/A',
+					c.lecturer_email ?? 'N/A',
+					c.lecturer_phoneNumber ?? 'N/A',
 					['view', 'edit', 'delete']
 				];
 			});
 		}
+	};
+
+	const handleRowClicked = (e: any) => {
+		const key = e.detail[1]['_cells'][0]['data']['key'];
+		goto(`${$page.url.toString()}/edit/${key}`);
 	};
 
 	let tableWrapper: HTMLDivElement | undefined;
@@ -109,8 +122,10 @@
 			height="{tableWrapper?.clientHeight - 130}px"
 			className={{
 				table: 'table-auto whitespace-nowrap ',
-				td: 'whitespace-nowrap '
+				td: 'whitespace-nowrap ',
+				tr: 'hover:cursor-pointer'
 			}}
+			on:rowClick={handleRowClicked}
 		/>
 	</div>
 </div>

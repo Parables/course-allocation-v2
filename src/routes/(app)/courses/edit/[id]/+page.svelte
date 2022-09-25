@@ -9,7 +9,7 @@
 	export let form: ActionData;
 
 	let course: typeof data.course;
-	let lecturers: typeof data.lecturers;
+	// let lecturers: typeof data.lecturers;
 
 	$: {
 		({ course } = data);
@@ -35,9 +35,12 @@
 		<form method="post" use:enhance>
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-32 mt-[85px] w-full px-10">
 				<!-- Personal details -->
-				<div class="flex flex-col w-full">
-					<h2 class="text-sm font-semibold font-poppins">Course Details</h2>
-					<h5 class="mb-8 text-xs font-light font-poppins">Fill in the details for a course</h5>
+				<div class="flex flex-col w-full gap-y-5">
+					<div>
+						<h2 class="text-sm font-semibold font-poppins">Course Details</h2>
+						<h5 class="text-xs font-light font-poppins">Fill in the details for a course</h5>
+					</div>
+
 					<InputField
 						id="key"
 						name="key"
@@ -78,11 +81,11 @@
 					/>
 				</div>
 				<!-- Contanct details -->
-				<div class="flex flex-col w-full">
-					<h2 class="text-sm font-semibold font-poppins">Other Details</h2>
-					<h5 class="invisible mb-8 text-xs font-light font-poppins">
-						Fill in other details of the course
-					</h5>
+				<div class="flex flex-col w-full gap-y-5">
+					<div>
+						<h2 class="text-sm font-semibold font-poppins">Other Details</h2>
+						<h5 class="text-xs font-light font-poppins">Fill in other details of the course</h5>
+					</div>
 					<InputField
 						id="profile"
 						name="profile"
@@ -122,7 +125,7 @@
 						initial={form?.studentCount ?? course?.studentCount ?? ''}
 					/>
 
-					{#if lecturers.length > 0}
+					<!-- {#if lecturers?.length > 0}
 						<InputField
 							id="lecturer"
 							name="lecturer"
@@ -139,7 +142,7 @@
 								<option value={lecturer.key}>{lecturer.fullName}</option>
 							{/each}
 						</datalist>
-					{/if}
+					{/if} -->
 				</div>
 			</div>
 			<!-- bottom divider -->

@@ -9,11 +9,18 @@
 	import editIcon from '$lib/assets/icons/edit.svg?raw';
 	import deleteIcon from '$lib/assets/icons/trash.svg?raw';
 	import type { ServerStorageOptions } from 'gridjs/dist/src/storage/server';
-	import type { ProgrammeType } from '$lib/data/types/programme';
+	import type {
+		FilterableProgramme,
+		ProgrammeRawType,
+		ProgrammeType
+	} from '$lib/data/types/programme';
+	import alasql from 'alasql';
+	import { goto } from '$app/navigation';
+	import { suffixWith } from '$lib/utils';
 
 	const columns: UserConfig['columns'] = [
 		{
-			id: 'title',
+			id: 'header',
 			name: 'Programme Title & Code',
 			sort: {
 				compare: (a: any, b: any) => {
@@ -29,20 +36,22 @@
 		<div class="flex flex-col">
 			<p class="text-base font-semibold">${cell?.title}</p>
 			<p class="text-sm text-gray-500">${cell?.code}</p>
-		</div>`)
+		</div>`),
+			width: '60%'
 		},
-		{ name: 'Title', hidden: true },
-		{ name: 'Programme Code', hidden: true },
-		{ name: 'Duration' },
-		{ name: 'Courses' },
+		{ id: 'title', name: 'Title', hidden: true },
+		{ id: 'code', name: 'Programme Code', hidden: true },
+		{ id: 'duration', name: 'Duration', width: '15%' },
+		{ name: 'Courses', width: '15%' },
 		{
 			name: 'Actions',
 			formatter: (cell: any, row: any) => {
 				const key = row.cells[0].data?.key;
+				const title = row.cells[0].data?.title;
 
 				const actions = cell.map((action: any) => {
 					if (action === 'view') {
-						return `<a href="${$page.url.toString()}/view/${key}">${viewIcon}</a>`;
+						return `<a href="${$page.url.toString()}/view?programme=${title}">${viewIcon}</a>`;
 					} else if (action === 'edit') {
 						return `<a href="${$page.url.toString()}/edit/${key}">${editIcon}</a>`;
 					} else if (action === 'delete') {
@@ -55,20 +64,31 @@
 		}
 	];
 	const server: ServerStorageOptions = {
-		url: `${$page.url.origin}/api/programmes`, // TODO: Replace with data fetched from PageLoad
-		then: (data: ProgrammeType[]) => {
-			// TODO: use alaSQL to count the number of unique courses and unique lecturers for the programme
-			return data?.map((programme: ProgrammeType) => {
+		url: `${$page.url.origin}/api/programmes?filterable=true`,
+		then: (data: {
+			filterableProgrammes: FilterableProgramme[];
+			rawProgrammes: ProgrammeRawType[];
+		}) => {
+			const tableData = alasql(
+				`SELECT p.*, COUNT(DISTINCT course_key) AS course_count FROM ? AS p GROUP BY p.title`,
+				[data.filterableProgrammes]
+			);
+
+			return tableData.map((p: FilterableProgramme) => {
 				return [
-					{ key: programme.key, title: programme.title, code: programme.code },
-					programme.title,
-					programme.code,
-					`${Object.keys(programme.outline).length} years`,
-					0, //TODO: use alaSQL here
+					p.header,
+					p.title?.toUpperCase(),
+					p.code?.toUpperCase(),
+					suffixWith(p.duration, 'Year', 'Years'),
+					suffixWith(p.course_count, 'Course', 'Courses'),
 					['view', 'edit', 'delete']
 				];
 			});
 		}
+	};
+	const handleRowClicked = (e: any) => {
+		const title = e.detail[1]['_cells'][0]['data']['title'];
+		goto(`${$page.url.toString()}/view?programme=${title}`);
 	};
 
 	let tableWrapper: HTMLDivElement | undefined;
@@ -101,8 +121,10 @@
 			height="{tableWrapper?.clientHeight - 130}px"
 			className={{
 				table: 'table-auto whitespace-nowrap ',
-				td: 'whitespace-nowrap '
+				td: 'whitespace-nowrap ',
+				tr: 'hover:cursor-pointer'
 			}}
+			on:rowClick={handleRowClicked}
 		/>
 	</div>
 </div>

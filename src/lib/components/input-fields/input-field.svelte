@@ -13,14 +13,12 @@
 	export let classNames: string = 'w-full';
 	export let required: boolean = false;
 	export let autocomplete: Autocomplete = 'off';
-	export let prefixIcon: SvelteComponentDev | string | undefined = undefined;
-	export let sufixIcon: SvelteComponentDev | string | undefined = undefined;
+	export let prefixIcon: any = undefined;
+	export let sufixIcon: any = undefined;
 </script>
 
 <!-- input -->
-<div
-	class="flex items-center w-full selection:bg-[#3E3859] selection:text-white mb-10 {classNames}"
->
+<div class="flex items-center w-full selection:bg-[#3E3859] selection:text-white mt-3 {classNames}">
 	{#if prefixIcon}
 		<svelte:component this={prefixIcon} class="w-4 h-4" />
 	{/if}
@@ -35,14 +33,14 @@
 			{required}
 			{...$$restProps}
 			value={initial}
-			class="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-[#3E3859]"
+			class="peer w-full placeholder-transparent input-bordered input input-md ${$$restProps.class}"
 			on:input={(e) => {
 				value = e.currentTarget.value;
 			}}
 		/>
 		<label
 			for={id}
-			class="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
+			class="absolute left-3 -top-3.5 px-2 bg-white  text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
 			>{label}</label
 		>
 	</span>

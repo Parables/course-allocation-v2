@@ -10,6 +10,7 @@
 	import deleteIcon from '$lib/assets/icons/trash.svg?raw';
 	import type { ServerStorageOptions } from 'gridjs/dist/src/storage/server';
 	import type { LecturerType } from '$lib/data/types/lecturer';
+	import { goto } from '$app/navigation';
 
 	const columns: UserConfig['columns'] = [
 		{ name: 'Key', hidden: true },
@@ -42,7 +43,7 @@
 	];
 
 	const server: ServerStorageOptions = {
-		url: `${$page.url.origin}/api/lecturers`, // TODO: Replace with data fetched from PageLoad
+		url: `${$page.url.origin}/api/lecturers`,
 		then: (data: LecturerType[]) => {
 			return data?.map((lecturer: LecturerType) => {
 				return [
@@ -61,8 +62,9 @@
 		}
 	};
 
-	const handleRowClicked = () => {
-		//TODO: navigate to the view  lecturer
+	const handleRowClicked = (e: any) => {
+		const key = e.detail[1]['_cells'][0]['data']['key'];
+		goto(`${$page.url.toString()}/edit/${key}`);
 	};
 
 	let tableWrapper: HTMLDivElement | undefined;
@@ -95,7 +97,8 @@
 			height="{tableWrapper?.clientHeight - 130}px"
 			className={{
 				table: 'table-auto whitespace-nowrap ',
-				td: 'whitespace-nowrap '
+				td: 'whitespace-nowrap ',
+				tr: 'hover:cursor-pointer'
 			}}
 			on:rowClick={handleRowClicked}
 		/>

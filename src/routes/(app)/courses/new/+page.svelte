@@ -8,11 +8,11 @@
 	export let data: PageData;
 	export let form: ActionData;
 
-	let lecturers: typeof data.lecturers = [];
+	/* 	let lecturers: typeof data.lecturers = [];
 
 	$: {
 		lecturers = data.lecturers ?? [];
-	}
+	} */
 </script>
 
 <div class="flex flex-col w-full h-full">
@@ -111,7 +111,7 @@
 						initial={form?.studentCount ?? ''}
 					/>
 
-					{#if lecturers.length > 0}
+					<!-- {#if lecturers.length > 0}
 						<InputField
 							id="lecturer"
 							name="lecturer"
@@ -128,7 +128,7 @@
 								<option value={lecturer.key}>{lecturer.fullName}</option>
 							{/each}
 						</datalist>
-					{/if}
+					{/if} -->
 				</div>
 			</div>
 			<!-- bottom divider -->

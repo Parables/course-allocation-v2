@@ -20,6 +20,7 @@
 		"@types/flat": "^5.0.2",
 		"@typescript-eslint/eslint-plugin": "^5.27.0",
 		"@typescript-eslint/parser": "^5.27.0",
+		"alasql": "^1.7.3",
 		"autoprefixer": "^10.4.7",
 		"daisyui": "^2.18.1",
 		"deta": "^1.1.0",
