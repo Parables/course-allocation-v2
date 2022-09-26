@@ -2,7 +2,7 @@ import type { RequestHandler } from './$types';
 import { Deta } from 'deta'; // import Deta
 import { error, json } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
-import type { FilterableProgramme, ProgrammeRawType } from '$lib/data/types/programme';
+import type { FilterableProgramme } from '$lib/data/types/programme';
 import alasql from 'alasql';
 import type { ObjectType } from 'deta/dist/types/types/basic';
 import type { CourseType, FilterableCourse } from '$lib/data/types/course';

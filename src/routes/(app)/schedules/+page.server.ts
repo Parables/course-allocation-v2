@@ -6,83 +6,41 @@ import { ValidationError } from 'myzod';
 import type { Actions } from './$types';
 
 export const actions: Actions = {
-	addCourses: async ({ url, request }) => {
-		const redirectTo = url.searchParams.get('redirectTo') ?? '/schedules';
+	default: async ({ url, request }) => {
 		try {
 			// extract data from request
 			const data = formDataToJson(await request.formData());
 
-			console.log(data);
-			const validated = UpdateCourseLecturerSchema.try(data);
-
-			console.log(validated);
-
-			if (validated instanceof ValidationError) {
-				return invalid(400, { ...data, error: { message: validated.message } });
-			}
-
-			const { addCourses, lecturer } = validated;
-
-			for await (const course_key of addCourses ?? []) {
-				updateCourseLecturer(url, lecturer, course_key);
-			}
-
-			return {
-				success: {
-					message: `${
-						addCourses?.length ?? 0
-					} Courses have been assigned to lecturer. Refresh the page to see the changes`
-				}
-			};
-		} catch (error) {
-			throw redirect(303, redirectTo);
-		}
-	},
-
-	removeCourses: async ({ url, request }) => {
-		const redirectTo = url.searchParams.get('redirectTo') ?? '/schedules';
-		try {
-			// extract data from request
-			const data = formDataToJson(await request.formData());
-
-			console.log(data);
 			const validated = UpdateCourseLecturerSchema.try(data);
 
 			if (validated instanceof ValidationError) {
 				return invalid(400, { ...data, error: { message: validated.message } });
 			}
 
-			const { removeCourses } = validated;
+			const { courses, lecturer } = validated;
 
-			for await (const course_key of removeCourses ?? []) {
-				updateCourseLecturer(url, null, course_key);
-			}
+			courses.forEach(async (key) => {
+				const response = await fetch(`${url.origin}/api/courses/${key}`, {
+					method: 'PATCH',
+					headers: {
+						'Content-Type': 'application/json',
+						Accept: 'application/json'
+					},
+					body: JSON.stringify({ lecturer: lecturer })
+				});
+
+				await response.json();
+			});
 
 			return {
 				success: {
-					message: `${
-						removeCourses?.length ?? 0
-					} Courses have been unassigned from lecturer. Refresh the page to see the changes`
+					message: `${courses?.length ?? 0} courses have been ${
+						lecturer ? 'assigned to lecturer' : 'unassigned'
+					}`
 				}
 			};
-		} catch (error) {
-			throw redirect(303, redirectTo);
+		} catch (err) {
+			throw redirect(303, '/schedules');
 		}
 	}
-};
-
-const updateCourseLecturer = async (url: URL, lecturer: string | null, key: string) => {
-	const response = await fetch(`${url.origin}/api/courses/${key}`, {
-		method: 'PATCH',
-		headers: {
-			'Content-Type': 'application/json',
-			Accept: 'application/json'
-		},
-		body: JSON.stringify({ lecturer })
-	});
-
-	const result = await response.json();
-
-	console.log(result);
-	return result;
 };

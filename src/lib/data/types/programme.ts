@@ -37,11 +37,7 @@ export const CreateProgrammeSchema = ProgrammeBaseSchema.and(
 					myzod
 						.array(ID)
 						.or(myzod.string())
-						.map((c) => {
-							if (!Array.isArray(c)) {
-								return c.split(',');
-							}
-						})
+						.map((c) => (!Array.isArray(c) ? c.split(',') : c))
 				)
 			)
 			.default({

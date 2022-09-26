@@ -1,12 +1,32 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { navigating, page } from '$app/stores';
+	import NavigatingIndicator from '$lib/components/navigating-indicator.svelte';
 	import type { LayoutData } from './$types';
 
 	export let data: LayoutData;
+
 	let navigation: typeof data['navigation'];
+	let fromAway = false;
+	let queryChange = false;
 
 	$: {
 		({ navigation } = data);
+	}
+
+	$: {
+		console.log($navigating);
+	}
+
+	$: {
+		fromAway =
+			$navigating?.from?.routeId !== '(app)/schedules' &&
+			$navigating?.to?.routeId === '(app)/schedules';
+		queryChange =
+			!fromAway &&
+			$navigating?.from?.url.searchParams.get('lecturer') !==
+				$navigating?.to?.url.searchParams.get('lecturer');
+
+		console.log(fromAway, queryChange);
 	}
 </script>
 
@@ -16,9 +36,9 @@
 	>
 		<!-- side bar -->
 		<nav class="w-[272px] bg-[#3E3859] hidden md:block">
-			<div class="flex overflow-hidden pt-20 pb-5 flex-col h-full w-full">
-				<div class="overflow-y-auto h-full flex-1">
-					<ul class="pl-10 w-full flex flex-col gap-y-6">
+			<div class="flex flex-col w-full h-full pt-20 pb-5 overflow-hidden">
+				<div class="flex-1 h-full overflow-y-auto">
+					<ul class="flex flex-col w-full pl-10 gap-y-6">
 						{#each navigation as menu, i (menu.href)}
 							{#if menu.href === '/settings'}
 								<li class="py-4">
@@ -33,7 +53,7 @@
 										? 'bg-[#E7E7E7] rounded-l-full py-4 text-black'
 										: ' text-[#959BA5] py-1'}"
 								>
-									<svelte:component this={menu.icon} />
+									{@html menu.icon}
 									<span class="ml-3 text-base font-medium font-poppins">{menu.label}</span>
 								</a>
 							</li>
@@ -47,7 +67,7 @@
 		</nav>
 		<!-- content -->
 		<main class=" bg-[#FFFFFF] px-6 py-10 overflow-hidden w-full h-full">
-			<slot />
+			<NavigatingIndicator show={fromAway && !queryChange}><slot /></NavigatingIndicator>
 		</main>
 	</div>
 </div>

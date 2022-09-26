@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { error, json, redirect } from '@sveltejs/kit';
-import type { ValidationError } from 'myzod';
+import type Base from 'deta/dist/types/base';
 
 export const isValidTicket = (ticket: any) =>
 	ticket &&
@@ -99,7 +100,6 @@ export const formDataToJson = (formData: FormData) => {
 };
 
 export const redirectTo = async (location: string) => {
-	console.log('redirectTo:-->', location);
 	if (browser) return goto(location);
 	else throw redirect(307, location);
 };

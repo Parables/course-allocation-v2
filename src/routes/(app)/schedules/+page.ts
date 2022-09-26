@@ -5,6 +5,8 @@ import alasql from 'alasql';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ url, fetch }) => {
+	const selectedLecturer = url.searchParams.get('lecturer');
+
 	const response = await fetch(`/api/lecturers/`, {
 		method: 'GET',
 		headers: {
@@ -15,7 +17,6 @@ export const load: PageLoad = async ({ url, fetch }) => {
 
 	const allLecturers: LecturerType[] = await response.json();
 
-	const selectedLecturer = url.searchParams.get('lecturer');
 	if (!selectedLecturer) {
 		return redirectTo(`schedules?lecturer=${allLecturers[0].key}`);
 	}
@@ -33,9 +34,14 @@ export const load: PageLoad = async ({ url, fetch }) => {
 	}: { filterableCourses: FilterableCourse[]; rawCourses: CourseType[] } =
 		await courseResponse.json();
 
-	const unassignedCourses: typeof allCourses = alasql("SELECT * FROM ? WHERE lecturer = ''", [
+	const unassignedCourses: typeof allCourses = alasql(`SELECT * FROM ? WHERE lecturer = 'null'`, [
 		allCourses
 	]);
 
-	return { allLecturers, allCourses, unassignedCourses };
+	const assignedCourses: typeof allCourses = alasql(`SELECT * FROM ? WHERE lecturer = ?`, [
+		allCourses,
+		selectedLecturer
+	]);
+
+	return { allLecturers, selectedLecturer, allCourses, unassignedCourses, assignedCourses };
 };

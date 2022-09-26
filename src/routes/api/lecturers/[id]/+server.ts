@@ -1,30 +1,30 @@
-import type { RequestHandler } from "./$types";
-import { Deta } from "deta"; // import Deta
-import { error, json } from "@sveltejs/kit";
-import { env } from "$env/dynamic/private";
+import type { RequestHandler } from './$types';
+import { Deta } from 'deta'; // import Deta
+import { error, json } from '@sveltejs/kit';
+import { env } from '$env/dynamic/private';
 
 // Initialize with a Project Key
 const deta = Deta(env.DETA_PROJECT_KEY);
 
 // This how to connect to or create a database.
-const db = deta.Base("lecturers");
+const db = deta.Base('lecturers');
 
 export const GET: RequestHandler = async ({ params }) => {
-  return json(await db.get(params.id));
+	return json(await db.get(params.id));
 };
 
 export const PATCH: RequestHandler = async ({ request, params }) => {
-  try {
-    return json(await db.update(await request.json(), params.id));
-  } catch (err) {
-    throw error(400, "Failed to update lecturer");
-  }
+	try {
+		return json(await db.update(await request.json(), params.id));
+	} catch (err) {
+		throw error(400, 'Failed to update lecturer');
+	}
 };
 
 export const DELETE: RequestHandler = async ({ params }) => {
-  try {
-    return json(await db.delete(params.id));
-  } catch (err) {
-    throw error(400, "Failed to delete lecturer");
-  }
+	try {
+		return json(await db.delete(params.id));
+	} catch (err) {
+		throw error(400, 'Failed to delete lecturer');
+	}
 };
