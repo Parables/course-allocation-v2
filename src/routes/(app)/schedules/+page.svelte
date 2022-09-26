@@ -38,7 +38,14 @@
 					WHERE key = ? AND year LIKE ? AND sem LIKE ?`,
 					[filterableProgrammes, `${selectedProgramme?.key}`, `%${y}%`, `%${selectedSemester}%`]
 				);
-				dataset[y] = res.map((pg, i) => ({ ...pg, 's/n': i + 1 }));
+				dataset[y] = res.map((pg, i) => ({
+					'S/N': i + 1,
+					'COURSE CODE': pg.course_code,
+					'COURSE TITLE': pg.course_title,
+					'CREDIT HOURS': pg.course_creditHours,
+					LECTURER: pg.course_lecturer_fullName,
+					CONTACT: pg.course_lecturer_phoneNumber
+				}));
 			});
 
 			console.log(dataset);
@@ -46,58 +53,28 @@
 	}
 
 	const columns: UserConfig['columns'] = [
-		{ id: 's/n', name: 'S/N', width: '10%' }, //
-		{ id: 'course_code', name: 'COURSE CODE', width: '12%' },
-		{ id: 'course_title', name: 'COURSE TITLE', width: '25%' }, //
-		{ id: 'course_creditHours', name: 'CREDIT HOURS', width: '12%' },
-		{ id: 'course_lecturer_fullName', name: 'LECTURER', width: '23%' }, //
-		{ id: 'course_lecturer_phoneNumber', name: 'CONTACT', width: '20%' } //
+		{ id: 'S/N', name: 'S/N', width: '10%' }, //
+		{ id: 'COURSE CODE', name: 'COURSE CODE', width: '12%' },
+		{ id: 'COURSE TITLE', name: 'COURSE TITLE', width: '25%' }, //
+		{ id: 'CREDIT HOURS', name: 'CREDIT HOURS', width: '12%' },
+		{ id: 'LECTURER', name: 'LECTURER', width: '23%' }, //
+		{ id: 'CONTACT', name: 'CONTACT', width: '20%' } //
 	];
 
-	/* 	let server: ServerStorageOptions;
-	$: {
-		server = {
-			url: `${$page.url.origin}/api/programmes?filterable=true`,
-			then: (data: {
-				filterableProgrammes: FilterableProgramme[];
-				rawProgrammes: ProgrammeRawType[];
-			}) => {
-				rawProgrammes = [...data.rawProgrammes];
-				const tableData = alasql(
-					`SELECT * FROM ? 
-					WHERE title LIKE ? AND year LIKE ? AND sem LIKE ?`,
-					[
-						data.filterableProgrammes,
-						`%${filterByProgramme}%`,
-						`%${filterByYear}%`,
-						`%${filterBySem}%`
-					]
-				);
-
-				return tableData.map((p: FilterableProgramme) => {
-					return [
-						p.header,
-						p.year?.replace('year', 'Year '),
-						p.sem?.replace('sem', 'Semester '),
-						p.course_header,
-						p.course_title?.toUpperCase(),
-						p.course_code?.toUpperCase(),
-						suffixWith(p.course_creditHours, 'Hour', 'Hours'),
-						suffixWith(p.course_contactHours, 'Hour', 'Hours'),
-						p.course_profile?.toUpperCase(),
-						p.course_session?.toUpperCase(),
-						suffixWith(p.course_studentCount, 'Student', 'Students'),
-						['edit']
-					];
-				});
-			}
-		};
-	} */
-
-	let tableWrapper: HTMLDivElement | undefined;
+	const exportToExcel = () => {
+		alasql(`SELECT INTO XLSX("${selectedProgramme?.title}.xlsx",?) FROM ?`, [
+			Object.keys(dataset).map((y) => ({ sheetid: y, header: true })),
+			Object.values(dataset)
+		]);
+	};
 </script>
 
+<svelte:head>
+	<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</svelte:head>
+
 <div class="flex flex-col w-full h-full overflow-hidden">
+	<!-- app bar -->
 	<div class="flex items-center justify-between w-full p-2">
 		<div class="flex items-center w-full ">
 			<a href="/programmes" class="mr-4 text-purple-500 border border-purple-500 rounded ">
@@ -105,13 +82,9 @@
 			</a>
 			<h1 class="text-2xl font-bold font-poppins">Schedules</h1>
 		</div>
-
-		<Button classNames="inline-flex w-max shrink-0 items-center gap-x-2"
-			>{@html downloadIcon}
-			<p class="text-center ">Export To Excel</p>
-		</Button>
 	</div>
-	<div class="grid items-center w-full grid-cols-1 gap-10 px-2 md:grid-cols-12 ">
+	<!-- filtering dropdowns -->
+	<div class="grid items-end w-full grid-cols-1 gap-10 px-2 md:grid-cols-12 ">
 		<!-- select programme -->
 		<div class="col-span-7 form-control">
 			<label for="select-programme" class="label">
@@ -125,7 +98,7 @@
 		</div>
 
 		<!-- select sem -->
-		<div class="col-span-3 form-control">
+		<div class="col-span-3 form-control ">
 			<label for="select-sem" class="label">
 				<span class="label-text">Select Semester</span>
 			</label>
@@ -134,8 +107,16 @@
 				<option value="sem2">2nd Semester</option>
 			</select>
 		</div>
+
+		<!-- export button -->
+		<Button classNames="flex items-center gap-x-2 col-span-2" on:click={exportToExcel}
+			>{@html downloadIcon}
+			<p class="text-center ">Export To Excel</p>
+		</Button>
 	</div>
-	<div class="flex-1 w-full mt-4 overflow-y-auto " bind:this={tableWrapper}>
+
+	<!-- grid list -->
+	<div class="flex-1 w-full mt-4 overflow-y-auto ">
 		<div class="grid w-full grid-cols-1 pr-5 mt-5 overflow-hidden gap-y-20">
 			{#if selectedProgramme}
 				{#each Object.keys(selectedProgramme.outline) as year}
