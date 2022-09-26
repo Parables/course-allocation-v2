@@ -1,191 +1,167 @@
 <script lang="ts">
+	import { page } from '$app/stores';
+	import Grid from 'gridjs-svelte';
+	import type { UserConfig } from 'gridjs';
 	import Button from '$lib/components/button.svelte';
-	import EassyToast from '$lib/components/easy-toast.svelte';
 	import backIcon from '$lib/assets/icons/chevron-left.svg?raw';
+	import plusIcon from '$lib/assets/icons/plus.svg?raw';
+	import editIcon from '$lib/assets/icons/edit.svg?raw';
 	import downloadIcon from '$lib/assets/icons/download-cloud.svg?raw';
-	import type { PageData } from './$types';
-	import { navigating, page } from '$app/stores';
+	import filterIcon from '$lib/assets/icons/filter.svg?raw';
+	import type { PageData, PageLoad } from './$types';
+	import type { ServerStorageOptions } from 'gridjs/dist/src/storage/server';
+	import type { FilterableProgramme, ProgrammeRawType } from '$lib/data/types/programme';
 	import alasql from 'alasql';
-	import { browser } from '$app/environment';
-	import { enhance } from '$app/forms';
-	import { invalidateAll } from '$app/navigation';
-	import NavigatingIndicator from '$lib/components/navigating-indicator.svelte';
+	import InputField from '$lib/components/input-fields/input-field.svelte';
+	import { suffixWith } from '$lib/utils';
+	import { goto } from '$app/navigation';
 
 	export let data: PageData;
-	export let form: any;
 
-	let allLecturers: typeof data.allLecturers = [];
-	let allCourses: typeof data.allCourses = [];
-	let unassignedCourses: typeof data.unassignedCourses = [];
-	let assignedCourses: typeof data.unassignedCourses = [];
+	let rawProgrammes: typeof data.rawProgrammes = [];
+	let filterableProgrammes: typeof data.filterableProgrammes = [];
+	let dataset: Record<string, any> = {};
 
-	let selectedLecturer: string;
-	let goingAway = false;
-
+	let selectedProgramme: ProgrammeRawType | undefined = undefined;
+	let selectedSemester: string | undefined = undefined;
 	$: {
-		({ allLecturers, selectedLecturer, allCourses, unassignedCourses, assignedCourses } = data);
+		({ rawProgrammes, filterableProgrammes } = data);
 	}
 
 	$: {
-		if (browser) {
-			document
-				.getElementById(`lecturer-${selectedLecturer}`)
-				?.scrollTo({ top: 60, behavior: 'smooth' });
+		if (selectedProgramme) {
+			// console.log(filterableProgrammes);
+
+			Object.keys(selectedProgramme.outline).forEach((y) => {
+				const res: FilterableProgramme[] = alasql(
+					`SELECT * FROM ? 
+					WHERE key = ? AND year LIKE ? AND sem LIKE ?`,
+					[filterableProgrammes, `${selectedProgramme?.key}`, `%${y}%`, `%${selectedSemester}%`]
+				);
+				dataset[y] = res.map((pg, i) => ({ ...pg, 's/n': i + 1 }));
+			});
+
+			console.log(dataset);
 		}
 	}
 
-	$: goingAway = $navigating?.to?.routeId !== '(app)/schedules';
+	const columns: UserConfig['columns'] = [
+		{ id: 's/n', name: 'S/N', width: '10%' }, //
+		{ id: 'course_code', name: 'COURSE CODE', width: '12%' },
+		{ id: 'course_title', name: 'COURSE TITLE', width: '25%' }, //
+		{ id: 'course_creditHours', name: 'CREDIT HOURS', width: '12%' },
+		{ id: 'course_lecturer_fullName', name: 'LECTURER', width: '23%' }, //
+		{ id: 'course_lecturer_phoneNumber', name: 'CONTACT', width: '20%' } //
+	];
+
+	/* 	let server: ServerStorageOptions;
+	$: {
+		server = {
+			url: `${$page.url.origin}/api/programmes?filterable=true`,
+			then: (data: {
+				filterableProgrammes: FilterableProgramme[];
+				rawProgrammes: ProgrammeRawType[];
+			}) => {
+				rawProgrammes = [...data.rawProgrammes];
+				const tableData = alasql(
+					`SELECT * FROM ? 
+					WHERE title LIKE ? AND year LIKE ? AND sem LIKE ?`,
+					[
+						data.filterableProgrammes,
+						`%${filterByProgramme}%`,
+						`%${filterByYear}%`,
+						`%${filterBySem}%`
+					]
+				);
+
+				return tableData.map((p: FilterableProgramme) => {
+					return [
+						p.header,
+						p.year?.replace('year', 'Year '),
+						p.sem?.replace('sem', 'Semester '),
+						p.course_header,
+						p.course_title?.toUpperCase(),
+						p.course_code?.toUpperCase(),
+						suffixWith(p.course_creditHours, 'Hour', 'Hours'),
+						suffixWith(p.course_contactHours, 'Hour', 'Hours'),
+						p.course_profile?.toUpperCase(),
+						p.course_session?.toUpperCase(),
+						suffixWith(p.course_studentCount, 'Student', 'Students'),
+						['edit']
+					];
+				});
+			}
+		};
+	} */
+
+	let tableWrapper: HTMLDivElement | undefined;
 </script>
 
-<div class="flex items-center justify-between w-full">
-	<div class="flex items-center w-full ">
-		<a href="/" class="mr-4 text-purple-500 border border-purple-500 rounded ">
-			{@html backIcon}
-		</a>
-		<h1 class="text-2xl font-bold font-poppins">Course Schedules</h1>
-	</div>
+<div class="flex flex-col w-full h-full overflow-hidden">
+	<div class="flex items-center justify-between w-full p-2">
+		<div class="flex items-center w-full ">
+			<a href="/programmes" class="mr-4 text-purple-500 border border-purple-500 rounded ">
+				{@html backIcon}
+			</a>
+			<h1 class="text-2xl font-bold font-poppins">Schedules</h1>
+		</div>
 
-	<a href="api/schedules/">
-		<Button classNames="inline-flex w-max items-center gap-x-2"
+		<Button classNames="inline-flex w-max shrink-0 items-center gap-x-2"
 			>{@html downloadIcon}
-			<p class="text-center">Export To Excel</p>
+			<p class="text-center ">Export To Excel</p>
 		</Button>
-	</a>
-</div>
-
-<div class="flex items-stretch w-full h-full gap-5 pb-10 overflow-hidden">
-	<!-- all lecturers -->
-	<div class="flex flex-col w-2/5 h-full overflow-hidden ">
-		<p class="my-5 font-semibold text-center uppercase">Select a Lecturer</p>
-		<ul class="flex flex-col w-full h-full gap-5 px-10 pb-10 overflow-y-auto">
-			{#each allLecturers as lecturer, i (lecturer.key)}
-				<li id="lecturer-{lecturer.key}">
-					<a
-						href="/schedules?lecturer={lecturer.key}"
-						class="w-full group flex flex-col  px-5 py-3 bg-white border-2 rounded-lg group-hover:border-purple-500 border-gray-50 {selectedLecturer?.includes(
-							lecturer.key
-						)
-							? 'active-lecturer'
-							: ''}"
-					>
-						<p>{lecturer.fullName}</p>
-						<p class="text-sm">{lecturer.email}</p>
-						<p class="text-sm">{lecturer.phoneNumber}</p>
-					</a>
-				</li>
-			{:else}
-				<a href="/lecturers/new" class="grid w-full h-full place-items-center">Create Lecturer</a>
-			{/each}
-		</ul>
 	</div>
+	<div class="grid items-center w-full grid-cols-1 gap-10 px-2 md:grid-cols-12 ">
+		<!-- select programme -->
+		<div class="col-span-7 form-control">
+			<label for="select-programme" class="label">
+				<span class="label-text">Select Programme</span>
+			</label>
+			<select id="select-programme" bind:value={selectedProgramme} class="select select-bordered">
+				{#each rawProgrammes as p}
+					<option value={p}>{p.title}</option>
+				{/each}
+			</select>
+		</div>
 
-	<!-- assigned courses lecturers -->
-	<div class="relative flex flex-col w-full h-full overflow-hidden">
-		<p class="my-5 font-semibold text-center uppercase">Assign Courses</p>
-
-		<NavigatingIndicator show={!goingAway}>
-			<div class="flex items-stretch w-full h-full overflow-hidden justify-evenly">
-				<!-- unassigned courses -->
-				<div class="flex flex-col flex-1 h-full px-10 overflow-hidden">
-					<p class="mb-5 text-sm font-medium text-center text-gray-500 uppercase">
-						Unassigned Courses
-					</p>
-
-					<ul class="flex flex-col w-full h-full gap-5 pb-5 overflow-y-auto">
-						{#each unassignedCourses as course, i (`add-course-key-${course.key}`)}
-							<li class="border border-gray-100 rounded-md group group-hover:shadow-md">
-								<label
-									for={`add-course-input-${course.key}`}
-									class="flex items-center w-full px-5 py-3 cursor-pointer"
-								>
-									<input
-										id={`add-course-input-${course.key}`}
-										name="courses"
-										form="add-course-form"
-										value={course.key}
-										type="checkbox"
-										class="checkbox checkbox-primary"
-									/>
-									<div class="inline-flex flex-col w-full ml-4">
-										<p>{course.title}</p>
-										<p class="text-sm text-gray-400">{course.code}</p>
-									</div>
-								</label>
-							</li>
-						{/each}
-					</ul>
-
-					<form id="add-course-form" method="POST" use:enhance>
-						<input
-							type="text"
-							name="lecturer"
-							id="lecturer"
-							value={selectedLecturer}
-							class="sr-only"
+		<!-- select sem -->
+		<div class="col-span-3 form-control">
+			<label for="select-sem" class="label">
+				<span class="label-text">Select Semester</span>
+			</label>
+			<select id="select-sem" bind:value={selectedSemester} class="select select-bordered">
+				<option value="sem1" selected>1st Semester</option>
+				<option value="sem2">2nd Semester</option>
+			</select>
+		</div>
+	</div>
+	<div class="flex-1 w-full mt-4 overflow-y-auto " bind:this={tableWrapper}>
+		<div class="grid w-full grid-cols-1 pr-5 mt-5 overflow-hidden gap-y-20">
+			{#if selectedProgramme}
+				{#each Object.keys(selectedProgramme.outline) as year}
+					<div>
+						<p class="py-4 text-base font-semibold text-center uppercase">
+							{year.replace('year', 'Year ')} - {selectedSemester === 'sem1'
+								? 'First Semester'
+								: 'Second Semester'}
+							{selectedProgramme.title}
+						</p>
+						<Grid
+							{columns}
+							data={dataset[year]}
+							sort
+							fixedHeader
+							resizable
+							width="100%"
+							className={{
+								table: 'table-auto whitespace-nowrap ',
+								td: 'whitespace-nowrap ',
+								tr: 'hover:cursor-pointer'
+							}}
 						/>
-						<Button classNames="my-3">Assign Courses</Button>
-					</form>
-				</div>
-
-				<div class="w-2 h-full bg-gray-500" />
-
-				<!-- selected courses -->
-				<div class="flex flex-col flex-1 h-full px-10 overflow-hidden">
-					<p class="mb-5 text-sm font-medium text-center text-gray-500 uppercase">
-						Assigned Courses
-					</p>
-
-					<ul class="flex flex-col w-full h-full gap-5 pb-5 overflow-y-auto">
-						{#each assignedCourses as course, i (`remove-course-key-${course.key}`)}
-							<li class="border border-gray-100 rounded-md group group-hover:shadow-md">
-								<label
-									for={`remove-course-input-${course.key}`}
-									class="flex items-center w-full px-5 py-3 cursor-pointer"
-								>
-									<input
-										id={`remove-course-input-${course.key}`}
-										name="courses"
-										form="remove-courses-form"
-										value={course.key}
-										type="checkbox"
-										class="checkbox checkbox-primary"
-									/>
-									<div class="inline-flex flex-col w-full ml-4">
-										<p>{course.title}</p>
-										<p class="text-sm text-gray-400">{course.code}</p>
-									</div>
-								</label>
-							</li>
-						{/each}
-					</ul>
-					<form id="remove-courses-form" method="POST" use:enhance>
-						<!-- no input for the selectedLecturer unsets the selectedLecturer from these courses -->
-						<Button classNames="my-3">Remove Courses</Button>
-					</form>
-				</div>
-			</div>
-		</NavigatingIndicator>
-
-		{#if form?.error}
-			<EassyToast
-				show={true}
-				message={form.error?.message ?? 'Something went wrong'}
-				type="error"
-			/>
-		{/if}
-
-		{#if form?.success}
-			<EassyToast
-				show={true}
-				message={form.success?.message ?? 'Updated successfully	'}
-				type="success"
-			/>
-		{/if}
+					</div>
+				{/each}
+			{/if}
+		</div>
 	</div>
 </div>
-
-<style lang="postcss">
-	.active-lecturer {
-		@apply shadow-lg bg-purple-500 text-white;
-	}
-</style>

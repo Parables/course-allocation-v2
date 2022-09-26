@@ -3,7 +3,7 @@ import { Deta } from 'deta'; // import Deta
 import { error, json } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import type { ObjectType } from 'deta/dist/types/types/basic';
-import type { FilterableCourse } from '$lib/data/types/course';
+import type { CourseType, FilterableCourse } from '$lib/data/types/course';
 import alasql from 'alasql';
 
 // Initialize with a Project Key
@@ -14,6 +14,7 @@ const db = deta.Base('courses');
 
 export const GET: RequestHandler = async ({ url }) => {
 	const filterable = url.searchParams.get('filterable') ?? false;
+	const simpleJoin = url.searchParams.get('simpleJoin') ?? false;
 
 	let res = await db.fetch();
 	let allItems = res.items;
@@ -24,11 +25,13 @@ export const GET: RequestHandler = async ({ url }) => {
 		allItems = allItems.concat(res.items);
 	}
 
-	if (!filterable) {
-		return json({ filterableCourses: [], rawCourses: allItems });
+	if (filterable) {
+		return getFilterableCourses(url, allItems);
+	} else if (simpleJoin) {
+		return getSimpleJoinCourses(url, allItems);
 	}
 
-	return getFilterableCourses(url, allItems);
+	return json(allItems);
 };
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -37,6 +40,27 @@ export const POST: RequestHandler = async ({ request }) => {
 	} catch (err) {
 		throw error(400, 'Failed to create course');
 	}
+};
+
+const getSimpleJoinCourses = async (url: URL, rawCourses: ObjectType[]) => {
+	const lecturersResponse = await fetch(`${url.origin}/api/lecturers`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			Accept: 'application/json'
+		}
+	});
+
+	const allLecturers: ObjectType[] = await lecturersResponse.json();
+
+	const simpleJoinCourses: CourseType[] = alasql(
+		`SELECT l.*, c.* 
+  		FROM ? as c 
+  		LEFT JOIN ? AS l ON c.lecturer = l.key`,
+		[rawCourses, allLecturers]
+	);
+
+	return json({ simpleJoinCourses, rawCourses });
 };
 
 const getFilterableCourses = async (url: URL, rawCourses: ObjectType[]) => {

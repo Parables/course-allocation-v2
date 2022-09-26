@@ -15,14 +15,7 @@
 	import { suffixWith } from '$lib/utils';
 	import { goto } from '$app/navigation';
 
-	export let data: PageData;
-
-	export let rawProgrammes: typeof data.rawProgrammes;
-
-	$: {
-		({ rawProgrammes } = data);
-	}
-
+	let rawProgrammes: ProgrammeRawType[] = [];
 	let filterByProgramme: string | undefined = undefined,
 		filterByYear: string | undefined = undefined,
 		filterBySem: string | undefined = undefined;
@@ -106,6 +99,7 @@
 				filterableProgrammes: FilterableProgramme[];
 				rawProgrammes: ProgrammeRawType[];
 			}) => {
+				rawProgrammes = [...data.rawProgrammes];
 				const tableData = alasql(
 					`SELECT * FROM ? 
 					WHERE title LIKE ? AND year LIKE ? AND sem LIKE ?`,
@@ -158,7 +152,7 @@
 			<Button classNames="w-auto inline-flex items-center gap-x-2">{@html plusIcon} New</Button>
 		</a>
 	</div>
-	<div class="w-full  px-2 grid grid-cols-1 md:grid-cols-12 items-center gap-10 ">
+	<div class="grid items-center w-full grid-cols-1 gap-10 px-2 md:grid-cols-12 ">
 		<InputField
 			id="filterByProgramme"
 			name="filterByProgramme"
@@ -211,7 +205,7 @@
 			<option value="sem2">2nd Semester</option>
 		</datalist>
 	</div>
-	<div class=" w-full h-full overflow-hidden mt-4" bind:this={tableWrapper}>
+	<div class="w-full h-full mt-4 overflow-hidden " bind:this={tableWrapper}>
 		<Grid
 			{columns}
 			{server}

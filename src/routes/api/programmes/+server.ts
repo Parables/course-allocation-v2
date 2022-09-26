@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 
 const getFilterableProgrammes = async (url: URL, rawProgrammes: ObjectType[]) => {
-	const coursesResponse = await fetch(`${url.origin}/api/courses`, {
+	const coursesResponse = await fetch(`${url.origin}/api/courses/?filterable=true`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -86,10 +86,18 @@ const getFilterableProgrammes = async (url: URL, rawProgrammes: ObjectType[]) =>
       c.profile AS course_profile,
       c.session AS course_session,
       c.studentCount AS course_studentCount, 
+	  c.lecturer_header AS course_lecturer_header,
+	  c.lecturer_fullName AS course_lecturer_fullName,
+	  c.lecturer_phoneNumber AS course_lecturer_phoneNumber,
+	  c.lecturer_email AS course_lecturer_email,
+	  c.lecturer_gender AS course_lecturer_gender,
+	  c.lecturer_degree AS course_lecturer_degree,
+	  c.lecturer_masters AS course_lecturer_masters,
+	  c.lecturer_PhD AS course_lecturer_PhD,
       p.* 
     FROM ? as p 
-    JOIN ? AS c ON p.course_key = c.key`,
-		[allProgrammes, allCourses.rawCourses]
+    LEFT JOIN ? AS c ON p.course_key = c.key`,
+		[allProgrammes, allCourses.filterableCourses]
 	);
 
 	return json({ filterableProgrammes, rawProgrammes });
