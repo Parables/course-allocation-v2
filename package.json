@@ -44,7 +44,8 @@
 		"tslib": "^2.3.1",
 		"typescript": "^4.7.4",
 		"vite": "^3.1.0",
-		"vite-plugin-svelte-svgr": "^1.0.3"
+		"vite-plugin-svelte-svgr": "^1.0.3",
+		"xlsx": "^0.18.5"
 	},
 	"type": "module"
 }

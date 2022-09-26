@@ -51,11 +51,11 @@
 
 				const actions = cell.map((action: any) => {
 					if (action === 'view') {
-						return `<a href="${$page.url.origin}/schedules?lecturer=${key}" title="Assign Lecturer">${assignLecturerIcon}</a>`;
+						return `<a href="/courses/schedules?lecturer=${key}" title="Assign Lecturer">${assignLecturerIcon}</a>`;
 					} else if (action === 'edit') {
-						return `<a href="${$page.url.toString()}/edit/${key}" title="Edit Course">${editIcon}</a>`;
+						return `<a href="/courses/edit/${key}" title="Edit Course">${editIcon}</a>`;
 					} else if (action === 'delete') {
-						return `<form action="${$page.url.toString()}?/delete" method="POST" class="grid place-items-center"><input name="key" value="${key}" class="sr-only"/><button type="submit"  title="Delete Course">${deleteIcon}</button></form>`;
+						return `<form action="/courses?/delete" method="POST" class="grid place-items-center"><input name="key" value="${key}" class="sr-only"/><button type="submit"  title="Delete Course">${deleteIcon}</button></form>`;
 					}
 				});
 
@@ -89,14 +89,14 @@
 
 	const handleRowClicked = (e: any) => {
 		const key = e.detail[1]['_cells'][0]['data']['key'];
-		goto(`${$page.url.toString()}/edit/${key}`);
+		goto(`/courses/edit/${key}`);
 	};
 
 	let tableWrapper: HTMLDivElement | undefined;
 </script>
 
 <div class="flex flex-col w-full h-full overflow-hidden">
-	<div class="flex items-center justify-between w-full">
+	<div class="flex items-center justify-between w-full p-4">
 		<div class="flex items-center w-full ">
 			<a href="/" class="mr-4 text-purple-500 border border-purple-500 rounded ">
 				{@html backIcon}
@@ -104,9 +104,27 @@
 			<h1 class="text-2xl font-bold font-poppins">All Courses</h1>
 		</div>
 
-		<a href="/courses/new">
+		<!-- <a href="/courses/new">
 			<Button classNames="w-auto inline-flex items-center gap-x-2">{@html plusIcon} New</Button>
-		</a>
+		</a> -->
+
+		<div class="dropdown dropdown-end">
+			<!-- <label tabindex="0" class="btn btn-ghost rounded-btn">Dropdown</label> -->
+			<Button tabindex="0" classNames="w-auto inline-flex items-center gap-x-2 "
+				>{@html plusIcon} New</Button
+			>
+
+			<ul tabindex="0" class="mt-4 rounded-md shadow-md menu dropdown-content bg-base-100 w-52">
+				{#each [{ label: 'New Course', url: '/courses/new', icon: plusIcon }, { label: 'Assign Course', url: '/courses/schedules', icon: assignLecturerIcon }] as menu}
+					<li class="hover-bordered">
+						<a href={menu.url}>
+							{@html menu.icon}
+							{menu.label}</a
+						>
+					</li>
+				{/each}
+			</ul>
+		</div>
 	</div>
 
 	<div class=" w-full h-[90%] overflow-hidden mt-4" bind:this={tableWrapper}>

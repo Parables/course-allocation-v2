@@ -29,11 +29,11 @@
 
 				const actions = cell.map((action: any) => {
 					if (action === 'view') {
-						return `<a href="${$page.url.toString()}/view/${key}">${viewIcon}</a>`;
+						return `<a href="/lecturers/view/${key}">${viewIcon}</a>`;
 					} else if (action === 'edit') {
-						return `<a href="${$page.url.toString()}/edit/${key}">${editIcon}</a>`;
+						return `<a href="/lecturers/edit/${key}">${editIcon}</a>`;
 					} else if (action === 'delete') {
-						return `<form action="${$page.url.toString()}?/delete" method="POST" class="grid place-items-center"><input name="key" value=${key} class="sr-only" /><button type="submit">${deleteIcon}</button></form>`;
+						return `<form action="/lecturers?/delete" method="POST" class="grid place-items-center"><input name="key" value=${key} class="sr-only" /><button type="submit">${deleteIcon}</button></form>`;
 					}
 				});
 
@@ -64,7 +64,7 @@
 
 	const handleRowClicked = (e: any) => {
 		const key = e.detail[1]['_cells'][0]['data']['key'];
-		goto(`${$page.url.toString()}/edit/${key}`);
+		goto(`/lecturers/edit/${key}`);
 	};
 
 	let tableWrapper: HTMLDivElement | undefined;

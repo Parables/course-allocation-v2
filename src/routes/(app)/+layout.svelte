@@ -19,8 +19,8 @@
 
 	$: {
 		fromAway =
-			$navigating?.from?.routeId !== '(app)/schedules' &&
-			$navigating?.to?.routeId === '(app)/schedules';
+			$navigating?.from?.routeId !== '(app)/courses/schedules' &&
+			$navigating?.to?.routeId === '(app)/courses/schedules';
 		queryChange =
 			!fromAway &&
 			$navigating?.from?.url.searchParams.get('lecturer') !==
