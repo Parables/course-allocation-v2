@@ -16,7 +16,7 @@
 		{ name: 'Key', hidden: true },
 		{ name: 'Full Name' },
 		{ name: 'Gender' },
-		{ name: 'Email Hours' },
+		{ name: 'Email' },
 		{ name: 'Phone Number' },
 		{ name: 'Degree' },
 		{ name: 'Masters' },
