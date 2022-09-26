@@ -21,7 +21,6 @@
 		{ name: 'Degree' },
 		{ name: 'Masters' },
 		{ name: 'PhD' },
-		{ name: 'Assigned Courses' },
 		{
 			name: 'Actions',
 			formatter: (cell: any, row: any) => {
@@ -55,7 +54,6 @@
 					lecturer.degree ?? '',
 					lecturer.masters ?? '',
 					lecturer.PhD,
-					0, //TODO: use alaSQL to fetch all courses assigned to lecturer
 					['view', 'edit', 'delete']
 				];
 			});
