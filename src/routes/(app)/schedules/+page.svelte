@@ -1,11 +1,7 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import Grid from 'gridjs-svelte';
-	import type { UserConfig } from 'gridjs';
 	import Button from '$lib/components/button.svelte';
+	import EasyToast from '$lib/components/easy-toast.svelte';
 	import backIcon from '$lib/assets/icons/chevron-left.svg?raw';
-	import plusIcon from '$lib/assets/icons/plus.svg?raw';
-	import editIcon from '$lib/assets/icons/edit.svg?raw';
 	import downloadIcon from '$lib/assets/icons/download-cloud.svg?raw';
 	import filterIcon from '$lib/assets/icons/filter.svg?raw';
 	import type { PageData, PageLoad } from './$types';
@@ -15,134 +11,176 @@
 	import InputField from '$lib/components/input-fields/input-field.svelte';
 	import { suffixWith } from '$lib/utils';
 	import { goto } from '$app/navigation';
+	import { browser } from '$app/environment';
+	import { navigating } from '$app/stores';
+	import NavigatingIndicator from '$lib/components/navigating-indicator.svelte';
+	import { enhance } from '$app/forms';
 
 	export let data: PageData;
+	export let form: any;
 
-	let rawProgrammes: typeof data.rawProgrammes = [];
-	let filterableProgrammes: typeof data.filterableProgrammes = [];
-	let dataset: Record<string, any> = {};
+	let allLecturers: typeof data.allLecturers = [];
+	let allCourses: typeof data.allCourses = [];
+	let unassignedCourses: typeof data.unassignedCourses = [];
+	let assignedCourses: typeof data.unassignedCourses = [];
 
-	let selectedProgramme: ProgrammeRawType | undefined = undefined;
-	let selectedSemester: string | undefined = undefined;
+	let selectedLecturer: string;
+	let goingAway = false;
+
 	$: {
-		({ rawProgrammes, filterableProgrammes } = data);
+		({ allLecturers, selectedLecturer, allCourses, unassignedCourses, assignedCourses } = data);
 	}
 
 	$: {
-		if (selectedProgramme) {
-			// console.log(filterableProgrammes);
-
-			Object.keys(selectedProgramme.outline).forEach((y) => {
-				const res: FilterableProgramme[] = alasql(
-					`SELECT * FROM ? 
-					WHERE key = ? AND year LIKE ? AND sem LIKE ?`,
-					[filterableProgrammes, `${selectedProgramme?.key}`, `%${y}%`, `%${selectedSemester}%`]
-				);
-				dataset[y] = res.map((pg, i) => ({
-					'S/N': i + 1,
-					'COURSE CODE': pg.course_code,
-					'COURSE TITLE': pg.course_title,
-					'CREDIT HOURS': pg.course_creditHours,
-					LECTURER: pg.course_lecturer_fullName,
-					CONTACT: pg.course_lecturer_phoneNumber
-				}));
-			});
-
-			console.log(dataset);
+		if (browser) {
+			document
+				.getElementById(`lecturer-${selectedLecturer}`)
+				?.scrollTo({ top: 60, behavior: 'smooth' });
 		}
 	}
 
-	const columns: UserConfig['columns'] = [
-		{ id: 'S/N', name: 'S/N', width: '10%' }, //
-		{ id: 'COURSE CODE', name: 'COURSE CODE', width: '12%' },
-		{ id: 'COURSE TITLE', name: 'COURSE TITLE', width: '25%' }, //
-		{ id: 'CREDIT HOURS', name: 'CREDIT HOURS', width: '12%' },
-		{ id: 'LECTURER', name: 'LECTURER', width: '23%' }, //
-		{ id: 'CONTACT', name: 'CONTACT', width: '20%' } //
-	];
-
-	const exportToExcel = () => {
-		alasql(`SELECT INTO XLSX("${selectedProgramme?.title}.xlsx",?) FROM ?`, [
-			Object.keys(dataset).map((y) => ({ sheetid: y, header: true })),
-			Object.values(dataset)
-		]);
-	};
+	$: goingAway = $navigating?.to?.routeId !== '(app)/courses/schedules';
 </script>
 
-<svelte:head>
-	<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-</svelte:head>
-
-<div class="flex flex-col w-full h-full overflow-hidden">
-	<!-- app bar -->
-	<div class="flex items-center justify-between w-full p-2">
-		<div class="flex items-center w-full ">
-			<a href="/programmes" class="mr-4 text-purple-500 border border-purple-500 rounded ">
-				{@html backIcon}
-			</a>
-			<h1 class="text-2xl font-bold font-poppins">Schedules</h1>
-		</div>
-	</div>
-	<!-- filtering dropdowns -->
-	<div class="grid items-end w-full grid-cols-1 gap-10 px-2 md:grid-cols-12 ">
-		<!-- select programme -->
-		<div class="col-span-7 form-control">
-			<label for="select-programme" class="label">
-				<span class="label-text">Select Programme</span>
-			</label>
-			<select id="select-programme" bind:value={selectedProgramme} class="select select-bordered">
-				{#each rawProgrammes as p}
-					<option value={p}>{p.title}</option>
-				{/each}
-			</select>
-		</div>
-
-		<!-- select sem -->
-		<div class="col-span-3 form-control ">
-			<label for="select-sem" class="label">
-				<span class="label-text">Select Semester</span>
-			</label>
-			<select id="select-sem" bind:value={selectedSemester} class="select select-bordered">
-				<option value="sem1" selected>1st Semester</option>
-				<option value="sem2">2nd Semester</option>
-			</select>
-		</div>
-
-		<!-- export button -->
-		<Button classNames="flex items-center gap-x-2 col-span-2" on:click={exportToExcel}
-			>{@html downloadIcon}
-			<p class="text-center ">Export To Excel</p>
-		</Button>
-	</div>
-
-	<!-- grid list -->
-	<div class="flex-1 w-full mt-4 overflow-y-auto ">
-		<div class="grid w-full grid-cols-1 pr-5 mt-5 overflow-hidden gap-y-20">
-			{#if selectedProgramme}
-				{#each Object.keys(selectedProgramme.outline) as year}
-					<div>
-						<p class="py-4 text-base font-semibold text-center uppercase">
-							{year.replace('year', 'Year ')} - {selectedSemester === 'sem1'
-								? 'First Semester'
-								: 'Second Semester'}
-							{selectedProgramme.title}
-						</p>
-						<Grid
-							{columns}
-							data={dataset[year]}
-							sort
-							fixedHeader
-							resizable
-							width="100%"
-							className={{
-								table: 'table-auto whitespace-nowrap ',
-								td: 'whitespace-nowrap ',
-								tr: 'hover:cursor-pointer'
-							}}
-						/>
-					</div>
-				{/each}
-			{/if}
-		</div>
+<!-- TODO: move this back to (app)/schedules -->
+<div class="flex items-center justify-between w-full">
+	<div class="flex items-center w-full p-4">
+		<a href="/courses" class="mr-4 text-purple-500 border border-purple-500 rounded ">
+			{@html backIcon}
+		</a>
+		<h1 class="text-2xl font-bold font-poppins">Assign Courses</h1>
 	</div>
 </div>
+
+<div class="flex items-stretch w-full h-full gap-5 pb-10 overflow-hidden">
+	<!-- all lecturers -->
+	<div class="flex flex-col w-2/5 h-full overflow-hidden ">
+		<p class="my-5 font-semibold text-center uppercase">Select a Lecturer</p>
+		<ul class="flex flex-col w-full h-full gap-5 px-10 pb-10 overflow-y-auto">
+			{#each allLecturers as lecturer, i (lecturer.key)}
+				<li id="lecturer-{lecturer.key}">
+					<a
+						href="/courses/schedules?lecturer={lecturer.key}"
+						class="w-full group flex flex-col  px-5 py-3 bg-white border-2 rounded-lg group-hover:border-purple-500 border-gray-50 {selectedLecturer?.includes(
+							lecturer.key
+						)
+							? 'active-lecturer'
+							: ''}"
+					>
+						<p>{lecturer.fullName}</p>
+						<p class="text-sm">{lecturer.email}</p>
+						<p class="text-sm">{lecturer.phoneNumber}</p>
+					</a>
+				</li>
+			{:else}
+				<a href="/lecturers/new" class="grid w-full h-full place-items-center">Create Lecturer</a>
+			{/each}
+		</ul>
+	</div>
+
+	<!-- assigned courses lecturers -->
+	<div class="relative flex flex-col w-full h-full overflow-hidden">
+		<p class="my-5 font-semibold text-center uppercase">Select Courses</p>
+
+		<NavigatingIndicator show={!goingAway}>
+			<div class="flex items-stretch w-full h-full overflow-hidden justify-evenly">
+				<!-- unassigned courses -->
+				<div class="flex flex-col flex-1 h-full px-10 overflow-hidden">
+					<p class="mb-5 text-sm font-medium text-center text-gray-500 uppercase">
+						Unassigned Courses
+					</p>
+
+					<ul class="flex flex-col w-full h-full gap-5 pb-5 overflow-y-auto">
+						{#each unassignedCourses as course, i (`add-course-key-${course.key}`)}
+							<li class="border border-gray-100 rounded-md group group-hover:shadow-md">
+								<label
+									for={`add-course-input-${course.key}`}
+									class="flex items-center w-full px-5 py-3 cursor-pointer"
+								>
+									<input
+										id={`add-course-input-${course.key}`}
+										name="courses"
+										form="add-course-form"
+										value={course.key}
+										type="checkbox"
+										class="checkbox checkbox-primary"
+									/>
+									<div class="inline-flex flex-col w-full ml-4">
+										<p>{course.title}</p>
+										<p class="text-sm text-gray-400">{course.code}</p>
+									</div>
+								</label>
+							</li>
+						{/each}
+					</ul>
+
+					<form id="add-course-form" method="POST" use:enhance>
+						<input
+							type="text"
+							name="lecturer"
+							id="lecturer"
+							value={selectedLecturer}
+							class="sr-only"
+						/>
+						<Button classNames="my-3">Assign Courses</Button>
+					</form>
+				</div>
+
+				<div class="w-2 h-full bg-gray-500" />
+
+				<!-- selected courses -->
+				<div class="flex flex-col flex-1 h-full px-10 overflow-hidden">
+					<p class="mb-5 text-sm font-medium text-center text-gray-500 uppercase">
+						Assigned Courses
+					</p>
+
+					<ul class="flex flex-col w-full h-full gap-5 pb-5 overflow-y-auto">
+						{#each assignedCourses as course, i (`remove-course-key-${course.key}`)}
+							<li class="border border-gray-100 rounded-md group group-hover:shadow-md">
+								<label
+									for={`remove-course-input-${course.key}`}
+									class="flex items-center w-full px-5 py-3 cursor-pointer"
+								>
+									<input
+										id={`remove-course-input-${course.key}`}
+										name="courses"
+										form="remove-courses-form"
+										value={course.key}
+										type="checkbox"
+										class="checkbox checkbox-primary"
+									/>
+									<div class="inline-flex flex-col w-full ml-4">
+										<p>{course.title}</p>
+										<p class="text-sm text-gray-400">{course.code}</p>
+									</div>
+								</label>
+							</li>
+						{/each}
+					</ul>
+					<form id="remove-courses-form" method="POST" use:enhance>
+						<!-- no input for the selectedLecturer unsets the selectedLecturer from these courses -->
+						<Button classNames="my-3">Remove Courses</Button>
+					</form>
+				</div>
+			</div>
+		</NavigatingIndicator>
+
+		<EasyToast
+			show={form?.error?.message}
+			message={form?.error?.message ?? 'Something went wrong'}
+			type="error"
+		/>
+
+		<EasyToast
+			show={form?.success?.message}
+			message={form?.success?.message ?? 'Updated successfully	'}
+			type="success"
+		/>
+	</div>
+</div>
+
+<style lang="postcss">
+	.active-lecturer {
+		@apply shadow-lg bg-purple-500 text-white;
+	}
+</style>

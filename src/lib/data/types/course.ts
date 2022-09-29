@@ -6,6 +6,9 @@ import { LecturerSchema, type LecturerType } from './lecturer';
 export const CourseBaseSchema = myzod.object({
 	title: myzod.string(),
 	code: myzod.string(),
+	content: myzod.string().optional(),
+	objectives: myzod.string().optional(),
+	description: myzod.string().optional(),
 	creditHours: myzod.number().coerce(),
 	contactHours: myzod.number().coerce(),
 	profile: myzod.string().valid(['department', 'servicing']),
@@ -15,6 +18,9 @@ export const CourseBaseSchema = myzod.object({
 
 interface ICourse extends Infer<typeof CourseBaseSchema> {
 	key: string;
+	content?: string;
+	objectives?: string;
+	description?: string;
 	lecturer?: LecturerType;
 }
 
@@ -53,6 +59,9 @@ export type FilterableCourse = {
 	key: string;
 	title: string;
 	code: string;
+	content: string;
+	objectives: string;
+	description: string;
 	header: {
 		key: string;
 		title: string;

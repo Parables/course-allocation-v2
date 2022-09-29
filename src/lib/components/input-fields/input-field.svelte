@@ -8,7 +8,7 @@
 	export let label: string;
 	export let errorText: string | undefined = undefined;
 	export let initial: string | undefined = '';
-	export let value: string | undefined = initial;
+	export let value: any = initial;
 	export let placeholder: string = 'Placeholder';
 	export let classNames: string = 'w-full';
 	export let required: boolean = false;
@@ -23,21 +23,23 @@
 		<svelte:component this={prefixIcon} class="w-4 h-4" />
 	{/if}
 	<span class="relative w-full">
-		<input
-			{id}
-			{name}
-			{label}
-			{type}
-			{placeholder}
-			{autocomplete}
-			{required}
-			{...$$restProps}
-			value={initial}
-			class="peer w-full placeholder-transparent input-bordered input input-md ${$$restProps.class}"
-			on:input={(e) => {
-				value = e.currentTarget.value;
-			}}
-		/>
+		<slot>
+			<input
+				{id}
+				{name}
+				{label}
+				{type}
+				{placeholder}
+				{autocomplete}
+				{required}
+				{...$$restProps}
+				value={initial}
+				class="peer w-full placeholder-transparent input-bordered input input-md ${$$restProps.class}"
+				on:input={(e) => {
+					value = e.currentTarget.value;
+				}}
+			/>
+		</slot>
 		<label
 			for={id}
 			class="absolute left-3 -top-3.5 px-2 bg-white  text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"

@@ -25,11 +25,11 @@ export const GET: RequestHandler = async ({ url }) => {
 		allItems = allItems.concat(res.items);
 	}
 
-	if (!filterable) {
-		return json({ filterableProgrammes: [], rawProgrammes: allItems });
+	if (filterable) {
+		return getFilterableProgrammes(url, allItems);
 	}
 
-	return getFilterableProgrammes(url, allItems);
+	return json(allItems);
 };
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -81,6 +81,9 @@ const getFilterableProgrammes = async (url: URL, rawProgrammes: ObjectType[]) =>
       @{key: (c.key), title: (c.title), code: (c.code)} AS course_header, 
       c.title AS course_title, 
       c.code AS course_code, 
+      c.content AS course_content, 
+      c.objectives AS course_objectives, 
+      c.description AS course_description, 
       c.creditHours AS course_creditHours,
       c.contactHours AS course_contactHours,
       c.profile AS course_profile,

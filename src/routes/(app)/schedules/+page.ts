@@ -1,19 +1,44 @@
-import type { FilterableProgramme, ProgrammeRawType } from '$lib/data/types/programme';
+import type { CourseType, FilterableCourse } from '$lib/data/types/course';
+import type { LecturerType } from '$lib/data/types/lecturer';
+import { redirectTo } from '$lib/utils';
+import alasql from 'alasql';
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ fetch }) => {
-	const response = await fetch(`/api/programmes?filterable=true`, {
+export const load: PageLoad = async ({ url, fetch }) => {
+	const selectedLecturer = url.searchParams.get('lecturer');
+
+	const response = await fetch(`/api/lecturers/`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
 			Accept: 'application/json'
 		}
 	});
-	const data: {
-		filterableProgrammes: FilterableProgramme[];
-		rawProgrammes: ProgrammeRawType[];
-	} = await response.json();
 
-	console.log(data);
-	return { ...data };
+	const allLecturers: LecturerType[] = await response.json();
+
+	if (!selectedLecturer) {
+		return redirectTo(`/courses/schedules?lecturer=${allLecturers[0].key}`);
+	}
+
+	const courseResponse = await fetch(`/api/courses`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			Accept: 'application/json'
+		}
+	});
+
+	const allCourses: CourseType[] = await courseResponse.json();
+
+	const unassignedCourses: typeof allCourses = alasql(`SELECT * FROM ? WHERE lecturer = 'null'`, [
+		allCourses
+	]);
+
+	const assignedCourses: typeof allCourses = alasql(`SELECT * FROM ? WHERE lecturer = ?`, [
+		allCourses,
+		selectedLecturer
+	]);
+
+	return { allLecturers, selectedLecturer, allCourses, unassignedCourses, assignedCourses };
 };

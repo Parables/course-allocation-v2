@@ -1,16 +1,17 @@
 import type { RequestHandler } from './$types';
 import { Deta } from 'deta'; // import Deta
-import { error, json } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
+import type { CourseType } from '$lib/data/types/course';
+import alasql from 'alasql';
 
 // Initialize with a Project Key
 const deta = Deta(env.DETA_PROJECT_KEY);
 
 // This how to connect to or create a database.
-const db = deta.Base('lecturers');
-const photos = deta.Drive('photos');
+const db = deta.Base('courses');
 
-export const GET: RequestHandler = async () => {
+export const GET: RequestHandler = async ({ params }) => {
 	let res = await db.fetch();
 	let allItems = res.items;
 
@@ -20,13 +21,10 @@ export const GET: RequestHandler = async () => {
 		allItems = allItems.concat(res.items);
 	}
 
-	return json(allItems);
-};
+	const assignedCourses: CourseType[] = alasql('SELECT * FROM ? WHERE lecturer = ?', [
+		allItems ?? [],
+		params.id
+	]);
 
-export const POST: RequestHandler = async ({ request }) => {
-	try {
-		return json(await db.put(await request.json()));
-	} catch (err) {
-		throw error(400, 'Failed to create lecturer');
-	}
+	return json(assignedCourses);
 };

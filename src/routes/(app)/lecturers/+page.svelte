@@ -14,17 +14,16 @@
 
 	const columns: UserConfig['columns'] = [
 		{ name: 'Key', hidden: true },
+		{ name: 'Staff ID' },
 		{ name: 'Full Name' },
 		{ name: 'Gender' },
 		{ name: 'Email' },
 		{ name: 'Phone Number' },
-		{ name: 'Degree' },
-		{ name: 'Masters' },
-		{ name: 'PhD' },
+		{ name: 'Qualifications' },
 		{
 			name: 'Actions',
 			formatter: (cell: any, row: any) => {
-				const key = row.cells[0].data?.key;
+				const key = row.cells[0].data;
 
 				const actions = cell.map((action: any) => {
 					if (action === 'view') {
@@ -47,13 +46,12 @@
 			return data?.map((lecturer: LecturerType) => {
 				return [
 					lecturer.key,
+					lecturer.staffID,
 					lecturer.fullName,
 					lecturer.gender,
 					lecturer.email,
 					lecturer.phoneNumber,
-					lecturer.degree ?? '',
-					lecturer.masters ?? '',
-					lecturer.PhD,
+					`${Object.keys(lecturer.qualifications ?? {}).length} Qualifications Added`,
 					['view', 'edit', 'delete']
 				];
 			});
@@ -61,8 +59,9 @@
 	};
 
 	const handleRowClicked = (e: any) => {
-		const key = e.detail[1]['_cells'][0]['data']['key'];
-		goto(`/lecturers/edit/${key}`);
+		console.log(e);
+		const key = e.detail[1]['_cells'][0]['data'];
+		goto(`/lecturers/view/${key}`); // TODO: add a table of courses assigned to lecturer and maybe qualifications
 	};
 
 	let tableWrapper: HTMLDivElement | undefined;

@@ -51,7 +51,8 @@
 
 				const actions = cell.map((action: any) => {
 					if (action === 'view') {
-						return `<a href="/courses/schedules?lecturer=${key}" title="Assign Lecturer">${assignLecturerIcon}</a>`;
+						// TODO: this throws a 500 internal server error
+						return `<a href="/schedules?lecturer=${key}" title="Assign Lecturer">${assignLecturerIcon}</a>`;
 					} else if (action === 'edit') {
 						return `<a href="/courses/edit/${key}" title="Edit Course">${editIcon}</a>`;
 					} else if (action === 'delete') {

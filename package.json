@@ -25,6 +25,7 @@
 		"daisyui": "^2.18.1",
 		"deta": "^1.1.0",
 		"dialogic-svelte": "^0.13.6",
+		"dialogic-svelte-ts": "^0.13.6",
 		"eslint": "^8.16.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-svelte3": "^4.0.0",

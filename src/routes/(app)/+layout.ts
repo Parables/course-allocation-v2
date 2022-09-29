@@ -39,6 +39,12 @@ export const load: LayoutLoad = async () => {
 				label: 'Schedules',
 				href: '/schedules',
 				icon: ScheduleIcon
+			},
+			{
+				title: 'View and Export Course Allocations',
+				label: 'Allocations',
+				href: '/allocations',
+				icon: ProgrammeIcon
 			}
 			/* 		{
 				title: 'Edit your preferences',

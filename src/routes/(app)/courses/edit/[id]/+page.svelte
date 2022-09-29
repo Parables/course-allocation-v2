@@ -42,14 +42,6 @@
 					</div>
 
 					<InputField
-						id="key"
-						name="key"
-						label="key"
-						required
-						classNames="sr-only"
-						initial={course?.key}
-					/>
-					<InputField
 						id="title"
 						name="title"
 						label="Course Title"
@@ -124,25 +116,43 @@
 						required
 						initial={form?.studentCount ?? course?.studentCount ?? ''}
 					/>
+				</div>
 
-					<!-- {#if lecturers?.length > 0}
-						<InputField
-							id="lecturer"
-							name="lecturer"
-							label="Assign Course To"
-							type="text"
-							list="assigned-lecturer-options"
-							required
-							initial={form?.lecturer ?? course?.lecturer ?? ''}
-						/>
-
-						<datalist id="assigned-lecturer-options">
-							<option value="" selected>None</option>
-							{#each lecturers as lecturer}
-								<option value={lecturer.key}>{lecturer.fullName}</option>
-							{/each}
-						</datalist>
-					{/if} -->
+				<!-- Contanct extra details -->
+				<div class="flex flex-col w-full gap-y-5">
+					<div>
+						<h2 class="text-sm font-semibold font-poppins">Other Details</h2>
+						<h5 class="text-xs font-light font-poppins">Fill in other details of the course</h5>
+					</div>
+					<InputField id="content" name="content" label="Course Content">
+						<textarea
+							name="content"
+							id="content"
+							cols="40"
+							rows="5"
+							class="textarea textarea-bordered">{form?.content ?? course?.content ?? ''}</textarea
+						>
+					</InputField>
+					<InputField id="objectives" name="objectives" label="Course Objectives">
+						<textarea
+							name="objectives"
+							id="objectives"
+							cols="40"
+							rows="5"
+							class="textarea textarea-bordered"
+							>{form?.objectives ?? course?.objectives ?? ''}</textarea
+						>
+					</InputField>
+					<InputField id="description" name="description" label="Course Description">
+						<textarea
+							name="description"
+							id="description"
+							cols="40"
+							rows="5"
+							class="textarea textarea-bordered"
+							>{form?.description ?? course?.description ?? ''}</textarea
+						>
+					</InputField>
 				</div>
 			</div>
 			<!-- bottom divider -->

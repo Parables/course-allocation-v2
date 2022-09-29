@@ -110,25 +110,41 @@
 						required
 						initial={form?.studentCount ?? ''}
 					/>
+				</div>
 
-					<!-- {#if lecturers.length > 0}
-						<InputField
-							id="lecturer"
-							name="lecturer"
-							label="Assign Course To"
-							type="text"
-							list="assigned-lecturer-options"
-							required
-							initial={form?.lecturer ?? ''}
-						/>
-
-						<datalist id="assigned-lecturer-options">
-							<option value="" selected>None</option>
-							{#each lecturers as lecturer}
-								<option value={lecturer.key}>{lecturer.fullName}</option>
-							{/each}
-						</datalist>
-					{/if} -->
+				<!-- Contanct extra details -->
+				<div class="flex flex-col w-full gap-y-5">
+					<div>
+						<h2 class="text-sm font-semibold font-poppins">Other Details</h2>
+						<h5 class="text-xs font-light font-poppins">Fill in other details of the course</h5>
+					</div>
+					<InputField id="content" name="content" label="Course Content">
+						<textarea
+							name="content"
+							id="content"
+							cols="40"
+							rows="5"
+							class="textarea textarea-bordered">{form?.content ?? ''}</textarea
+						>
+					</InputField>
+					<InputField id="objectives" name="objectives" label="Course Objectives">
+						<textarea
+							name="objectives"
+							id="objectives"
+							cols="40"
+							rows="5"
+							class="textarea textarea-bordered">{form?.objectives ?? ''}</textarea
+						>
+					</InputField>
+					<InputField id="description" name="description" label="Course Description">
+						<textarea
+							name="description"
+							id="description"
+							cols="40"
+							rows="5"
+							class="textarea textarea-bordered">{form?.description ?? ''}</textarea
+						>
+					</InputField>
 				</div>
 			</div>
 			<!-- bottom divider -->

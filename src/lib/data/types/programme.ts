@@ -77,6 +77,9 @@ export type FilterableProgramme = {
 	course_key?: string;
 	course_title?: string;
 	course_code?: string;
+	course_content?: string;
+	course_objectives?: string;
+	course_description?: string;
 	course_header: {
 		key: string;
 		title: string;

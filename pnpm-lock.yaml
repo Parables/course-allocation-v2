@@ -13,6 +13,7 @@ specifiers:
   daisyui: ^2.18.1
   deta: ^1.1.0
   dialogic-svelte: ^0.13.6
+  dialogic-svelte-ts: ^0.13.6
   eslint: ^8.16.0
   eslint-config-prettier: ^8.3.0
   eslint-plugin-svelte3: ^4.0.0
@@ -48,6 +49,7 @@ devDependencies:
   daisyui: 2.27.0_sgpsnuuprrt5xbm24hei2nffhq
   deta: 1.1.0
   dialogic-svelte: 0.13.6
+  dialogic-svelte-ts: 0.13.6
   eslint: 8.23.1
   eslint-config-prettier: 8.5.0_eslint@8.23.1
   eslint-plugin-svelte3: 4.0.0_rhh4tpcyg7zwtq6pdnkzw5gxma
@@ -999,6 +1001,12 @@ packages:
 
   /devalue/3.1.3:
     resolution: {integrity: sha512-9KO89Cb+qjzf2CqdrH+NuLaqdk9GhDP5EhR4zlkR51dvuIaiqtlkDkGzLMShDemwUy21raSMdu+kpX8Enw3yGQ==}
+    dev: true
+
+  /dialogic-svelte-ts/0.13.6:
+    resolution: {integrity: sha512-iMkupecty1ifxoHWcvl8IFbc1Ut/F8SIyifzQH5N1j4edfw9iVFveXHuFcjt12l5NV1OquHI10sB/9+dEaek1g==}
+    dependencies:
+      dialogic: 0.13.6
     dev: true
 
   /dialogic-svelte/0.13.6:
