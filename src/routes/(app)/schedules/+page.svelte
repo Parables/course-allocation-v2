@@ -39,13 +39,12 @@
 		}
 	}
 
-	$: goingAway = $navigating?.to?.routeId !== '(app)/courses/schedules';
+	$: goingAway = $navigating?.to?.routeId !== '(app)/schedules';
 </script>
 
-<!-- TODO: move this back to (app)/schedules -->
 <div class="flex items-center justify-between w-full">
 	<div class="flex items-center w-full p-4">
-		<a href="/courses" class="mr-4 text-purple-500 border border-purple-500 rounded ">
+		<a href="/" class="mr-4 text-purple-500 border border-purple-500 rounded ">
 			{@html backIcon}
 		</a>
 		<h1 class="text-2xl font-bold font-poppins">Assign Courses</h1>
@@ -60,7 +59,7 @@
 			{#each allLecturers as lecturer, i (lecturer.key)}
 				<li id="lecturer-{lecturer.key}">
 					<a
-						href="/courses/schedules?lecturer={lecturer.key}"
+						href="/schedules?lecturer={lecturer.key}"
 						class="w-full group flex flex-col  px-5 py-3 bg-white border-2 rounded-lg group-hover:border-purple-500 border-gray-50 {selectedLecturer?.includes(
 							lecturer.key
 						)

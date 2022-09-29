@@ -18,7 +18,7 @@ export const load: PageLoad = async ({ url, fetch }) => {
 	const allLecturers: LecturerType[] = await response.json();
 
 	if (!selectedLecturer) {
-		return redirectTo(`/courses/schedules?lecturer=${allLecturers[0].key}`);
+		return redirectTo(`/schedules?lecturer=${allLecturers[0].key}`);
 	}
 
 	const courseResponse = await fetch(`/api/courses`, {

@@ -34,7 +34,7 @@ export type CourseType = Infer<typeof CourseSchema>;
 
 export const CreateCourseSchema = CourseBaseSchema.and(
 	myzod.object({
-		lecturer: ID.optional()
+		lecturer: ID.default('null')
 	})
 );
 

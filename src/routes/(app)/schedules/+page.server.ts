@@ -40,7 +40,7 @@ export const actions: Actions = {
 				}
 			};
 		} catch (err) {
-			throw redirect(303, '/courses/schedules');
+			throw redirect(303, '/schedules');
 		}
 	}
 };

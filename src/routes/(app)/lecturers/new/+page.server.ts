@@ -9,9 +9,6 @@ export const actions: Actions = {
 		// extract data from request
 		const data = formDataToJson(await request.formData());
 
-		console.log((await request.formData()).get('profilePicture'));
-		console.log((await request.formData()).get('profilePicture'));
-
 		const { profilePicture, staffID, fullName, gender, email, phoneNumber, qualifications } = data;
 		const validated = CreateLecturerSchema.try({
 			staffID,

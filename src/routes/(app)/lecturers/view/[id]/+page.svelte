@@ -16,11 +16,9 @@
 	export let data: PageData;
 
 	let lecturer: typeof data.lecturer;
-	let courses: typeof data.courses;
-	// TODO: Use alaSQL to select * courses where course.lecturer = lecturer.key
 
 	$: {
-		({ lecturer, courses } = data);
+		({ lecturer } = data);
 	}
 
 	const columnsQualifications: UserConfig['columns'] = [

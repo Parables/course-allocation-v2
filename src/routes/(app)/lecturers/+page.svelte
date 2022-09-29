@@ -61,7 +61,7 @@
 	const handleRowClicked = (e: any) => {
 		console.log(e);
 		const key = e.detail[1]['_cells'][0]['data'];
-		goto(`/lecturers/view/${key}`); // TODO: add a table of courses assigned to lecturer and maybe qualifications
+		goto(`/lecturers/view/${key}`);
 	};
 
 	let tableWrapper: HTMLDivElement | undefined;

@@ -90,7 +90,7 @@
 
 	const handleRowClicked = (e: any) => {
 		const key = e.detail[1]['_cells'][0]['data']['key'];
-		goto(`/courses/edit/${key}`);
+		goto(`/courses/view/${key}`); // TODO: Buuild a view page
 	};
 
 	let tableWrapper: HTMLDivElement | undefined;
@@ -105,10 +105,6 @@
 			<h1 class="text-2xl font-bold font-poppins">All Courses</h1>
 		</div>
 
-		<!-- <a href="/courses/new">
-			<Button classNames="w-auto inline-flex items-center gap-x-2">{@html plusIcon} New</Button>
-		</a> -->
-
 		<div class="dropdown dropdown-end">
 			<!-- <label tabindex="0" class="btn btn-ghost rounded-btn">Dropdown</label> -->
 			<Button tabindex="0" classNames="w-auto inline-flex items-center gap-x-2 "
@@ -116,7 +112,7 @@
 			>
 
 			<ul tabindex="0" class="mt-4 rounded-md shadow-md menu dropdown-content bg-base-100 w-52">
-				{#each [{ label: 'New Course', url: '/courses/new', icon: plusIcon }, { label: 'Assign Course', url: '/courses/schedules', icon: assignLecturerIcon }] as menu}
+				{#each [{ label: 'New Course', url: '/courses/new', icon: plusIcon }, { label: 'Assign Course', url: '/schedules', icon: assignLecturerIcon }] as menu}
 					<li class="hover-bordered">
 						<a href={menu.url}>
 							{@html menu.icon}
