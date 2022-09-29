@@ -9,9 +9,10 @@ export const actions: Actions = {
 		// extract data from request
 		const data = formDataToJson(await request.formData());
 
-		console.log(await (await request.formData()).get('profilePicture'));
+		console.log((await request.formData()).get('profilePicture'));
+		console.log((await request.formData()).get('profilePicture'));
 
-		/* const {profilePicture, staffID, fullName, gender, email, phoneNumber, qualifications } = data;
+		const { profilePicture, staffID, fullName, gender, email, phoneNumber, qualifications } = data;
 		const validated = CreateLecturerSchema.try({
 			staffID,
 			fullName,
@@ -21,12 +22,12 @@ export const actions: Actions = {
 			qualifications: JSON.parse(qualifications)
 		});
 
-		console.log(validated); */
-		/* 	if (validated instanceof ValidationError) {
+		console.log(validated);
+		if (validated instanceof ValidationError) {
 			return invalid(400, { ...data, error: { message: validated.message } });
 		}
- */
-		/* 		const response = await fetch(`${url.origin}/api/lecturers`, {
+
+		const response = await fetch(`${url.origin}/api/lecturers`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -39,6 +40,6 @@ export const actions: Actions = {
 
 		if (result.key) {
 			throw redirect(303, '/lecturers');
-		} */
+		}
 	}
 };

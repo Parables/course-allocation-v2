@@ -83,7 +83,7 @@
 		<hr class="mt-6" />
 
 		<!-- add lecturer form -->
-		<form method="POST" use:enhance enctype="multipart/form-data">
+		<form method="POST">
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-32 mt-[85px] w-full px-10">
 				<!-- Personal details -->
 				<div class="flex flex-col gap-y-5 w-full">
