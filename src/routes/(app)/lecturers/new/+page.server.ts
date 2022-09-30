@@ -8,9 +8,11 @@ export const actions: Actions = {
 	default: async ({ request, url }) => {
 		// extract data from request
 		const data = formDataToJson(await request.formData());
+		console.log('🚀 ~ file: +page.server.ts ~ line 11 ~ default: ~ data', data);
 
 		const { profilePicture, staffID, fullName, gender, email, phoneNumber, qualifications } = data;
 		const validated = CreateLecturerSchema.try({
+			profilePicture,
 			staffID,
 			fullName,
 			gender,

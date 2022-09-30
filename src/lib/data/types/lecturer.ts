@@ -35,7 +35,11 @@ export const LecturerSchema = baseSchema.and(LecturerBaseSchema);
 
 export type LecturerType = Infer<typeof LecturerSchema>;
 
-export const CreateLecturerSchema = LecturerBaseSchema;
+export const CreateLecturerSchema = LecturerBaseSchema.and(
+	myzod.object({
+		profilePicture: myzod.string().optional()
+	})
+);
 
 export type CreateLecturerInput = Infer<typeof CreateLecturerSchema>;
 

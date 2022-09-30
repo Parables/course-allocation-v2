@@ -8,7 +8,7 @@ const deta = Deta(env.DETA_PROJECT_KEY);
 
 // This how to connect to or create a database.
 const db = deta.Base('lecturers');
-const photos = deta.Drive('photos');
+const drive = deta.Drive('photos');
 
 export const GET: RequestHandler = async () => {
 	let res = await db.fetch();
@@ -25,7 +25,19 @@ export const GET: RequestHandler = async () => {
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {
-		return json(await db.put(await request.json()));
+		const { profilePicture, ...data } = await request.json();
+		const result = await db.put(data);
+
+		if (result?.key && profilePicture) {
+			const buffer = Buffer.from(profilePicture, 'base64');
+			const name = await drive.put(`lecturers/${result.key}.png`, {
+				data: buffer,
+				contentType: 'image/png'
+			});
+			console.log('Image upload was successful', name);
+		}
+
+		return json(result);
 	} catch (err) {
 		throw error(400, 'Failed to create lecturer');
 	}

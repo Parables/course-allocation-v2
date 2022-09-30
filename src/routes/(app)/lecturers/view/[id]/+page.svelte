@@ -8,6 +8,8 @@
 	import { enhance } from '$app/forms';
 	import backIcon from '$lib/assets/icons/chevron-left.svg?raw';
 	import viewIcon from '$lib/assets/icons/eye.svg?raw';
+	import editIcon from '$lib/assets/icons/edit.svg?raw';
+	import printIcon from '$lib/assets/icons/printer.svg?raw';
 	import type { PageData } from './$types';
 	import type { ServerStorageOptions } from 'gridjs/dist/src/storage/server';
 	import type { CourseType } from '$lib/data/types/course';
@@ -56,7 +58,20 @@
 			});
 		}
 	};
+	let printEl: HTMLDivElement | undefined;
+
+	const handlePrint = () => {
+		html2pdf(printEl);
+	};
 </script>
+
+<svelte:head>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+		integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+		crossorigin="anonymous"
+		referrerpolicy="no-referrer"></script>
+</svelte:head>
 
 <div class="w-full h-full flex flex-col">
 	<div class="flex w-full items-center ">
@@ -64,9 +79,14 @@
 			{@html backIcon}
 		</a>
 		<h1 class="font-poppins text-2xl font-bold">Lecturer's Profile</h1>
+		<!-- print button -->
+		<!-- svelte-ignore missing-declaration -->
+		<Button on:click={handlePrint} classNames="w-auto inline-flex items-center gap-x-2"
+			>{@html printIcon} New</Button
+		>
 	</div>
 
-	<div class="overflow-y-hidden flex-1 mb-10">
+	<div id="html2pdf" bind:this={printEl} class="overflow-y-hidden flex-1 mb-10">
 		<div
 			class="grid grid-cols-1 md:grid-cols-12 gap-y-10 gap-x-2  h-full w-full py-10 overflow-y-auto md:overflow-hidden"
 		>
@@ -80,7 +100,7 @@
 				<li class="mb-2">
 					<img
 						class="w-36 h-36 ring-4 ring-purple-300 ring-offset-4 object-cover rounded-md"
-						src="https://images.unsplash.com/photo-1557862921-37829c790f19?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8bWFufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
+						src="{$page.url.origin}/api/drives/photos/lecturers%2F{lecturer.key}.png"
 						alt="Extra large avatar"
 					/>
 				</li>
@@ -96,7 +116,7 @@
 				</li>
 
 				<li>
-					<p class="uppercase text-sm text-gray-500 font-medium">Gender/p></p>
+					<p class="uppercase text-sm text-gray-500 font-medium">Gender</p>
 					<p class="text-base mb-4">{lecturer.gender}</p>
 				</li>
 
@@ -131,9 +151,11 @@
 			>
 				<!-- assigned courses lecturers -->
 				<div>
-					<p class="py-4 text-base font-semibold text-center uppercase">
-						Lecturer's Qualifications
-					</p>
+					<a
+						href="/lecturers/edit/{lecturer.key}"
+						class="py-4 text-base font-semibold text-center uppercase flex w-full items-center gap-x-5 link link-hover"
+						>Lecturer's Qualifications {@html editIcon}</a
+					>
 					<Grid
 						columns={columnsQualifications}
 						data={Object.values(lecturer.qualifications ?? {})}
@@ -151,7 +173,11 @@
 				</div>
 
 				<div>
-					<p class="py-4 text-base font-semibold text-center uppercase">Assigned Courses</p>
+					<a
+						href="/schedules?lecturer={lecturer.key}"
+						class="py-4 text-base font-semibold text-center uppercase flex w-full items-center gap-x-5 link link-hover"
+						>Assigned Courses {@html editIcon}</a
+					>
 					<Grid
 						columns={columnsCourses}
 						server={serverCourses}
