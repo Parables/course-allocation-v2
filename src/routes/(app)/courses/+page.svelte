@@ -47,16 +47,16 @@
 		{
 			name: 'Actions',
 			formatter: (cell: any, row: any) => {
-				const key = row.cells[8].data?.key ?? '';
+				const key = row.cells[0].data?.key ?? '';
+				const lecturerKey = row.cells[8].data?.key ?? '';
 
 				const actions = cell.map((action: any) => {
 					if (action === 'view') {
-						// TODO: this throws a 500 internal server error
-						return `<a href="/schedules?lecturer=${key}" title="Assign Lecturer">${assignLecturerIcon}</a>`;
+						return `<a href="/schedules?lecturer=${lecturerKey}" title="Assign Lecturer" class="hover:bg-purple-200 p-5 rounded-md">${assignLecturerIcon}</a>`;
 					} else if (action === 'edit') {
-						return `<a href="/courses/edit/${key}" title="Edit Course">${editIcon}</a>`;
+						return `<a href="/courses/edit/${key}" title="Edit Course" class="hover:bg-purple-200 p-5 rounded-md">${editIcon}</a>`;
 					} else if (action === 'delete') {
-						return `<form action="/courses?/delete" method="POST" class="grid place-items-center"><input name="key" value="${key}" class="sr-only"/><button type="submit"  title="Delete Course">${deleteIcon}</button></form>`;
+						return `<form action="/courses?/delete" method="POST" class="grid place-items-center"><input name="key" value="${key}" class="sr-only"/><button type="submit"  title="Delete Course" class="hover:bg-purple-200 p-5 rounded-md" on:click|preventDefault >${deleteIcon}</button></form>`;
 					}
 				});
 
@@ -90,7 +90,7 @@
 
 	const handleRowClicked = (e: any) => {
 		const key = e.detail[1]['_cells'][0]['data']['key'];
-		goto(`/courses/view/${key}`); // TODO: Buuild a view page
+		goto(`/courses/edit/${key}`);
 	};
 
 	let tableWrapper: HTMLDivElement | undefined;

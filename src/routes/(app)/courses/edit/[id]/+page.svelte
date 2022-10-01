@@ -124,15 +124,6 @@
 						<h2 class="text-sm font-semibold font-poppins">Other Details</h2>
 						<h5 class="text-xs font-light font-poppins">Fill in other details of the course</h5>
 					</div>
-					<InputField id="content" name="content" label="Course Content">
-						<textarea
-							name="content"
-							id="content"
-							cols="40"
-							rows="5"
-							class="textarea textarea-bordered">{form?.content ?? course?.content ?? ''}</textarea
-						>
-					</InputField>
 					<InputField id="objectives" name="objectives" label="Course Objectives">
 						<textarea
 							name="objectives"
@@ -143,6 +134,7 @@
 							>{form?.objectives ?? course?.objectives ?? ''}</textarea
 						>
 					</InputField>
+
 					<InputField id="description" name="description" label="Course Description">
 						<textarea
 							name="description"
@@ -151,6 +143,16 @@
 							rows="5"
 							class="textarea textarea-bordered"
 							>{form?.description ?? course?.description ?? ''}</textarea
+						>
+					</InputField>
+
+					<InputField id="content" name="content" label="Course Content">
+						<textarea
+							name="content"
+							id="content"
+							cols="40"
+							rows="5"
+							class="textarea textarea-bordered">{form?.content ?? course?.content ?? ''}</textarea
 						>
 					</InputField>
 				</div>

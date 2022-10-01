@@ -5,14 +5,7 @@
 	import backIcon from '$lib/assets/icons/chevron-left.svg?raw';
 	import type { ActionData, PageData } from './$types';
 
-	export let data: PageData;
 	export let form: ActionData;
-
-	/* 	let lecturers: typeof data.lecturers = [];
-
-	$: {
-		lecturers = data.lecturers ?? [];
-	} */
 </script>
 
 <div class="flex flex-col w-full h-full">
@@ -118,15 +111,6 @@
 						<h2 class="text-sm font-semibold font-poppins">Other Details</h2>
 						<h5 class="text-xs font-light font-poppins">Fill in other details of the course</h5>
 					</div>
-					<InputField id="content" name="content" label="Course Content">
-						<textarea
-							name="content"
-							id="content"
-							cols="40"
-							rows="5"
-							class="textarea textarea-bordered">{form?.content ?? ''}</textarea
-						>
-					</InputField>
 					<InputField id="objectives" name="objectives" label="Course Objectives">
 						<textarea
 							name="objectives"
@@ -136,6 +120,7 @@
 							class="textarea textarea-bordered">{form?.objectives ?? ''}</textarea
 						>
 					</InputField>
+
 					<InputField id="description" name="description" label="Course Description">
 						<textarea
 							name="description"
@@ -143,6 +128,16 @@
 							cols="40"
 							rows="5"
 							class="textarea textarea-bordered">{form?.description ?? ''}</textarea
+						>
+					</InputField>
+
+					<InputField id="content" name="content" label="Course Content">
+						<textarea
+							name="content"
+							id="content"
+							cols="40"
+							rows="5"
+							class="textarea textarea-bordered">{form?.content ?? ''}</textarea
 						>
 					</InputField>
 				</div>

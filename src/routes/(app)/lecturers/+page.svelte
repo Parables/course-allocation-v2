@@ -27,11 +27,11 @@
 
 				const actions = cell.map((action: any) => {
 					if (action === 'view') {
-						return `<a href="/lecturers/view/${key}">${viewIcon}</a>`;
+						return `<a href="/lecturers/view/${key}" title="View Lecturer" class="hover:bg-purple-200 p-5 rounded-md">${viewIcon}</a>`;
 					} else if (action === 'edit') {
-						return `<a href="/lecturers/edit/${key}">${editIcon}</a>`;
+						return `<a href="/lecturers/edit/${key}" title="Edit Lecturer" class="hover:bg-purple-200 p-5 rounded-md">${editIcon}</a>`;
 					} else if (action === 'delete') {
-						return `<form action="/lecturers?/delete" method="POST" class="grid place-items-center"><input name="key" value=${key} class="sr-only" /><button type="submit">${deleteIcon}</button></form>`;
+						return `<form action="/lecturers?/delete" method="POST" class="grid place-items-center"><input name="key" value=${key} class="sr-only" /><button type="submit" title="Delete Lecturer" class="hover:bg-purple-200 p-5 rounded-md"  on:click|preventDefault>${deleteIcon}</button></form>`;
 					}
 				});
 
@@ -48,7 +48,7 @@
 					lecturer.key,
 					lecturer.staffID,
 					lecturer.fullName,
-					lecturer.gender,
+					lecturer.gender.toUpperCase(),
 					lecturer.email,
 					lecturer.phoneNumber,
 					`${Object.keys(lecturer.qualifications ?? {}).length} Qualifications Added`,

@@ -5,6 +5,7 @@ export const actions: Actions = {
   delete: async ({ request, url }) => {
     // extract data from request
     const data = await request.formData();
+    console.log("🚀 ~ file: +page.server.ts ~ line 8 ~ delete: ~ data", data)
 
     const key = data.get("key");
 

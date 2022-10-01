@@ -51,11 +51,11 @@
 
 				const actions = cell.map((action: any) => {
 					if (action === 'view') {
-						return `<a href="/programmes/view?programme=${title}">${viewIcon}</a>`;
+						return `<a href="/programmes/view?programme=${title}"View title=" Programme" class="hover:bg-purple-200 p-5 rounded-md">${viewIcon}</a>`;
 					} else if (action === 'edit') {
-						return `<a href="/programmes/edit/${key}">${editIcon}</a>`;
+						return `<a href="/programmes/edit/${key}" title="Edit Programme" class="hover:bg-purple-200 p-5 rounded-md">${editIcon}</a>`;
 					} else if (action === 'delete') {
-						return `<form action="/programmes?/delete" method="POST" class="grid place-items-center"><input name="key" value=${key} class="sr-only" /><button type="submit">${deleteIcon}</button></form>`;
+						return `<form action="/programmes?/delete" method="POST" class="grid place-items-center"><input name="key" value=${key} class="sr-only" /><button type="submit" title="Delete Programme" class="hover:bg-purple-200 p-5 rounded-md"  on:click|preventDefault>${deleteIcon}</button></form>`;
 					}
 				});
 

@@ -60,9 +60,9 @@
 	};
 	let printEl: HTMLDivElement | undefined;
 
-	const handlePrint = () => {
-		html2pdf(printEl);
-	};
+	// const handlePrint = () => {
+	// 	// html2pdf(printEl);
+	// };
 </script>
 
 <svelte:head>
@@ -74,16 +74,17 @@
 </svelte:head>
 
 <div class="w-full h-full flex flex-col">
-	<div class="flex w-full items-center ">
-		<a href="/lecturers" class=" rounded border-purple-500 text-purple-500 border mr-4">
-			{@html backIcon}
-		</a>
-		<h1 class="font-poppins text-2xl font-bold">Lecturer's Profile</h1>
+	<div class="flex w-full items-center justify-between">
+		<div class="flex items-center w-full ">
+			<a href="/lecturers" class=" rounded border-purple-500 text-purple-500 border mr-4">
+				{@html backIcon}
+			</a>
+			<h1 class="font-poppins text-2xl font-bold">Lecturer's Profile</h1>
+		</div>
 		<!-- print button -->
-		<!-- svelte-ignore missing-declaration -->
-		<Button on:click={handlePrint} classNames="w-auto inline-flex items-center gap-x-2"
-			>{@html printIcon} New</Button
-		>
+		<a href="{$page.url.toString()}/print">
+			<Button classNames="w-auto inline-flex items-center gap-x-2">{@html printIcon} Print</Button>
+		</a>
 	</div>
 
 	<div id="html2pdf" bind:this={printEl} class="overflow-y-hidden flex-1 mb-10">

@@ -30,6 +30,7 @@
 		{
 			id: 'header',
 			name: 'Programme Title & Code',
+			hidden: true,
 			sort: {
 				compare: (a: any, b: any) => {
 					return a.title > b.title || a.code > b.code
@@ -46,11 +47,12 @@
 						<p class="text-sm text-gray-500">${cell?.code}</p>
 					</div>`)
 		},
-		{ id: 'year', name: 'Year' },
-		{ id: 'sem', name: 'Semester' },
+		{ id: 'year', name: 'Year', hidden: true },
+		{ id: 'sem', name: 'Semester', hidden: true },
 		{
 			id: 'course_header',
 			name: 'Course Title & Code',
+			width: '35%',
 			sort: {
 				compare: (a: any, b: any) => {
 					return a.title > b.title || a.code > b.code
@@ -69,14 +71,15 @@
 		},
 		{ id: 'course_title', name: 'Title', hidden: true },
 		{ id: 'course_code', name: 'Course Code', hidden: true },
-		{ id: 'course_creditHours', name: 'Credit Hours', width: '1300px' },
-		{ id: 'course_contactHours', name: 'Contact Hours' },
-		{ id: 'course_profile', name: 'Profile' },
-		{ id: 'course_session', name: 'Session' },
-		{ id: 'course_studentCount', name: 'Student Count' },
+		{ id: 'course_creditHours', name: 'Credit Hours', width: '13%' },
+		{ id: 'course_contactHours', name: 'Contact Hours', width: '15%' },
+		{ id: 'course_profile', name: 'Profile', width: '10%' },
+		{ id: 'course_session', name: 'Session', width: '10%' },
+		{ id: 'course_studentCount', name: 'Student Count', width: '14%' },
 		// {id:'', name: 'Lecturer' },
 		{
 			name: 'Actions',
+			width: '15%',
 			formatter: (cell: any, row: any) => {
 				const key = row.cells[0].data?.key;
 
@@ -102,10 +105,10 @@
 				rawProgrammes = [...data.rawProgrammes];
 				const tableData = alasql(
 					`SELECT * FROM ? 
-					WHERE title LIKE ? AND year LIKE ? AND sem LIKE ?`,
+					WHERE title = ? AND year LIKE ? AND sem LIKE ?`,
 					[
 						data.filterableProgrammes,
-						`%${filterByProgramme}%`,
+						`${filterByProgramme}`,
 						`%${filterByYear}%`,
 						`%${filterBySem}%`
 					]
