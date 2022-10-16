@@ -30,8 +30,6 @@
 
 	$: {
 		if (selectedProgramme) {
-			// console.log(filterableProgrammes);
-
 			Object.keys(selectedProgramme.outline).forEach((y) => {
 				const res: FilterableProgramme[] = alasql(
 					`SELECT * FROM ? 
@@ -47,8 +45,6 @@
 					CONTACT: pg.course_lecturer_phoneNumber
 				}));
 			});
-
-			console.log(dataset);
 		}
 	}
 

@@ -27,9 +27,12 @@
 		<form method="POST" use:enhance>
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-32 mt-[85px] w-full px-10">
 				<!-- Course details -->
-				<div class="flex flex-col w-full">
-					<h2 class="text-sm font-semibold font-poppins">Course Details</h2>
-					<h5 class="mb-8 text-xs font-light font-poppins">Fill in the details for a course</h5>
+				<div class="flex flex-col w-full gap-y-5">
+					<div>
+						<h2 class="text-sm font-semibold font-poppins">Course Details</h2>
+						<h5 class="mb-8 text-xs font-light font-poppins">Fill in the details for a course</h5>
+					</div>
+
 					<InputField
 						id="title"
 						name="title"
@@ -62,7 +65,7 @@
 					/>
 				</div>
 				<!-- Other details -->
-				<div class="flex flex-col w-full">
+				<div class="flex flex-col w-full gap-y-5">
 					<h2 class="text-sm font-semibold font-poppins">Other Details</h2>
 					<h5 class="mb-8 text-xs font-light font-poppins">Fill in other details of the course</h5>
 					<InputField

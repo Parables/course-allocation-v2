@@ -14,10 +14,6 @@
 	}
 
 	$: {
-		console.log($navigating);
-	}
-
-	$: {
 		fromAway =
 			$navigating?.from?.routeId !== '(app)/schedules' &&
 			$navigating?.to?.routeId === '(app)/schedules';
@@ -25,8 +21,6 @@
 			!fromAway &&
 			$navigating?.from?.url.searchParams.get('lecturer') !==
 				$navigating?.to?.url.searchParams.get('lecturer');
-
-		console.log(fromAway, queryChange);
 	}
 </script>
 

@@ -37,7 +37,6 @@ export const actions: Actions = {
 
 		const result = await response.json();
 
-		console.log('result', result);
 		if (result === null) {
 			throw redirect(303, '/lecturers');
 		}

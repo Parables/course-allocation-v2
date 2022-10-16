@@ -34,7 +34,6 @@ export const POST: RequestHandler = async ({ request }) => {
 				data: buffer,
 				contentType: 'image/png'
 			});
-			console.log('Image upload was successful', name);
 		}
 
 		return json(result);
