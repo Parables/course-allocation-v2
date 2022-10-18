@@ -2,7 +2,6 @@ import { LoginSchema } from '$lib/data/types/auth';
 import { auth } from '$lib/server/lucia';
 import { formDataToJson } from '$lib/utils';
 import { invalid, redirect } from '@sveltejs/kit';
-import { setCookie } from 'lucia-sveltekit';
 import { ValidationError } from 'myzod';
 import type { Actions } from './$types';
 
@@ -22,9 +21,9 @@ export const actions: Actions = {
 		try {
 			const user = await auth.authenticateUser('email', email, password);
 
-			const { tokens } = await auth.createSession(user.userId);
+			const { setSessionCookie } = await auth.createSession(user.userId);
 
-			setCookie(cookies, ...tokens.cookies);
+			setSessionCookie(cookies);
 		} catch (e) {
 			const error = e as Error;
 			if (

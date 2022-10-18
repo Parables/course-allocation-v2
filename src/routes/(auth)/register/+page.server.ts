@@ -2,7 +2,6 @@ import { RegisterSchema } from '$lib/data/types/auth';
 import { auth } from '$lib/server/lucia';
 import { formDataToJson } from '$lib/utils';
 import { invalid, redirect, type Actions } from '@sveltejs/kit';
-import { setCookie } from 'lucia-sveltekit';
 import { ValidationError } from 'myzod';
 
 export const actions: Actions = {
@@ -25,9 +24,9 @@ export const actions: Actions = {
 					// role: 'guest' // default role is guest
 				}
 			});
-			const { tokens } = await auth.createSession(user.userId);
+			const { setSessionCookie } = await auth.createSession(user.userId);
 
-			setCookie(cookies, ...tokens.cookies);
+			setSessionCookie(cookies);
 		} catch (e) {
 			const error = e as Error;
 			if (
