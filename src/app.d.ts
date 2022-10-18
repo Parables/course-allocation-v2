@@ -8,7 +8,7 @@ declare namespace App {
 		_lucia: import('lucia-sveltekit/types').Session;
 	}
 	// interface PageData {}
-	// interface PageError {}
+	// interface Error {}
 	// interface Platform {}
 }
 
