@@ -4,6 +4,15 @@ import { goto } from '$app/navigation';
 import { error, json, redirect } from '@sveltejs/kit';
 import type Base from 'deta/dist/types/base';
 
+export const isValidEmail = (email: any) =>
+	!!email &&
+	typeof email === 'string' &&
+	!!String(email)
+		.toLowerCase()
+		.match(
+			/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+		);
+
 export const isValidTicket = (ticket: any) =>
 	ticket &&
 	typeof ticket === 'string' &&
