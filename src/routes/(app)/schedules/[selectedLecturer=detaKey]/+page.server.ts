@@ -1,7 +1,6 @@
-import { invalidateAll } from '$app/navigation';
 import { UpdateCourseLecturerSchema } from '$lib/data/types/course';
-import { formDataToJson, redirectTo } from '$lib/utils';
-import { invalid, redirect } from '@sveltejs/kit';
+import { formDataToJson } from '$lib/utils';
+import { invalid } from '@sveltejs/kit';
 import { ValidationError } from 'myzod';
 import type { Actions } from './$types';
 
@@ -40,7 +39,11 @@ export const actions: Actions = {
 				}
 			};
 		} catch (err) {
-			throw redirect(303, '/schedules');
+			return {
+				error: {
+					message: `${err}`
+				}
+			};
 		}
 	}
 };

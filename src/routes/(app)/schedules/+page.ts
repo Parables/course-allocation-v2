@@ -1,12 +1,8 @@
-import type { CourseType, FilterableCourse } from '$lib/data/types/course';
 import type { LecturerType } from '$lib/data/types/lecturer';
-import { redirectTo } from '$lib/utils';
-import alasql from 'alasql';
+import { redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ url, fetch }) => {
-	const selectedLecturer = url.searchParams.get('lecturer');
-
+export const load: PageLoad = async ({ fetch }) => {
 	const response = await fetch(`/api/lecturers/`, {
 		method: 'GET',
 		headers: {
@@ -16,29 +12,11 @@ export const load: PageLoad = async ({ url, fetch }) => {
 	});
 
 	const allLecturers: LecturerType[] = await response.json();
-
-	if (!selectedLecturer) {
-		return redirectTo(`/schedules?lecturer=${allLecturers[0].key}`);
+	console.log(allLecturers);
+	if (Array.isArray(allLecturers) && allLecturers.length > 0 && allLecturers[0].key) {
+		console.log('Lecturers is not empty... redirect to the first lecturer');
+		throw redirect(303, `/schedules/${allLecturers[0].key}`);
 	}
 
-	const courseResponse = await fetch(`/api/courses`, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-			Accept: 'application/json'
-		}
-	});
-
-	const allCourses: CourseType[] = await courseResponse.json();
-
-	const unassignedCourses: typeof allCourses = alasql(`SELECT * FROM ? WHERE lecturer = 'null'`, [
-		allCourses
-	]);
-
-	const assignedCourses: typeof allCourses = alasql(`SELECT * FROM ? WHERE lecturer = ?`, [
-		allCourses,
-		selectedLecturer
-	]);
-
-	return { allLecturers, selectedLecturer, allCourses, unassignedCourses, assignedCourses };
+	return { allLecturers };
 };

@@ -6,8 +6,13 @@ import CourseIcon from '$lib/assets/icons/airplay.svg?raw';
 import ScheduleIcon from '$lib/assets/icons/calendar.svg?raw';
 import SettingIcon from '$lib/assets/icons/settings.svg?raw';
 import LogoutIcon from '$lib/assets/icons/log-out.svg?raw';
+import { redirect } from '@sveltejs/kit';
+import { getUser } from 'lucia-sveltekit/load';
 
-export const load: LayoutLoad = async () => {
+export const load: LayoutLoad = async (event) => {
+	const user = await getUser(event);
+	if (!user) throw redirect(302, '/login');
+
 	return {
 		navigation: [
 			{
