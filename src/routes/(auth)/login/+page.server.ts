@@ -24,6 +24,7 @@ export const actions: Actions = {
 
 			setSessionCookie(cookies);
 		} catch (e) {
+			console.log(e);
 			// email already in use
 			return invalid(400, { error: { message: 'Authentication failed... please try again' } });
 		}

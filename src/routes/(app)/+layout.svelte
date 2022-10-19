@@ -2,6 +2,7 @@
 	import { navigating, page } from '$app/stores';
 	import NavigatingIndicator from '$lib/components/navigating-indicator.svelte';
 	import type { LayoutData } from './$types';
+	import { signOut, getUser } from 'lucia-sveltekit/client';
 
 	export let data: LayoutData;
 
@@ -40,22 +41,35 @@
 				<div class="flex-1 h-full overflow-y-auto">
 					<ul class="flex flex-col w-full pl-10 gap-y-6">
 						{#each navigation as menu, i (menu.href)}
-							{#if menu.href === '/settings'}
+							{#if menu.href === '/logout'}
 								<li class="py-4">
 									<hr class=" bg-white opacity-30 w-[80%]  justify-center" />
 								</li>
 							{/if}
 							<li class="" title={menu.title}>
-								<a
-									href={menu.href}
-									class="flex items-center pl-6 {(i === 0 && $page.url.pathname === '/') ||
-									(i > 0 && $page.url.pathname !== '/' && $page.url.pathname.startsWith(menu.href))
-										? 'bg-[#E7E7E7] rounded-l-full py-4 text-black'
-										: ' text-[#959BA5] py-1'}"
-								>
-									{@html menu.icon}
-									<span class="ml-3 text-base font-medium font-poppins">{menu.label}</span>
-								</a>
+								{#if menu.href === '/logout'}
+									<a
+										on:click|preventDefault={() => signOut('/login')}
+										href={menu.href}
+										class="flex items-center pl-6  text-[#959BA5] py-1"
+									>
+										{@html menu.icon}
+										<span class="ml-3 text-base font-medium font-poppins">{menu.label}</span>
+									</a>
+								{:else}
+									<a
+										href={menu.href}
+										class="flex items-center pl-6 {(i === 0 && $page.url.pathname === '/') ||
+										(i > 0 &&
+											$page.url.pathname !== '/' &&
+											$page.url.pathname.startsWith(menu.href))
+											? 'bg-[#E7E7E7] rounded-l-full py-4 text-black'
+											: ' text-[#959BA5] py-1'}"
+									>
+										{@html menu.icon}
+										<span class="ml-3 text-base font-medium font-poppins">{menu.label}</span>
+									</a>
+								{/if}
 							</li>
 						{/each}
 					</ul>

@@ -50,19 +50,19 @@ export const load: LayoutLoad = async (event) => {
 				label: 'Allocations',
 				href: '/allocations',
 				icon: ProgrammeIcon
-			}
+			},
 			/* 		{
 				title: 'Edit your preferences',
 				label: 'Settings',
 				href: '/settings',
 				icon: SettingIcon
-			},
+			},*/
 			{
 				title: 'Logout current user',
 				label: 'Logout',
 				href: '/logout',
 				icon: LogoutIcon
-			} */
+			}
 		]
 	};
 };
