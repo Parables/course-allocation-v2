@@ -19,7 +19,6 @@ export const GET: RequestHandler = async ({ params }) => {
 export const POST: RequestHandler = async ({ request, params }) => {
 	try {
 		const { profilePicture: data } = await request.json();
-		console.log('image recieved', data);
 
 		writeFileSync(`static/avatar.png`, data, 'base64');
 

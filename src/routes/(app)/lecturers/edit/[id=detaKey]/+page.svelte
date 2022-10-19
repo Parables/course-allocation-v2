@@ -34,7 +34,6 @@
 
 	$: {
 		strQ = JSON.stringify(qualifications ?? {});
-		console.log('strQ', strQ);
 	}
 
 	$: qCount = Object.keys(qualifications).length;
@@ -48,7 +47,6 @@
 				src = e?.target?.result ?? null;
 				if (typeof src === 'string') {
 					profilePicture = src?.split(',')[1];
-					console.log(profilePicture);
 				}
 			};
 		}
@@ -62,7 +60,6 @@
 
 		qError = undefined;
 		qualifications = { ...qualifications, [new Date().valueOf()]: validated };
-		console.log(qualifications);
 	};
 
 	const removeQ = (k: string) => {

@@ -59,7 +59,6 @@
 	};
 
 	const handleRowClicked = (e: any) => {
-		console.log(e);
 		const key = e.detail[1]['_cells'][0]['data'];
 		goto(`/lecturers/view/${key}`);
 	};

@@ -14,6 +14,5 @@ export const load: PageLoad = async ({ fetch }) => {
 		rawProgrammes: ProgrammeRawType[];
 	} = await response.json();
 
-	console.log(data);
 	return { ...data };
 };

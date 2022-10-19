@@ -21,3 +21,11 @@ declare namespace App {
 	// interface Error {}
 	// interface Platform {}
 }
+
+/// <reference types="lucia-sveltekit" />
+declare namespace Lucia {
+	interface UserData {
+		username: string;
+		role?: string;
+	}
+}
