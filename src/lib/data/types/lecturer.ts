@@ -7,13 +7,10 @@ export const QualificationSchema = myzod
 		university: myzod.string().min(3),
 		programme: myzod.string().min(3),
 		certificate: myzod.string().min(3),
-		startDate: myzod.date().map((v) => `${v.getMonth()}/${v.getDate()}/${v.getFullYear()}`),
-		endDate: myzod.date().map((v) => `${v.getMonth()}/${v.getDate()}/${v.getFullYear()}`)
+		startDate: myzod.date(), //.map((v) => `${v.getMonth()}/${v.getDate()}/${v.getFullYear()}`),
+		endDate: myzod.date() //.map((v) => `${v.getMonth()}/${v.getDate()}/${v.getFullYear()}`)
 	})
-	.withPredicate(
-		(q) => new Date(q?.endDate) >= new Date(q?.startDate),
-		'End Date must be after Start Date'
-	);
+	.withPredicate((q) => q?.endDate >= q?.startDate, 'End Date must be after Start Date');
 
 export type QualificationType = Infer<typeof QualificationSchema>;
 

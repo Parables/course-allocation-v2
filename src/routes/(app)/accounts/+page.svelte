@@ -43,7 +43,6 @@
 					name="email"
 					label="Select Email"
 					list="pending-invites"
-					required
 					classNames="col-span-6 w-auto"
 				/>
 				<datalist id="pending-invites">

@@ -11,35 +11,45 @@
 	import type { ServerStorageOptions } from 'gridjs/dist/src/storage/server';
 	import type { LecturerType } from '$lib/data/types/lecturer';
 	import { goto } from '$app/navigation';
+	import { getUser } from 'lucia-sveltekit/client';
 
-	const columns: UserConfig['columns'] = [
+	const user = getUser();
+
+	let columns: UserConfig['columns'] = [
 		{ name: 'Key', hidden: true },
 		{ name: 'Staff ID' },
 		{ name: 'Full Name' },
 		{ name: 'Gender' },
 		{ name: 'Email' },
 		{ name: 'Phone Number' },
-		{ name: 'Qualifications' },
-		{
-			name: 'Actions',
-			formatter: (cell: any, row: any) => {
-				const key = row.cells[0].data;
-
-				const actions = cell.map((action: any) => {
-					if (action === 'view') {
-						return `<a href="/lecturers/view/${key}" title="View Lecturer" class="hover:bg-purple-200 p-5 rounded-md">${viewIcon}</a>`;
-					} else if (action === 'edit') {
-						return `<a href="/lecturers/edit/${key}" title="Edit Lecturer" class="hover:bg-purple-200 p-5 rounded-md">${editIcon}</a>`;
-					} else if (action === 'delete') {
-						return `<form action="/lecturers?/delete" method="POST" class="grid place-items-center"><input name="key" value=${key} class="sr-only" /><button type="submit" title="Delete Lecturer" class="hover:bg-purple-200 p-5 rounded-md"  on:click|preventDefault>${deleteIcon}</button></form>`;
-					}
-				});
-
-				return html(`<span class="inline-flex items-center gap-x-5">${actions.join('\n')}</span>`);
-			}
-		}
+		{ name: 'Qualifications' }
 	];
 
+	if (user?.role === 'admin') {
+		columns = [
+			...columns,
+			{
+				name: 'Actions',
+				formatter: (cell: any, row: any) => {
+					const key = row.cells[0].data;
+
+					const actions = cell.map((action: any) => {
+						if (action === 'view') {
+							return `<a href="/lecturers/view/${key}" title="View Lecturer" class="hover:bg-purple-200 p-5 rounded-md">${viewIcon}</a>`;
+						} else if (action === 'edit') {
+							return `<a href="/lecturers/edit/${key}" title="Edit Lecturer" class="hover:bg-purple-200 p-5 rounded-md">${editIcon}</a>`;
+						} else if (action === 'delete') {
+							return `<form action="/lecturers?/delete" method="POST" class="grid place-items-center"><input name="key" value=${key} class="sr-only" /><button type="submit" title="Delete Lecturer" class="hover:bg-purple-200 p-5 rounded-md"  on:click|preventDefault>${deleteIcon}</button></form>`;
+						}
+					});
+
+					return html(
+						`<span class="inline-flex items-center gap-x-5">${actions.join('\n')}</span>`
+					);
+				}
+			}
+		];
+	}
 	const server: ServerStorageOptions = {
 		url: `${$page.url.origin}/api/lecturers`,
 		then: (data: LecturerType[]) => {
@@ -75,10 +85,11 @@
 			</a>
 			<h1 class="text-2xl font-bold font-poppins">All Lecturers</h1>
 		</div>
-
-		<a href="/lecturers/new">
-			<Button classNames="w-auto inline-flex items-center gap-x-2">{@html plusIcon} New</Button>
-		</a>
+		{#if user?.role === 'admin'}
+			<a href="/lecturers/new">
+				<Button classNames="w-auto inline-flex items-center gap-x-2">{@html plusIcon} New</Button>
+			</a>
+		{/if}
 	</div>
 
 	<div class=" w-full h-[90%] overflow-hidden mt-4" bind:this={tableWrapper}>

@@ -46,7 +46,10 @@ const adapter = (projectKey: string, userBaseName: string, sessionBaseName: stri
 			return users
 				.fetch({ provider_id: providerId }, { limit: 1 })
 				.then((data: any) => {
-					console.log('🚀 ~ file: lucia_deta_adapter.ts ~ line 46 ~ .then ~ data', data);
+					console.log(
+						'🚀 ~ file: lucia_deta_adapter.ts ~ line 46 ~ .then ~ data["items"][0]',
+						data['items'][0]
+					);
 					return data['items'][0];
 				})
 				.catch((error) => {
@@ -110,19 +113,27 @@ const adapter = (projectKey: string, userBaseName: string, sessionBaseName: stri
 				'🚀 ~ file: lucia_deta_adapter.ts ~ line 103 ~ getSessionsByUserId: ~ userId',
 				userId
 			);
-			return sessions
-				.fetch({ user_id: userId })
-				.then((data: any) => {
-					console.log('🚀 ~ file: lucia_deta_adapter.ts ~ line 107 ~ .then ~ data', data);
-					return data;
-				})
-				.catch((error) => {
-					console.log(
-						'🚀 ~ file: lucia_deta_adapter.ts ~ line 111 ~ getSessionsByUserId: ~ error',
-						error
-					);
-					throw new LuciaError('DATABASE_FETCH_FAILED');
-				});
+
+			let allItems: any[] = [];
+
+			try {
+				let res = await sessions.fetch({ user_id: userId });
+				allItems = res.items;
+
+				// continue fetching until last is not seen
+				while (res.last) {
+					res = await sessions.fetch({ user_id: userId }, { last: res.last });
+					allItems = allItems.concat(res.items);
+				}
+			} catch (error) {
+				console.log(
+					'🚀 ~ file: lucia_deta_adapter.ts ~ line 111 ~ getSessionsByUserId: ~ error',
+					error
+				);
+				throw new LuciaError('DATABASE_FETCH_FAILED');
+			}
+
+			return allItems;
 		},
 		setUser: async (userId, data) => {
 			console.log('🚀 ~ file: lucia_deta_adapter.ts ~ line 116 ~ setUser: ~ data', data);

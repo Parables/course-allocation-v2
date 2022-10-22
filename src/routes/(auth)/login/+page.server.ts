@@ -25,6 +25,11 @@ export const actions: Actions = {
 			setSessionCookie(cookies);
 		} catch (e) {
 			console.log(e);
+			if (e instanceof Error) {
+				if (e.message === 'DATABASE_FETCH_FAILED') {
+					return invalid(400, { error: { message: 'Please check your internet and try again' } });
+				}
+			}
 			// email already in use
 			return invalid(400, { error: { message: 'Authentication failed... please try again' } });
 		}

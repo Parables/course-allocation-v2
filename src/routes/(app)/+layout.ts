@@ -9,11 +9,29 @@ import SettingIcon from '$lib/assets/icons/settings.svg?raw';
 import LogoutIcon from '$lib/assets/icons/log-out.svg?raw';
 import { redirect } from '@sveltejs/kit';
 import { getUser } from 'lucia-sveltekit/load';
+import { accessList } from './route-access-list';
+import { browser } from '$app/environment';
 
 export const load: LayoutLoad = async (event) => {
+	console.log('CSR: ', browser, 'SSR', !browser);
+
+	// console.log('routeID: ', event.routeId);
+	console.log(
+		'🚀 ~ file: +layout.ts ~ line 15 ~ constload:LayoutLoad= ~ event.routeId',
+		event.url.pathname
+	);
 	const user = await getUser(event);
 	if (!user) throw redirect(302, '/login');
+	const redirectTo = accessList[event.url.pathname]?.[user.role];
+	console.log(
+		'🚀 ~ file: +layout.ts ~ line 23 ~ constload:LayoutLoad= ~ redirectTo',
+		redirectTo,
+		event.url.pathname
+	);
 
+	if (redirectTo && redirectTo !== event.url.pathname) {
+		throw redirect(302, redirectTo);
+	}
 	return {
 		navigation:
 			user.role === 'admin'

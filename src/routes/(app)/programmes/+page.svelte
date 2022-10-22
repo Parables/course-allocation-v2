@@ -17,8 +17,11 @@
 	import alasql from 'alasql';
 	import { goto } from '$app/navigation';
 	import { suffixWith } from '$lib/utils';
+import {getUser} from 'lucia-sveltekit/client'
 
-	const columns: UserConfig['columns'] = [
+const user = getUser();
+
+	let columns: UserConfig['columns'] = [
 		{
 			id: 'header',
 			name: 'Programme Title & Code',
@@ -43,7 +46,13 @@
 		{ id: 'code', name: 'Programme Code', hidden: true },
 		{ id: 'duration', name: 'Duration', width: '15%' },
 		{ name: 'Courses', width: '15%' },
-		{
+	
+	];
+
+	if (user?.role === 'admin') {
+		columns = [
+			...columns,
+			{
 			name: 'Actions',
 			formatter: (cell: any, row: any) => {
 				const key = row.cells[0].data?.key;
@@ -62,7 +71,8 @@
 				return html(`<span class="inline-flex items-center gap-x-5">${actions.join('\n')}</span>`);
 			}
 		}
-	];
+		];
+	}
 	const server: ServerStorageOptions = {
 		url: `${$page.url.origin}/api/programmes?filterable=true`,
 		then: (data: {

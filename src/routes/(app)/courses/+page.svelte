@@ -12,8 +12,11 @@
 	import type { CourseType, FilterableCourse } from '$lib/data/types/course';
 	import { goto } from '$app/navigation';
 	import { suffixWith } from '$lib/utils';
+	import { getUser } from 'lucia-sveltekit/client';
 
-	const columns: UserConfig['columns'] = [
+	const user = getUser();
+
+	let columns: UserConfig['columns'] = [
 		{
 			id: 'header',
 			name: 'Course Title & Code',
@@ -43,27 +46,35 @@
 		{ id: 'lecturer_header', name: 'Lecturer Header', hidden: true },
 		{ id: 'lecturer_fullName', name: 'Lecturer Name' },
 		{ id: 'lecturer_email', name: 'Lecturer Email' },
-		{ id: 'lecturer_phoneNumber', name: 'Lecturer Phone Number' },
-		{
-			name: 'Actions',
-			formatter: (cell: any, row: any) => {
-				const key = row.cells[0].data?.key ?? '';
-				const lecturerKey = row.cells[8].data?.key ?? '';
-
-				const actions = cell.map((action: any) => {
-					if (action === 'view') {
-						return `<a href="/schedules?lecturer=${lecturerKey}" title="Assign Lecturer" class="hover:bg-purple-200 p-5 rounded-md">${assignLecturerIcon}</a>`;
-					} else if (action === 'edit') {
-						return `<a href="/courses/edit/${key}" title="Edit Course" class="hover:bg-purple-200 p-5 rounded-md">${editIcon}</a>`;
-					} else if (action === 'delete') {
-						return `<form action="/courses?/delete" method="POST" class="grid place-items-center"><input name="key" value="${key}" class="sr-only"/><button type="submit"  title="Delete Course" class="hover:bg-purple-200 p-5 rounded-md" on:click|preventDefault >${deleteIcon}</button></form>`;
-					}
-				});
-
-				return html(`<span class="inline-flex items-center gap-x-5">${actions.join('\n')}</span>`);
-			}
-		}
+		{ id: 'lecturer_phoneNumber', name: 'Lecturer Phone Number' }
 	];
+
+	if (user?.role === 'admin') {
+		columns = [
+			...columns,
+			{
+				name: 'Actions',
+				formatter: (cell: any, row: any) => {
+					const key = row.cells[0].data?.key ?? '';
+					const lecturerKey = row.cells[8].data?.key ?? '';
+
+					const actions = cell.map((action: any) => {
+						if (action === 'view') {
+							return `<a href="/schedules?lecturer=${lecturerKey}" title="Assign Lecturer" class="hover:bg-purple-200 p-5 rounded-md">${assignLecturerIcon}</a>`;
+						} else if (action === 'edit') {
+							return `<a href="/courses/edit/${key}" title="Edit Course" class="hover:bg-purple-200 p-5 rounded-md">${editIcon}</a>`;
+						} else if (action === 'delete') {
+							return `<form action="/courses?/delete" method="POST" class="grid place-items-center"><input name="key" value="${key}" class="sr-only"/><button type="submit"  title="Delete Course" class="hover:bg-purple-200 p-5 rounded-md" on:click|preventDefault >${deleteIcon}</button></form>`;
+						}
+					});
+
+					return html(
+						`<span class="inline-flex items-center gap-x-5">${actions.join('\n')}</span>`
+					);
+				}
+			}
+		];
+	}
 
 	const server: ServerStorageOptions = {
 		url: `${$page.url.origin}/api/courses?filterable=true`,
@@ -105,23 +116,25 @@
 			<h1 class="text-2xl font-bold font-poppins">All Courses</h1>
 		</div>
 
-		<div class="dropdown dropdown-end">
-			<!-- <label tabindex="0" class="btn btn-ghost rounded-btn">Dropdown</label> -->
-			<Button tabindex="0" classNames="w-auto inline-flex items-center gap-x-2 "
-				>{@html plusIcon} New</Button
-			>
+		{#if user?.role === 'admin'}
+			<div class="dropdown dropdown-end">
+				<!-- <label tabindex="0" class="btn btn-ghost rounded-btn">Dropdown</label> -->
+				<Button tabindex="0" classNames="w-auto inline-flex items-center gap-x-2 "
+					>{@html plusIcon} New</Button
+				>
 
-			<ul tabindex="0" class="mt-4 rounded-md shadow-md menu dropdown-content bg-base-100 w-52">
-				{#each [{ label: 'New Course', url: '/courses/new', icon: plusIcon }, { label: 'Assign Course', url: '/schedules', icon: assignLecturerIcon }] as menu}
-					<li class="hover-bordered">
-						<a href={menu.url}>
-							{@html menu.icon}
-							{menu.label}</a
-						>
-					</li>
-				{/each}
-			</ul>
-		</div>
+				<ul tabindex="0" class="mt-4 rounded-md shadow-md menu dropdown-content bg-base-100 w-52">
+					{#each [{ label: 'New Course', url: '/courses/new', icon: plusIcon }, { label: 'Assign Course', url: '/schedules', icon: assignLecturerIcon }] as menu}
+						<li class="hover-bordered">
+							<a href={menu.url}>
+								{@html menu.icon}
+								{menu.label}</a
+							>
+						</li>
+					{/each}
+				</ul>
+			</div>
+		{/if}
 	</div>
 
 	<div class=" w-full h-[90%] overflow-hidden mt-4" bind:this={tableWrapper}>
