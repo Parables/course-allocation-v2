@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { getUser } from 'lucia-sveltekit/client';
+	import { getUser, signOut } from 'lucia-sveltekit/client';
 	import { useRef } from 'gridjs';
 	export let data: PageData;
 
@@ -18,17 +18,17 @@
 <!-- app bar -->
 <h1 class="text-xl font-semibold font-poppins">Dashboard</h1>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-4 gap-4 w-full">
+<div class="grid w-full grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 	<!-- manage user accounts -->
 	{#if user?.role === 'admin'}
 		<a href="/accounts">
-			<div class="flex items-center p-4 rounded-xl shadow-lg bg-white">
+			<div class="flex items-center p-4 bg-white shadow-lg rounded-xl">
 				<div
-					class="flex items-center justify-center bg-orange-50 h-12 w-12 rounded-full border border-orange-100"
+					class="flex items-center justify-center w-12 h-12 border border-orange-100 rounded-full bg-orange-50"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="h-6 w-6 text-orange-400"
+						class="w-6 h-6 text-orange-400"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke="currentColor"
@@ -52,13 +52,13 @@
 
 	<!-- view allocations -->
 	<a href="/allocations">
-		<div class="flex items-center p-4 rounded-xl shadow-lg bg-white">
+		<div class="flex items-center p-4 bg-white shadow-lg rounded-xl">
 			<div
-				class="flex items-center justify-center bg-orange-50 h-12 w-12 rounded-full border border-orange-100"
+				class="flex items-center justify-center w-12 h-12 border border-orange-100 rounded-full bg-orange-50"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					class="h-6 w-6 text-orange-400"
+					class="w-6 h-6 text-orange-400"
 					fill="none"
 					viewBox="0 0 24 24"
 					stroke="currentColor"
@@ -82,13 +82,13 @@
 	<!-- view schedules -->
 	{#if user?.role === 'admin'}
 		<a href="/schedules">
-			<div class="flex items-center p-4 rounded-xl shadow-lg bg-white">
+			<div class="flex items-center p-4 bg-white shadow-lg rounded-xl">
 				<div
-					class="flex items-center justify-center bg-orange-50 h-12 w-12 rounded-full border border-orange-100"
+					class="flex items-center justify-center w-12 h-12 border border-orange-100 rounded-full bg-orange-50"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="h-6 w-6 text-orange-400"
+						class="w-6 h-6 text-orange-400"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke="currentColor"
@@ -113,15 +113,15 @@
 	<!-- all lecturers stats -->
 	{#if user?.role === 'admin'}
 		<a href="/lecturers">
-			<div class="flex items-center p-4 rounded-xl shadow-lg bg-white">
+			<div class="flex items-center p-4 bg-white shadow-lg rounded-xl">
 				<!-- lecturer stats -->
 
 				<div
-					class="flex items-center justify-center bg-orange-50 h-12 w-12 rounded-full border border-orange-100"
+					class="flex items-center justify-center w-12 h-12 border border-orange-100 rounded-full bg-orange-50"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="h-6 w-6 text-orange-400"
+						class="w-6 h-6 text-orange-400"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke="currentColor"
@@ -144,13 +144,13 @@
 	{:else}
 		<!-- lecturer profile -->
 		<a href="/profile">
-			<div class="flex items-center p-4 rounded-xl shadow-lg bg-white">
+			<div class="flex items-center p-4 bg-white shadow-lg rounded-xl">
 				<div
-					class="flex items-center justify-center bg-orange-50 h-12 w-12 rounded-full border border-orange-100"
+					class="flex items-center justify-center w-12 h-12 border border-orange-100 rounded-full bg-orange-50"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="h-6 w-6 text-orange-400"
+						class="w-6 h-6 text-orange-400"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke="currentColor"
@@ -174,13 +174,13 @@
 
 	<!-- course stats -->
 	<a href="/courses">
-		<div class="flex items-center p-4 rounded-xl shadow-lg bg-white">
+		<div class="flex items-center p-4 bg-white shadow-lg rounded-xl">
 			<div
-				class="flex items-center justify-center bg-indigo-50 h-12 w-12 rounded-full border border-indigo-100"
+				class="flex items-center justify-center w-12 h-12 border border-indigo-100 rounded-full bg-indigo-50"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					class="h-6 w-6 text-indigo-400"
+					class="w-6 h-6 text-indigo-400"
 					fill="none"
 					viewBox="0 0 24 24"
 					stroke="currentColor"
@@ -203,13 +203,13 @@
 
 	<!-- programmes stats -->
 	<a href="/programmes">
-		<div class="flex items-center p-4 rounded-xl shadow-lg bg-white">
+		<div class="flex items-center p-4 bg-white shadow-lg rounded-xl">
 			<div
-				class="flex items-center justify-center bg-indigo-50 h-12 w-12 rounded-full border border-indigo-100"
+				class="flex items-center justify-center w-12 h-12 border border-indigo-100 rounded-full bg-indigo-50"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					class="h-6 w-6 text-indigo-400"
+					class="w-6 h-6 text-indigo-400"
 					fill="none"
 					viewBox="0 0 24 24"
 					stroke="currentColor"
@@ -225,6 +225,35 @@
 
 			<div class="ml-4">
 				<h2 class="font-semibold">All Programmes: {programmes}</h2>
+				<!-- <p class="mt-2 text-sm text-gray-500">Last commented 8 days ago</p> -->
+			</div>
+		</div>
+	</a>
+
+	<!-- programmes stats -->
+	<a href="/logout" on:click|preventDefault={() => signOut('/login')}>
+		<div class="flex items-center p-4 bg-white shadow-lg rounded-xl">
+			<div
+				class="flex items-center justify-center w-12 h-12 border border-indigo-100 rounded-full bg-indigo-50"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="w-6 h-6 text-indigo-400"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+					stroke-width="2"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+					/>
+				</svg>
+			</div>
+
+			<div class="ml-4">
+				<h2 class="font-semibold">Logout</h2>
 				<!-- <p class="mt-2 text-sm text-gray-500">Last commented 8 days ago</p> -->
 			</div>
 		</div>
