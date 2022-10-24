@@ -115,7 +115,7 @@ export const load: LayoutLoad = async (event) => {
 						{
 							title: 'View Profile',
 							label: 'Profile',
-							href: `/profile${user.lecturerKey}`,
+							href: `/profile/${user.lecturerKey}`,
 							icon: LecturerIcon
 						},
 						{
