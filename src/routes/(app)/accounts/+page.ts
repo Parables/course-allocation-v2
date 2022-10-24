@@ -13,7 +13,7 @@ export const load: PageLoad = async ({ fetch }) => {
 	const allLecturers: LecturerType[] = await response.json();
 
 	// TODO: filter out already registered lecturers
-	const unregisteredLecturers = allLecturers.filter((l) => !l.userID || l.userID === 'null');
+	const unregisteredLecturers = allLecturers.filter((l) => !l.userId || l.userId === 'null');
 
 	return { allLecturers, unregisteredLecturers };
 };
