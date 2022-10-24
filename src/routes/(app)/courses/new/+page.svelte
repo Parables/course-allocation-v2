@@ -91,7 +91,7 @@
 
 					<datalist id="course-sessions">
 						<option value="regular" />
-						<option value="evening" />
+						<option value="regular & evening" />
 						<option value="weekend" />
 					</datalist>
 

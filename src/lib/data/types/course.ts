@@ -12,7 +12,7 @@ export const CourseBaseSchema = myzod.object({
 	creditHours: myzod.number().coerce(),
 	contactHours: myzod.number().coerce(),
 	profile: myzod.string().valid(['department', 'servicing']),
-	session: myzod.literals('regular', 'evening', 'weekend'),
+	session: myzod.literals('regular', 'regular & evening', 'weekend'),
 	studentCount: myzod.number().coerce().default(0)
 });
 
