@@ -6,6 +6,7 @@ import LecturerIcon from '$lib/assets/icons/users.svg?raw';
 import ProgrammeIcon from '$lib/assets/icons/grid.svg?raw';
 import CourseIcon from '$lib/assets/icons/airplay.svg?raw';
 import ScheduleIcon from '$lib/assets/icons/calendar.svg?raw';
+import AllocationIcon from '$lib/assets/icons/user-check.svg?raw';
 import SettingIcon from '$lib/assets/icons/settings.svg?raw';
 import LogoutIcon from '$lib/assets/icons/log-out.svg?raw';
 import { redirect } from '@sveltejs/kit';
