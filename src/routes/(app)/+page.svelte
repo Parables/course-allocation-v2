@@ -113,7 +113,7 @@
 		</a>
 	{:else}
 		<!-- lecturer profile -->
-		<a href="/profile">
+		<a href="/profile/{user?.lecturerKey}">
 			<div class="flex items-center p-4 bg-white shadow-lg rounded-xl">
 				<div
 					class="flex items-center justify-center w-12 h-12 border rounded-full border-rose-100 bg-rose-50"
