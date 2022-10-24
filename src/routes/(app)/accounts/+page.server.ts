@@ -5,6 +5,7 @@ import { invalid, json, redirect, type Actions } from '@sveltejs/kit';
 import { ValidationError } from 'myzod';
 import { ARKESEL_SMS_API } from '$env/static/private';
 import type { LecturerType } from '$lib/data/types/lecturer';
+import axios from 'axios';
 
 export const actions: Actions = {
 	createAccount: async ({ request, fetch }) => {
@@ -60,21 +61,35 @@ export const actions: Actions = {
 					// STEP 4: compose the SMS message to be sent
 					const sms = {
 						sender: 'CourseApp',
-						message: `Dear Lecturer: ${lecturer.fullName}, you have been granted access to the Course Allocation app available on https://course-allocation.vercel.app.\n\n You default password is\n${password}`,
+						message: `Dear Lecturer: ${lecturer.fullName}, you have been granted access to the Course Allocation app available on https://course-allocation.vercel.app.\n\n Your default password is\n\n${password}`,
 						recipients: [`233${lecturer.phoneNumber.slice(1)}`]
 					};
 					console.log('🚀 ~ file: +page.server.ts ~ line 66 ~ createAccount: ~ sms', sms);
 
-					const smsResponse = await fetch('https://sms.arkesel.com/api/v2/sms/send', {
-						method: 'POST',
+					const config = {
+						method: 'post',
+						url: 'https://sms.arkesel.com/api/v2/sms/send',
 						headers: {
 							'api-key': ARKESEL_SMS_API
 						},
-						body: JSON.stringify(sms)
-					});
+						data: sms
+					};
 
-					const smsSent = await smsResponse.json();
-					console.log('🚀 ~ file: +page.server.ts ~ line 77 ~ createAccount: ~ smsSent', smsSent);
+					axios(config)
+						.then(function (response) {
+							// console.log(JSON.stringify(response.data));
+							console.log(
+								'🚀 ~ file: +page.server.ts ~ line 81 ~ JSON.stringify(response.data)',
+								JSON.stringify(response.data)
+							);
+						})
+						.catch(function (error) {
+							console.log(
+								'🚀 ~ file: +page.server.ts ~ line 83 ~ createAccount: ~ axios error',
+								error
+							);
+							console.log(error);
+						});
 
 					/* return {
 						success: { message: `Account created successfully for ${username} - ${email}` }
