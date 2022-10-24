@@ -18,9 +18,12 @@
 	import { lecturersTable } from '$lib/components/table_builder/tables/lecturersTable';
 	import { applyAction, enhance } from '$app/forms';
 	import EasyToast from '$lib/components/easy-toast.svelte';
+	import { getUser } from 'lucia-sveltekit/client';
 
 	export let data: PageData;
 	export let form: any;
+
+	const user = getUser();
 
 	let allLecturers: typeof data.allLecturers;
 	let unregisteredLecturers: typeof data.unregisteredLecturers;
@@ -64,14 +67,24 @@
 </script>
 
 <div class="flex flex-col w-full h-full">
-	<div>
-		<div class="flex items-center w-full ">
-			<a href="/courses" class="mr-4 text-purple-500 border border-purple-500 rounded ">
-				{@html backIcon}
-			</a>
-			<h1 class="text-2xl font-bold font-poppins">User Accounts</h1>
+	<div class="flex items-center justify-between w-full">
+		<div>
+			<div class="flex items-center w-full ">
+				<a href="/" class="mr-4 text-purple-500 border border-purple-500 rounded ">
+					{@html backIcon}
+				</a>
+				<h1 class="text-2xl font-bold font-poppins">User Accounts</h1>
+			</div>
+			<h3 class="mt-3 ml-10 text-sm font-light font-roboto">Manage all Users</h3>
 		</div>
-		<h3 class="mt-3 ml-10 text-sm font-light font-roboto">Manage all Users</h3>
+
+		{#if user?.role === 'admin'}
+			<a href="/register">
+				<Button classNames="w-auto inline-flex  items-center gap-x-2"
+					>{@html plusIcon} Register Another Admin</Button
+				>
+			</a>
+		{/if}
 	</div>
 
 	<div class="flex-1 mb-10 overflow-y-auto">

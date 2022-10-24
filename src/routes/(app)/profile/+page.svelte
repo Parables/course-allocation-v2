@@ -35,7 +35,7 @@
 
 	<div class="overflow-y-hidden flex-1 mb-10">
 		<div
-			class="grid grid-cols-1 md:grid-cols-3 print:grid-cols-1 gap-y-10 gap-x-2  h-full w-full py-10 overflow-y-auto md:overflow-hidden print:overflow-hidden"
+			class="flex flex-col md:grid grid-cols-1 md:grid-cols-3 print:grid-cols-1 gap-y-10 gap-x-2  h-full w-full py-10 overflow-y-auto md:overflow-hidden print:overflow-hidden"
 		>
 			<!-- Profile -->
 
@@ -86,7 +86,9 @@
 				</li>
 			</ul>
 
-			<div class="w-full h-full grid grid-cols-1 gap-y-16  px-10 overflow-y-auto overflow-x-hidden">
+			<div
+				class="w-full h-full grid grid-cols-1 md:col-span-2 gap-y-16  px-10 md:overflow-y-auto overflow-x-hidden"
+			>
 				<!-- assigned courses lecturers -->
 
 				<div>
@@ -96,11 +98,20 @@
 						>Assigned Courses {@html editIcon}</a
 					>
 
-					<ul>
+					<ul
+						class="grid grid-cols-1 gap-y-5 w-full  gap-x-4 px-6 md:overflow-y-auto print:overflow-hidden"
+					>
 						{#each assignedCourses as course}
-							<li class="border-0 border-b-2">
-								<p>Course Title: {course.title}</p>
-								<p class="">Course Code:{course.code}</p>
+							<li class="grid grid-cols-12 gap-x-4">
+								<div class="col-span-6">
+									<p class="uppercase text-sm text-gray-500 font-medium">Course Title</p>
+									<p class="text-base mb-4">{course.title ?? 'N/A'}</p>
+								</div>
+
+								<div class="col-span-6">
+									<p class="uppercase text-sm text-gray-500 font-medium ">Course Code</p>
+									<p class="text-base mb-4">{course.code ?? 'N/A'}</p>
+								</div>
 							</li>
 						{/each}
 					</ul>

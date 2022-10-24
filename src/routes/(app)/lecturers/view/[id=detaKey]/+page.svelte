@@ -63,11 +63,6 @@
 			});
 		}
 	};
-	let printEl: HTMLDivElement | undefined;
-
-	// const handlePrint = () => {
-	// 	// html2pdf(printEl);
-	// };
 </script>
 
 <svelte:head>
@@ -88,19 +83,22 @@
 				<h1 class="font-poppins text-2xl font-bold">Lecturer's Profile</h1>
 			</div>
 			<!-- print button -->
-			<a href="{$page.url.toString()}/print">
-				<Button classNames="w-auto inline-flex items-center gap-x-2">{@html printIcon} Print</Button
-				>
-			</a>
+			<!-- <a href="{$page.url.toString()}/print"> -->
+			<Button on:click={() => window.print()} classNames="w-auto inline-flex items-center gap-x-2"
+				>{@html printIcon} Print</Button
+			>
+			<!-- </a> -->
 		</div>
 
-		<div id="html2pdf" bind:this={printEl} class="overflow-y-hidden flex-1 mb-10">
+		<div id="html2pdf" class="overflow-y-hidden flex-1 mb-10">
 			<div
-				class="grid grid-cols-1 md:grid-cols-12 gap-y-10 gap-x-2  h-full w-full py-10 overflow-y-auto md:overflow-hidden"
+				class="grid grid-cols-1 print:grid-cols-1 print:overflow-hidden md:grid-cols-12 gap-y-10 gap-x-2  h-full w-full py-10 overflow-y-auto md:overflow-hidden"
 			>
 				<!-- Profile -->
 
-				<ul class="grid grid-cols-1 col-span-3 gap-y-5 w-full  gap-x-4 px-6 md:overflow-y-auto">
+				<ul
+					class="grid grid-cols-1 col-span-3 gap-y-5 w-full  print:overflow-hidden gap-x-4 px-6 md:overflow-y-auto"
+				>
 					<li>
 						<h3 class="font-semibold text-base text-gray-400 uppercase">Lecturers Profile</h3>
 					</li>
@@ -138,13 +136,13 @@
 						<p class="text-base mb-4">{lecturer.phoneNumber}</p>
 					</li>
 
-					<li>
+					<li class="print:hidden">
 						<a href="/lecturers/edit/{$page.params.id}">
 							<Button classNames="w-8/12">Edit Profile</Button>
 						</a>
 					</li>
 
-					<li>
+					<li class="print:hidden">
 						<form action="?/lecturers" method="POST" use:enhance>
 							<Button
 								classNames=" w-8/12 border-2 border-red-500 bg-transparent text-red-500 hover:ring-red-500 focus:ring-red-500"

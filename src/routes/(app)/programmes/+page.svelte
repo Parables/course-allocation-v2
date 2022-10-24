@@ -17,9 +17,9 @@
 	import alasql from 'alasql';
 	import { goto } from '$app/navigation';
 	import { suffixWith } from '$lib/utils';
-import {getUser} from 'lucia-sveltekit/client'
+	import { getUser } from 'lucia-sveltekit/client';
 
-const user = getUser();
+	const user = getUser();
 
 	let columns: UserConfig['columns'] = [
 		{
@@ -45,32 +45,33 @@ const user = getUser();
 		{ id: 'title', name: 'Title', hidden: true },
 		{ id: 'code', name: 'Programme Code', hidden: true },
 		{ id: 'duration', name: 'Duration', width: '15%' },
-		{ name: 'Courses', width: '15%' },
-	
+		{ name: 'Courses', width: '15%' }
 	];
 
 	if (user?.role === 'admin') {
 		columns = [
 			...columns,
 			{
-			name: 'Actions',
-			formatter: (cell: any, row: any) => {
-				const key = row.cells[0].data?.key;
-				const title = row.cells[0].data?.title;
+				name: 'Actions',
+				formatter: (cell: any, row: any) => {
+					const key = row.cells[0].data?.key;
+					const title = row.cells[0].data?.title;
 
-				const actions = cell.map((action: any) => {
-					if (action === 'view') {
-						return `<a href="/programmes/view?programme=${title}"View title=" Programme" class="hover:bg-purple-200 p-5 rounded-md">${viewIcon}</a>`;
-					} else if (action === 'edit') {
-						return `<a href="/programmes/edit/${key}" title="Edit Programme" class="hover:bg-purple-200 p-5 rounded-md">${editIcon}</a>`;
-					} else if (action === 'delete') {
-						return `<form action="/programmes?/delete" method="POST" class="grid place-items-center"><input name="key" value=${key} class="sr-only" /><button type="submit" title="Delete Programme" class="hover:bg-purple-200 p-5 rounded-md"  on:click|preventDefault>${deleteIcon}</button></form>`;
-					}
-				});
+					const actions = cell.map((action: any) => {
+						if (action === 'view') {
+							return `<a href="/programmes/view?programme=${title}"View title=" Programme" class="hover:bg-purple-200 p-5 rounded-md">${viewIcon}</a>`;
+						} else if (action === 'edit') {
+							return `<a href="/programmes/edit/${key}" title="Edit Programme" class="hover:bg-purple-200 p-5 rounded-md">${editIcon}</a>`;
+						} else if (action === 'delete') {
+							return `<form action="/programmes?/delete" method="POST" class="grid place-items-center"><input name="key" value=${key} class="sr-only" /><button type="submit" title="Delete Programme" class="hover:bg-purple-200 p-5 rounded-md"  on:click|preventDefault>${deleteIcon}</button></form>`;
+						}
+					});
 
-				return html(`<span class="inline-flex items-center gap-x-5">${actions.join('\n')}</span>`);
+					return html(
+						`<span class="inline-flex items-center gap-x-5">${actions.join('\n')}</span>`
+					);
+				}
 			}
-		}
 		];
 	}
 	const server: ServerStorageOptions = {
@@ -113,9 +114,11 @@ const user = getUser();
 			<h1 class="text-2xl font-bold font-poppins">All Programmes</h1>
 		</div>
 
-		<a href="/programmes/new">
-			<Button classNames="w-auto inline-flex items-center gap-x-2">{@html plusIcon} New</Button>
-		</a>
+		{#if user?.role === 'admin'}
+			<a href="/programmes/new">
+				<Button classNames="w-auto inline-flex items-center gap-x-2">{@html plusIcon} New</Button>
+			</a>
+		{/if}
 	</div>
 
 	<div class=" w-full h-[90%] overflow-hidden mt-4" bind:this={tableWrapper}>
