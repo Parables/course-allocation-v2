@@ -182,7 +182,7 @@
 
 						<ul
 							tabindex="0"
-							class="mt-4 rounded-md shadow-md menu dropdown-content bg-base-100 w-96 h-80 overflow-y-auto p-5"
+							class="mt-4 grid grid-cols-1 rounded-md shadow-md menu dropdown-content bg-base-100 w-96 h-80 overflow-y-auto p-5"
 						>
 							<li class="text-sm py-2 font-semibold">Click on an item to remove it</li>
 							{#each Object.entries(qualifications) as [k, v], i (k)}

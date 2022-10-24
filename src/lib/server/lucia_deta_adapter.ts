@@ -138,6 +138,17 @@ const adapter = (projectKey: string, userBaseName: string, sessionBaseName: stri
 		setUser: async (userId, data) => {
 			console.log('🚀 ~ file: lucia_deta_adapter.ts ~ line 116 ~ setUser: ~ data', data);
 			console.log('🚀 ~ file: lucia_deta_adapter.ts ~ line 116 ~ setUser: ~ userId', userId);
+
+			const existingUser = await users.fetch({ provider_id: data.providerId }, { limit: 1 });
+			console.log(
+				'🚀 ~ file: lucia_deta_adapter.ts ~ line 143 ~ setUser: ~ existingUser',
+				existingUser
+			);
+
+			if (existingUser.count > 0) {
+				throw new LuciaError('AUTH_DUPLICATE_PROVIDER_ID');
+			}
+
 			return users
 				.insert(
 					{
@@ -166,10 +177,12 @@ const adapter = (projectKey: string, userBaseName: string, sessionBaseName: stri
 		},
 		deleteUser: async (userId) => {
 			console.log('🚀 ~ file: lucia_deta_adapter.ts ~ line 145 ~ deleteUser: ~ userId', userId);
-			users.delete(userId).catch((error) => {
-				console.log('🚀 ~ file: lucia_deta_adapter.ts ~ line 147 ~ deleteUser: ~ error', error);
-				throw new LuciaError('DATABASE_UPDATE_FAILED');
-			});
+			if (userId) {
+				users.delete(userId).catch((error) => {
+					console.log('🚀 ~ file: lucia_deta_adapter.ts ~ line 147 ~ deleteUser: ~ error', error);
+					throw new LuciaError('DATABASE_UPDATE_FAILED');
+				});
+			}
 		},
 		setSession: async (sessionId, data) => {
 			console.log(

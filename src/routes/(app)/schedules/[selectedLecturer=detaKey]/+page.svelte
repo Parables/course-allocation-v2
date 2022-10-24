@@ -174,7 +174,7 @@
 
 			<EasyToast
 				show={form?.success?.message}
-				message={form?.success?.message ?? 'Updated successfully	'}
+				message={form?.success?.message ?? 'Updated successfully'}
 				type="success"
 			/>
 		{:else}

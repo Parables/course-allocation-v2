@@ -15,6 +15,7 @@ export const QualificationSchema = myzod
 export type QualificationType = Infer<typeof QualificationSchema>;
 
 export const LecturerBaseSchema = myzod.object({
+	userID: myzod.string().default('null'),
 	staffID: myzod.string(),
 	fullName: myzod.string(),
 	gender: myzod.literals('male', 'female'),

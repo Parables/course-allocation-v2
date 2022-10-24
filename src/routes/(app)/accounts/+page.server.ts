@@ -1,57 +1,125 @@
-import sgMail from '@sendgrid/mail';
 import { RegisterSchema } from '$lib/data/types/auth';
 import { auth } from '$lib/server/lucia';
 import { formDataToJson } from '$lib/utils';
-import { invalid, redirect, type Actions } from '@sveltejs/kit';
+import { invalid, json, redirect, type Actions } from '@sveltejs/kit';
 import { ValidationError } from 'myzod';
-import {
-	SENDGRID_API_KEY,
-	MAILCHIMP_API_KEY,
-	MAILJET_API_KEY,
-	MAILJET_API_SECRET
-} from '$env/static/private';
-import mailchimpTx, { type MessagesMessage } from '@mailchimp/mailchimp_transactional';
-import mailjet from 'node-mailjet';
+import { ARKESEL_SMS_API } from '$env/static/private';
+import type { LecturerType } from '$lib/data/types/lecturer';
+
 export const actions: Actions = {
-	default: async ({ request, cookies }) => {
+	createAccount: async ({ request, fetch }) => {
 		// extract data from request
 		const data = formDataToJson(await request.formData());
 
-		try {
-			const client = mailjet.apiConnect(MAILJET_API_KEY, MAILJET_API_SECRET);
-			const request = client.post('send', { version: 'v3.1' }).request({
-				Messages: [
-					{
-						From: {
-							Email: 'btseg20001@ttu.edu.gh',
-							Name: 'TTU Course Allocation'
-						},
-						To: [
-							{
-								Email: 'parables95@gmail.com',
-								Name: 'Parables'
-							}
-						],
-						Subject: 'Greetings from Mailjet.',
-						TextPart: 'My first Mailjet email',
-						HTMLPart:
-							"<h3>Dear passenger 1, welcome to <a href='https://www.mailjet.com/'>Mailjet</a>!</h3><br />May the delivery force be with you!",
-						CustomID: 'AppGettingStartedTest'
-					}
-				]
-			});
-			request
-				.then((result) => {
-					console.log('🚀 ~ file: +page.server.ts ~ line 43 ~ .then ~ result.body', result.body);
-					// console.log(result.body);
-				})
-				.catch((err) => {
-					console.log('🚀 ~ file: +page.server.ts ~ line 47 ~ default: ~ err', err);
-					// console.log(err.statusCode);
-				});
-		} catch (e) {
-			console.log('🚀 ~ file: accounts+page.server.ts ~ line 37 ~ default: ~ e', e);
+		const validated = RegisterSchema.try(data);
+
+		if (validated instanceof ValidationError) {
+			return invalid(400, { ...data, error: { message: validated.message } });
 		}
+
+		const { username, email, password, role, lecturerKey } = validated;
+
+		try {
+			// STEP 1: Create the user account
+			const user = await auth.createUser('email', email, {
+				password,
+				attributes: {
+					lecturerKey,
+					username,
+					role // default role is guest
+				}
+			});
+
+			// STEP 2: if the `lecturerKey` is passed, update the lecturer profile and set the userId
+			if (lecturerKey) {
+				const response = await fetch(`/api/lecturers/${lecturerKey}`, {
+					method: 'PATCH',
+					headers: {
+						'Content-Type': 'application/json',
+						Accept: 'application/json'
+					},
+					body: JSON.stringify({ userId: user.userId })
+				});
+
+				const result = await response.json();
+
+				console.log('result', result);
+
+				//  STEP 3: if lecturer profile was updated successfully, get the updated profile
+				if (result === null) {
+					const response = await fetch(`/api/lecturers/${lecturerKey}`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							Accept: 'application/json'
+						}
+					});
+
+					const lecturer: LecturerType = await response.json();
+
+					// STEP 4: compose the SMS message to be sent
+					const sms = {
+						sender: 'CourseApp',
+						message: `Dear Lecturer: ${lecturer.fullName}, you have been granted access to the Course Allocation app available on https://course-allocation.vercel.app.\n\n You default password is\n${password}`,
+						recipients: [`233${lecturer.phoneNumber.slice(1)}`]
+					};
+					console.log('🚀 ~ file: +page.server.ts ~ line 66 ~ createAccount: ~ sms', sms);
+
+					const smsResponse = await fetch('https://sms.arkesel.com/api/v2/sms/send', {
+						method: 'POST',
+						headers: {
+							'api-key': ARKESEL_SMS_API
+						},
+						body: JSON.stringify(sms)
+					});
+
+					const smsSent = await smsResponse.json();
+					console.log('🚀 ~ file: +page.server.ts ~ line 77 ~ createAccount: ~ smsSent', smsSent);
+
+					/* return {
+						success: { message: `Account created successfully for ${username} - ${email}` }
+					}; */
+				}
+			}
+		} catch (e) {
+			console.log('🚀 ~ file: +page.server.ts ~ line 47 ~ default: ~ e', e);
+			const error = e as Error;
+			if (
+				error.message === 'AUTH_DUPLICATE_PROVIDER_ID' ||
+				error.message === 'AUTH_DUPLICATE_USER_DATA'
+			) {
+				return invalid(400, {
+					error: {
+						message: 'User already exists'
+					}
+				});
+			}
+			return invalid(500, {
+				error: {
+					message: 'Unknown error occurred... please contact administrators'
+				}
+			});
+		}
+
+		throw redirect(302, '/accounts');
+	},
+	deleteAccount: async ({ request, fetch }) => {
+		// extract data from request
+		const { lecturerKey, userId } = formDataToJson(await request.formData());
+
+		await auth.deleteUser(userId);
+
+		const response = await fetch(`/api/lecturers/${lecturerKey}`, {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json'
+			},
+			body: JSON.stringify({ userID: 'null' })
+		});
+
+		await response.json();
+
 		throw redirect(302, '/accounts');
 	}
 };

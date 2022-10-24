@@ -33,8 +33,15 @@ export const POST: RequestHandler = async ({ request, params }) => {
 
 export const PATCH: RequestHandler = async ({ request, params }) => {
 	try {
-		return json(await db.update(await request.json(), params.id));
+		const data = await request.json();
+		console.log(
+			'🚀 ~ file: +server.ts ~ line 37 ~ constPATCH:RequestHandler= ~ await request.json(), params.id',
+			data,
+			params.id
+		);
+		return json(await db.update(data, params.id));
 	} catch (err) {
+		console.log('🚀 ~ file: +server.ts ~ line 43 ~ constPATCH:RequestHandler= ~ err', err);
 		throw error(400, 'Failed to update lecturer');
 	}
 };

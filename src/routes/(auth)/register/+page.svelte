@@ -1,9 +1,10 @@
 <script lang="ts">
-	import EassyToast from '$lib/components/easy-toast.svelte';
+	import EasyToast from '$lib/components/easy-toast.svelte';
 	import InputField from '$lib/components/input-fields/input-field.svelte';
 	import Button from '$lib/components/button.svelte';
 	import { applyAction, enhance } from '$app/forms';
-	export let errors: any;
+
+	export let form: any;
 </script>
 
 <form
@@ -21,7 +22,7 @@
 	<!-- large title -->
 	<div class="w-full">
 		<h1 class="text-2xl font-bold font-poppins">Register</h1>
-		<h3 class="mt-[13px] font-roboto text-sm font-light">Fill in the form to proceed</h3>
+		<h3 class="mt-[13px] sr-only font-roboto text-sm font-light">Fill in the form to proceed</h3>
 	</div>
 
 	<div class="grid grid-cols-1 gap-y-10 my-10 ">
@@ -57,6 +58,10 @@
 			>
 		</p>
 
-		<EassyToast bind:show={errors} message="Something went wrong:" {errors} type="error" />
+		<EasyToast
+			show={form?.error?.message}
+			message={form?.error?.message ?? 'Something went wrong'}
+			type="error"
+		/>
 	</div>
 </form>

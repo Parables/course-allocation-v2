@@ -1,6 +1,7 @@
 import type { LayoutLoad } from './$types';
 import HomeIcon from '$lib/assets/icons/home.svg?raw';
 import AccountIcon from '$lib/assets/icons/shield.svg?raw';
+import UserIcon from '$lib/assets/icons/user.svg?raw';
 import LecturerIcon from '$lib/assets/icons/users.svg?raw';
 import ProgrammeIcon from '$lib/assets/icons/grid.svg?raw';
 import CourseIcon from '$lib/assets/icons/airplay.svg?raw';
@@ -84,6 +85,12 @@ export const load: LayoutLoad = async (event) => {
 				href: '/settings',
 				icon: SettingIcon
 			},*/
+						{
+							title: 'Register another admin',
+							label: 'Register Admin',
+							href: '/register',
+							icon: UserIcon
+						},
 						{
 							title: 'Logout current user',
 							label: 'Logout',

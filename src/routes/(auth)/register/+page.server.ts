@@ -1,11 +1,11 @@
 import { RegisterSchema } from '$lib/data/types/auth';
 import { auth } from '$lib/server/lucia';
 import { formDataToJson } from '$lib/utils';
-import { invalid, redirect, type Actions } from '@sveltejs/kit';
+import { invalid, json, redirect, type Actions } from '@sveltejs/kit';
 import { ValidationError } from 'myzod';
 
 export const actions: Actions = {
-	default: async ({ request, cookies }) => {
+	default: async ({ url, request, cookies }) => {
 		// extract data from request
 		const data = formDataToJson(await request.formData());
 
@@ -21,25 +21,30 @@ export const actions: Actions = {
 				password,
 				attributes: {
 					username,
-					role: 'guest' // default role is guest
+					role: 'admin' // default role is guest
 				}
 			});
+
 			const { setSessionCookie } = await auth.createSession(user.userId);
 
 			setSessionCookie(cookies);
 		} catch (e) {
 			const error = e as Error;
+			console.error(e);
 			if (
 				error.message === 'AUTH_DUPLICATE_PROVIDER_ID' ||
 				error.message === 'AUTH_DUPLICATE_USER_DATA'
 			) {
 				return invalid(400, {
-					message: 'Username already in use'
+					error: {
+						message: 'User already exists'
+					}
 				});
 			}
-			console.error(error);
 			return invalid(500, {
-				message: 'Unknown error occurred'
+				error: {
+					message: 'Unknown error occurred... please contact administrators'
+				}
 			});
 		}
 		throw redirect(302, '/');

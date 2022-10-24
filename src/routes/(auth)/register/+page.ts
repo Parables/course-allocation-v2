@@ -9,6 +9,6 @@ export const load: PageLoad = async (event) => {
 			throw redirect(303, '/');
 		}
 	} else {
-		// throw redirect(303, '/login');
+		throw redirect(303, '/login');
 	}
 };

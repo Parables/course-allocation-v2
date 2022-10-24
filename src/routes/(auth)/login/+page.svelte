@@ -41,10 +41,9 @@
 
 		<Button />
 
-		<p class="">
-			Don't have an Account? <a
-				href="/register"
-				class="text-purple-500 font-semibold underline p-2  rounded">Register</a
+		<p class="text-center">
+			Don't have an Account? <br /><span class="text-purple-500 font-semibold p-2  rounded"
+				>Contact Adminstrator</span
 			>
 		</p>
 		<EasyToast
