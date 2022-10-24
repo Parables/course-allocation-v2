@@ -6,8 +6,11 @@
 	import editIcon from '$lib/assets/icons/edit.svg?raw';
 	import printIcon from '$lib/assets/icons/printer.svg?raw';
 	import type { PageData } from './$types';
+	import { getUser } from 'lucia-sveltekit/client';
 
 	export let data: PageData;
+
+	const user = getUser();
 
 	let lecturer: typeof data.lecturer;
 	let assignedCourses: typeof data.assignedCourses;
@@ -20,7 +23,10 @@
 <div class="flex flex-col w-full h-full">
 	<div class="flex items-center justify-between w-full print:hidden">
 		<div class="flex items-center w-full ">
-			<a href="/" class="mr-4 text-purple-500 border border-purple-500 rounded ">
+			<a
+				href={user?.lecturerKey ? '/' : `/lecturers/view/${$page.params.id}`}
+				class="mr-4 text-purple-500 border border-purple-500 rounded "
+			>
 				{@html backIcon}
 			</a>
 			<h1 class="text-2xl font-bold font-poppins">Lecturer's Profile</h1>

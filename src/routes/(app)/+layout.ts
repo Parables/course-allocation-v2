@@ -27,7 +27,8 @@ export const load: LayoutLoad = async (event) => {
 	console.log(
 		'🚀 ~ file: +layout.ts ~ line 23 ~ constload:LayoutLoad= ~ redirectTo',
 		redirectTo,
-		event.url.pathname
+		event.url.pathname,
+		user
 	);
 
 	if (redirectTo && redirectTo !== event.url.pathname) {
@@ -114,7 +115,7 @@ export const load: LayoutLoad = async (event) => {
 						{
 							title: 'View Profile',
 							label: 'Profile',
-							href: '/profile',
+							href: `/profile${user.lecturerKey}`,
 							icon: LecturerIcon
 						},
 						{

@@ -230,7 +230,7 @@
 		</div>
 	</a>
 
-	<!-- programmes stats -->
+	<!-- logout -->
 	<a href="/logout" on:click|preventDefault={() => signOut('/login')}>
 		<div class="flex items-center p-4 bg-white shadow-lg rounded-xl">
 			<div

@@ -74,66 +74,65 @@
 	></script>
 </svelte:head>
 {#if user?.role === 'admin'}
-	<div class="w-full h-full flex flex-col">
-		<div class="flex w-full items-center justify-between">
+	<div class="flex flex-col w-full h-full">
+		<div class="flex items-center justify-between w-full">
 			<div class="flex items-center w-full ">
-				<a href="/lecturers" class=" rounded border-purple-500 text-purple-500 border mr-4">
+				<a href="/lecturers" class="mr-4 text-purple-500 border border-purple-500 rounded ">
 					{@html backIcon}
 				</a>
-				<h1 class="font-poppins text-2xl font-bold">Lecturer's Profile</h1>
+				<h1 class="text-2xl font-bold font-poppins">Lecturer's Profile</h1>
 			</div>
 			<!-- print button -->
-			<!-- <a href="{$page.url.toString()}/print"> -->
-			<Button on:click={() => window.print()} classNames="w-auto inline-flex items-center gap-x-2"
-				>{@html printIcon} Print</Button
-			>
-			<!-- </a> -->
+			<a href="/profile/{lecturer.key}">
+				<Button classNames="w-auto inline-flex items-center gap-x-2">{@html printIcon} Print</Button
+				>
+			</a>
 		</div>
 
-		<div id="html2pdf" class="overflow-y-hidden flex-1 mb-10">
+		<div class="flex-1 mb-10 overflow-y-hidden">
 			<div
-				class="grid grid-cols-1 print:grid-cols-1 print:overflow-hidden md:grid-cols-12 gap-y-10 gap-x-2  h-full w-full py-10 overflow-y-auto md:overflow-hidden"
+				class="grid w-full h-full grid-cols-1 py-10 overflow-y-auto print:grid-cols-1 print:overflow-hidden md:grid-cols-12 gap-y-10 gap-x-2 md:overflow-hidden"
 			>
 				<!-- Profile -->
 
 				<ul
-					class="grid grid-cols-1 col-span-3 gap-y-5 w-full  print:overflow-hidden gap-x-4 px-6 md:overflow-y-auto"
+					class="grid w-full grid-cols-1 col-span-3 px-6 gap-y-5 print:overflow-hidden gap-x-4 md:overflow-y-auto"
 				>
 					<li>
-						<h3 class="font-semibold text-base text-gray-400 uppercase">Lecturers Profile</h3>
+						<h3 class="text-base font-semibold text-gray-400 uppercase">Lecturers Profile</h3>
 					</li>
 
 					<li class="mb-2">
 						<img
-							class="w-36 h-36 ring-4 ring-purple-300 ring-offset-4 object-cover rounded-md"
+							class="object-cover rounded-md w-36 h-36 ring-4 ring-purple-300 ring-offset-4"
 							src="{$page.url.origin}/api/drives/photos/lecturers%2F{lecturer.key}.png"
 							alt="Extra large avatar"
 						/>
 					</li>
 
 					<li>
-						<p class="uppercase text-sm text-gray-500 font-medium">Staff ID</p>
-						<p class="text-base mb-4">{lecturer.staffID ?? 'N/A'}</p>
+						<p class="text-sm font-medium text-gray-500 uppercase">Staff ID</p>
+						<p class="mb-4 text-base">{lecturer.staffID ?? 'N/A'}</p>
 					</li>
 
 					<li>
-						<p class="uppercase text-sm text-gray-500 font-medium">Full Name</p>
-						<p class="text-base mb-4">{lecturer.fullName}</p>
+						<p class="text-sm font-medium text-gray-500 uppercase">Full Name</p>
+						<p class="mb-4 text-base">{lecturer.fullName}</p>
 					</li>
 
 					<li>
-						<p class="uppercase text-sm text-gray-500 font-medium">Gender</p>
-						<p class="text-base mb-4">{lecturer.gender}</p>
+						<p class="text-sm font-medium text-gray-500 uppercase">Gender</p>
+						<p class="mb-4 text-base">{lecturer.gender}</p>
 					</li>
 
 					<li>
-						<p class="uppercase text-sm text-gray-500 font-medium">Email</p>
-						<p class="text-base mb-4">{lecturer?.email}</p>
+						<p class="text-sm font-medium text-gray-500 uppercase">Email</p>
+						<p class="mb-4 text-base">{lecturer?.email}</p>
 					</li>
 
 					<li>
-						<p class="uppercase text-sm text-gray-500 font-medium">Phone Number</p>
-						<p class="text-base mb-4">{lecturer.phoneNumber}</p>
+						<p class="text-sm font-medium text-gray-500 uppercase">Phone Number</p>
+						<p class="mb-4 text-base">{lecturer.phoneNumber}</p>
 					</li>
 
 					<li class="print:hidden">
@@ -153,13 +152,13 @@
 				</ul>
 
 				<div
-					class="w-full h-full grid grid-cols-1 gap-y-16 col-span-8 px-10 overflow-y-auto overflow-x-hidden"
+					class="grid w-full h-full grid-cols-1 col-span-8 px-10 overflow-x-hidden overflow-y-auto gap-y-16"
 				>
 					<!-- assigned courses lecturers -->
 					<div>
 						<a
 							href="/lecturers/edit/{lecturer.key}"
-							class="py-4 text-base font-semibold text-center uppercase flex w-full items-center gap-x-5 link link-hover"
+							class="flex items-center w-full py-4 text-base font-semibold text-center uppercase gap-x-5 link link-hover"
 							>Lecturer's Qualifications {@html editIcon}</a
 						>
 						<Grid
@@ -181,7 +180,7 @@
 					<div>
 						<a
 							href="/schedules?lecturer={lecturer.key}"
-							class="py-4 text-base font-semibold text-center uppercase flex w-full items-center gap-x-5 link link-hover"
+							class="flex items-center w-full py-4 text-base font-semibold text-center uppercase gap-x-5 link link-hover"
 							>Assigned Courses {@html editIcon}</a
 						>
 						<Grid

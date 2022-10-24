@@ -3,12 +3,9 @@ import type { LecturerType } from '$lib/data/types/lecturer';
 import type { PageLoad } from './$types';
 import { getUser } from 'lucia-sveltekit/load';
 export const load: PageLoad = async (event) => {
-	const { fetch } = event;
+	const { fetch, params } = event;
 
-	// TODO: get the user
-	const user = await getUser(event);
-
-	const response = await fetch(`/api/lecturers/hyasex5ofwoy`, {
+	const response = await fetch(`/api/lecturers/${params.id}`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -18,7 +15,7 @@ export const load: PageLoad = async (event) => {
 
 	const lecturer: LecturerType = await response.json();
 
-	const assignedCoursesResponse = await fetch(`/api/lecturers/hyasex5ofwoy/courses`, {
+	const assignedCoursesResponse = await fetch(`/api/lecturers/${params.id}/courses`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
