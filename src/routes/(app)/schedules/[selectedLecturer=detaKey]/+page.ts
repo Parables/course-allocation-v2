@@ -3,7 +3,17 @@ import type { LecturerType } from '$lib/data/types/lecturer';
 import alasql from 'alasql';
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ params, fetch }) => {
+import { getUser } from 'lucia-sveltekit/load';
+import { redirect } from '@sveltejs/kit';
+
+export const load: PageLoad = async (event) => {
+	const { fetch, params } = event;
+
+	const user = await getUser(event);
+	if (!user) throw redirect(302, '/login');
+
+	if (user.role !== 'admin') throw redirect(302, '/');
+
 	const selectedLecturer = params.selectedLecturer;
 
 	const response = await fetch(`/api/lecturers/`, {

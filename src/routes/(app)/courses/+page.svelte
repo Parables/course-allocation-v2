@@ -56,12 +56,9 @@
 				name: 'Actions',
 				formatter: (cell: any, row: any) => {
 					const key = row.cells[0].data?.key ?? '';
-					const lecturerKey = row.cells[8].data?.key ?? '';
 
 					const actions = cell.map((action: any) => {
-						if (action === 'view') {
-							return `<a href="/schedules?lecturer=${lecturerKey}" title="Assign Lecturer" class="hover:bg-purple-200 p-5 rounded-md">${assignLecturerIcon}</a>`;
-						} else if (action === 'edit') {
+						if (action === 'edit') {
 							return `<a href="/courses/edit/${key}" title="Edit Course" class="hover:bg-purple-200 p-5 rounded-md">${editIcon}</a>`;
 						} else if (action === 'delete') {
 							return `<form action="/courses?/delete" method="POST" class="grid place-items-center"><input name="key" value="${key}" class="sr-only"/><button type="submit"  title="Delete Course" class="hover:bg-purple-200 p-5 rounded-md" on:click|preventDefault >${deleteIcon}</button></form>`;
@@ -93,15 +90,17 @@
 					c.lecturer_fullName ?? 'N/A',
 					c.lecturer_email ?? 'N/A',
 					c.lecturer_phoneNumber ?? 'N/A',
-					['view', 'edit', 'delete']
+					['edit', 'delete']
 				];
 			});
 		}
 	};
 
 	const handleRowClicked = (e: any) => {
-		const key = e.detail[1]['_cells'][0]['data']['key'];
-		goto(`/courses/edit/${key}`);
+		if (user?.role === 'admin') {
+			const key = e.detail[1]['_cells'][0]['data']['key'];
+			goto(`/courses/edit/${key}`);
+		}
 	};
 
 	let tableWrapper: HTMLDivElement | undefined;

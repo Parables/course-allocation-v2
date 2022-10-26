@@ -5,9 +5,9 @@ import myzod from 'myzod';
 export const RegisterSchema = myzod.object({
 	username: myzod.string().default(''),
 	email: myzod.string(),
-	lecturerKey: myzod.string().optional(),
+	lecturerKey: myzod.string().default('null'),
 	password: myzod.string().min(8).default(generateRandomString(8)),
-	role: myzod.string().valid(['admin', 'lecturer', 'guest']).default('guest')
+	role: myzod.literals('admin', 'lecturer', 'guest').default('guest')
 });
 
 export const LoginSchema = myzod.object({
