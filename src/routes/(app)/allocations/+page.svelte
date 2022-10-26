@@ -1,20 +1,12 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import Grid from 'gridjs-svelte';
 	import type { UserConfig } from 'gridjs';
 	import Button from '$lib/components/button.svelte';
 	import backIcon from '$lib/assets/icons/chevron-left.svg?raw';
-	import plusIcon from '$lib/assets/icons/plus.svg?raw';
-	import editIcon from '$lib/assets/icons/edit.svg?raw';
 	import downloadIcon from '$lib/assets/icons/download-cloud.svg?raw';
-	import filterIcon from '$lib/assets/icons/filter.svg?raw';
 	import type { PageData, PageLoad } from './$types';
-	import type { ServerStorageOptions } from 'gridjs/dist/src/storage/server';
 	import type { FilterableProgramme, ProgrammeRawType } from '$lib/data/types/programme';
 	import alasql from 'alasql';
-	import InputField from '$lib/components/input-fields/input-field.svelte';
-	import { suffixWith } from '$lib/utils';
-	import { goto } from '$app/navigation';
 
 	export let data: PageData;
 
@@ -30,8 +22,6 @@
 
 	$: {
 		if (selectedProgramme) {
-			// console.log(filterableProgrammes);
-
 			Object.keys(selectedProgramme.outline).forEach((y) => {
 				const res: FilterableProgramme[] = alasql(
 					`SELECT * FROM ? 
@@ -47,8 +37,6 @@
 					CONTACT: pg.course_lecturer_phoneNumber
 				}));
 			});
-
-			console.log(dataset);
 		}
 	}
 

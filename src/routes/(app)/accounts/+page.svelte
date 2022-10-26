@@ -42,7 +42,6 @@
 			formatter: (cell: any, row: any) => {
 				const userId = row.cells[0].data;
 				const lecturerKey = row.cells[1].data;
-				console.log('userID for action: ', userId);
 
 				const actions = cell.map((action: any) => {
 					if (action === 'delete') {
@@ -58,7 +57,6 @@
 	const server: ServerStorageOptions = {
 		url: `${$page.url.origin}/api/users`,
 		then: (data: any[]) => {
-			console.log('🚀 ~ file: +page.svelte ~ line 53 ~ data', data);
 			return data
 				.filter((d) => d.role !== 'admin')
 				.map((d) => [d.userId, d.lecturerKey, d.providerId, d.username, d.role, ['delete']]);

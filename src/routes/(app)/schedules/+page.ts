@@ -12,9 +12,7 @@ export const load: PageLoad = async ({ fetch }) => {
 	});
 
 	const allLecturers: LecturerType[] = await response.json();
-	console.log(allLecturers);
 	if (Array.isArray(allLecturers) && allLecturers.length > 0 && allLecturers[0].key) {
-		console.log('Lecturers is not empty... redirect to the first lecturer');
 		throw redirect(303, `/schedules/${allLecturers[0].key}`);
 	}
 

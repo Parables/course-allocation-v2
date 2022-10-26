@@ -25,7 +25,6 @@
 
 	$: {
 		strQ = JSON.stringify(qualifications ?? {});
-		console.log('strQ', strQ);
 	}
 
 	$: qCount = Object.keys(qualifications).length;
@@ -53,7 +52,6 @@
 
 		qError = undefined;
 		qualifications = { ...qualifications, [new Date().valueOf()]: validated };
-		console.log(qualifications);
 	};
 
 	const removeQ = (k: string) => {

@@ -44,8 +44,6 @@ export const actions: Actions = {
 
 				const result = await response.json();
 
-				console.log('result', result);
-
 				//  STEP 3: if lecturer profile was updated successfully, get the updated profile
 				if (result === null) {
 					const response = await fetch(`/api/lecturers/${lecturerKey}`, {
@@ -64,7 +62,6 @@ export const actions: Actions = {
 						message: `Dear Lecturer: ${lecturer.fullName}, you have been granted access to the Course Allocation app available on https://course-allocation.vercel.app.\n\n Your default password is\n\n${password}`,
 						recipients: [`233${lecturer.phoneNumber.slice(1)}`]
 					};
-					console.log('🚀 ~ file: +page.server.ts ~ line 66 ~ createAccount: ~ sms', sms);
 
 					const config = {
 						method: 'post',
@@ -77,27 +74,18 @@ export const actions: Actions = {
 
 					axios(config)
 						.then(function (response) {
-							// console.log(JSON.stringify(response.data));
 							console.log(
-								'🚀 ~ file: +page.server.ts ~ line 81 ~ JSON.stringify(response.data)',
+								'🚀 ~ file: +page.server.ts ~ line 77 ~ JSON.stringify(response.data)',
 								JSON.stringify(response.data)
 							);
 						})
 						.catch(function (error) {
-							console.log(
-								'🚀 ~ file: +page.server.ts ~ line 83 ~ createAccount: ~ axios error',
-								error
-							);
-							console.log(error);
+							console.log('🚀 ~ file: +page.server.ts ~ line 83 ~ createAccount: ~ error', error);
 						});
-
-					/* return {
-						success: { message: `Account created successfully for ${username} - ${email}` }
-					}; */
 				}
 			}
 		} catch (e) {
-			console.log('🚀 ~ file: +page.server.ts ~ line 47 ~ default: ~ e', e);
+			console.log('🚀 ~ file: +page.server.ts ~ line 92 ~ default: ~ e', e);
 			const error = e as Error;
 			if (
 				error.message === 'AUTH_DUPLICATE_PROVIDER_ID' ||
