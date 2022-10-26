@@ -39,7 +39,12 @@
 		}
 	}
 
-	$: goingAway = $navigating?.to?.routeId !== '(app)/schedules';
+	$: {
+		goingAway = $navigating?.to?.routeId !== '(app)/schedules/[selectedLecturer=detaKey]';
+		console.log('🚀 ~ file: +page.svelte ~ line 28 ~ selectedLecturer', selectedLecturer);
+		console.log('🚀 ~ file: +page.svelte ~ line 43 ~ navigating', $navigating);
+		console.log('🚀 ~ file: +page.svelte ~ line 43 ~ goingAway', goingAway);
+	}
 </script>
 
 <div class="flex items-center justify-between w-full">
@@ -59,7 +64,9 @@
 			{#each allLecturers as lecturer, i (lecturer.key)}
 				<li id="lecturer-{lecturer.key}">
 					<a
-						href="/schedules?lecturer={lecturer.key}"
+						data-sveltekit-reload
+						data-sveltekit-prefetch
+						href="/schedules/{lecturer.key}"
 						class="w-full group flex flex-col  px-5 py-3 bg-white border-2 rounded-lg group-hover:border-purple-500 border-gray-50 {selectedLecturer?.includes(
 							lecturer.key
 						)
@@ -82,7 +89,7 @@
 		<p class="my-5 font-semibold text-center uppercase">Select Courses</p>
 
 		{#if selectedLecturer}
-			<NavigatingIndicator show={!goingAway}>
+			<NavigatingIndicator show={goingAway}>
 				<div class="flex items-stretch w-full h-full overflow-hidden justify-evenly">
 					<!-- unassigned courses -->
 					<div class="flex flex-col flex-1 h-full px-10 overflow-hidden">

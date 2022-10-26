@@ -98,7 +98,7 @@
 				<!-- assigned courses lecturers -->
 
 				<a
-					href="/schedules?lecturer={lecturer.key}"
+					href="/schedules/{lecturer.key}"
 					class="flex items-center w-full py-4 text-base font-semibold text-center uppercase print:hidden gap-x-5 link link-hover"
 					>Assigned Courses {@html editIcon}</a
 				>
