@@ -33,13 +33,26 @@ export const POST: RequestHandler = async ({ request, params }) => {
 
 export const PATCH: RequestHandler = async ({ request, params }) => {
 	try {
-		const data = await request.json();
+		const { profilePicture, ...data } = await request.json();
 		console.log(
 			'🚀 ~ file: +server.ts ~ line 37 ~ constPATCH:RequestHandler= ~ await request.json(), params.id',
 			data,
-			params.id
+			params.id,
+			profilePicture
 		);
-		return json(await db.update(data, params.id));
+
+		const result = await db.update(data, params.id);
+
+		if (params.id && profilePicture) {
+			const buffer = Buffer.from(profilePicture, 'base64');
+			const name = await drive.put(`lecturers/${params.id}.png`, {
+				data: buffer,
+				contentType: 'image/png'
+			});
+			console.log('Image upload was successful', name);
+		}
+
+		return json(result);
 	} catch (err) {
 		console.log('🚀 ~ file: +server.ts ~ line 43 ~ constPATCH:RequestHandler= ~ err', err);
 		throw error(400, 'Failed to update lecturer');

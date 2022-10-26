@@ -8,10 +8,11 @@ export const actions: Actions = {
 	default: async ({ request, url, params }) => {
 		// extract data from request
 		const data = formDataToJson(await request.formData());
-		const { staffID, fullName, gender, email, phoneNumber, qualifications } = data;
+		const { profilePicture, staffID, fullName, gender, email, phoneNumber, qualifications } = data;
 
 		const validated = UpdateLecturerSchema.try({
 			key: params.id,
+			profilePicture,
 			staffID,
 			fullName,
 			gender,
